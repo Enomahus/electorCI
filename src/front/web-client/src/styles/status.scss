@@ -1,0 +1,48 @@
+.status {
+  padding: 4px;
+  border-radius: 4px;
+
+  &.status-toBeProcessed {
+    background-color: var(--status-toBeProcessed-color);
+    color: var(--inverse-text-color);
+  }
+
+  &.status-waitingForInformation {
+    background-color: var(--status-waiting-background-color);
+  }
+
+  &.status-validated {
+    background-color: var(--status-validated-color);
+    color: var(--inverse-text-color);
+  }
+
+  &.status-refused {
+    background-color: var(--status-refused-color);
+    color: var(--inverse-text-color);
+  }
+
+  &.status-collectionInProgress {
+    background-color: var(--status-collection-in-progress);
+  }
+
+  &.status-shipment-order {
+    background-color: var(--status-shipment-order);
+    color: var(--primary-text-color);
+  }
+}
+
+.status-list-item-toBeProcessed {
+  color: var(--status-toBeProcessed-color) !important;
+}
+
+.status-list-item-waitingForInformation {
+  color: var(--status-waiting-color) !important;
+}
+
+.status-list-item-validated {
+  color: var(--status-validated-color) !important;
+}
+
+.status-list-item-refused {
+  color: var(--status-refused-color) !important;
+}

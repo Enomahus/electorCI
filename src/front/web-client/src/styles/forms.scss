@@ -1,0 +1,238 @@
+.form-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inputs-container {
+  display: flex;
+  gap: 16px;
+}
+
+.input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+
+  &.required {
+    label,
+    .label {
+      &::after {
+        content: ' *';
+        color: var(--error-color);
+      }
+    }
+    .options-container {
+      label:not(.required),
+      .label:not(.required) {
+        &::after {
+          content: none;
+        }
+      }
+    }
+  }
+
+  label,
+  .label {
+    font-weight: 500;
+
+    &.radio,
+    &.checkbox {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      cursor: pointer;
+      font-weight: normal;
+      width: fit-content;
+      &:has(input.disabled, input:disabled) {
+        pointer-events: none;
+      }
+    }
+  }
+
+  .options-container {
+    display: flex;
+    gap: 16px 50px;
+    flex-wrap: wrap;
+  }
+
+  .label-container {
+    display: flex;
+    align-items: center;
+  }
+}
+
+input:not([type='radio']):not([type='checkbox']) {
+  display: inline-flex;
+  align-items: center;
+  padding: 0px 16px;
+  height: 36px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--input-background);
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+
+  &[type='text'],
+  &[type='number'],
+  &[type='email'],
+  &[type='password'] {
+    &.error,
+    &.ng-invalid.ng-touched {
+      border-color: var(--error-color);
+    }
+    &:focus {
+      outline: none;
+      border-bottom: 2px solid var(--primary-color);
+    }
+  }
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    background-color: var(--primary-color);
+  }
+
+  &:checked::before {
+    transform: scale(1);
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+input[type='radio'] {
+  border-radius: 50%;
+
+  &::before {
+    border-radius: 50%;
+  }
+}
+
+input:disabled,
+input.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+  color: inherit;
+}
+
+input[type='number'].no-spinner {
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  appearance: textfield;
+}
+
+.cost-input {
+  position: relative;
+  &:after {
+    content: '€';
+    display: block;
+    position: absolute;
+    right: 4px;
+    top: 0;
+    font-size: 16px;
+    line-height: 35px;
+  }
+  input {
+    text-align: right;
+  }
+}
+
+.input-with-icon-container {
+  position: relative;
+
+  input:not([type='radio']):not([type='checkbox']) {
+    padding-right: 36px;
+  }
+
+  i {
+    display: block;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 16px;
+    font-size: 18px;
+  }
+}
+
+textarea {
+  outline: none;
+  background-color: var(--input-background);
+  border-radius: 10px;
+  padding: 10px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  border: solid 1px transparent;
+
+  &.error {
+    border-color: var(--error-color);
+  }
+}
+
+.alert {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 30px;
+}
+
+.form-error {
+  color: var(--error-color);
+  font-size: var(--font-size-info);
+  font-weight: 600;
+}
+
+.error-message {
+  color: var(--error-color);
+}
+
+::placeholder {
+  color: var(--primary-text-color);
+}
+
+.basic-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .form-errors {
+    color: var(--error-color);
+    font-size: var(--font-size-info);
+    font-weight: 600;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
