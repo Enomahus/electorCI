@@ -1,0 +1,38 @@
+.card {
+  background-color: var(--primary-background);
+  border: solid 1px var(--border-color);
+  box-shadow: var(--standard-box-shadow);
+
+  .card-header {
+    height: 30px;
+    position: relative;
+    background: red;
+
+    .card-icon {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-background);
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translate(-50%, 50%);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .card-content {
+    padding: 24px;
+    line-height: 18px;
+
+    .card-title {
+      font-size: var(--font-size-default);
+      font-weight: bold;
+      margin: 0 0 4px 0;
+    }
+  }
+}

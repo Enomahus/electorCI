@@ -1,0 +1,14 @@
+body.dark {
+  --primary-color: #4258ff;
+  --secondary-color: #5796fc;
+
+  --body-background: #252525;
+  --primary-background: #3f3f3f;
+
+  --primary-text-color: #ffffff;
+  --accent-text-color: #c3c3c3;
+  --inverse-text-color: #000000;
+
+  // Buttons
+  --primary-btn-text-color: var(--primary-text-color);
+}

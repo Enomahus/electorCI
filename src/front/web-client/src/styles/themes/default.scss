@@ -1,0 +1,140 @@
+body {
+  //default colors
+  --primary-color: #283ca5;
+  --secondary-color: #46d27d;
+  --tertiary-color: #ff7350;
+  --accent-color: #ffcd00;
+  --gradient-color: linear-gradient(90deg, #00e6ac 0%, #ffde00 100%);
+
+  // backgrounds
+  --body-background: #f3f3f3;
+  --primary-background: #ffffff;
+  --secondary-background: #f8f8f8;
+
+  --primary-title-color: var(--primary-color);
+  --primary-text-color: #333;
+  --accent-text-color: var(--primary-color);
+  --secondary-text-color: #666666;
+  --tertiary-text-color: #c7c7c7;
+  --inverse-text-color: #ffffff;
+  --info-bubble-background-color: #e7ebf6;
+  --info-bubble-text-color: var(--primary-color);
+  --warning-bubble-background-color: #fffae5;
+  --warning-bubble-text-color: #ad8b00;
+  --info-status-background-color: #e7ebf6;
+
+  --link-hover-color: #1d93ad;
+  --border-color: #ddd;
+
+  --success-color: var(--secondary-color);
+  --warning-color: var(--accent-color);
+  --info-color: var(--primary-color);
+  --error-color: var(--tertiary-color);
+
+  --form-error-color: var(--primary-color);
+
+  --standard-box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.05);
+
+  // Buttons
+  --primary-btn-background: var(--primary-color);
+  --primary-btn-text-color: var(--inverse-text-color);
+
+  --secondary-btn-background: var(--secondary-color);
+  --secondary-btn-text-color: var(--inverse-text-color);
+
+  --accent-btn-background: var(--accent-color);
+  --accent-btn-text-color: var(--inverse-text-color);
+
+  --outline-btn-background: var(--primary-background);
+  --outline-primary-btn-color: var(--primary-color);
+
+  --default-btn-background: #e0e0e0;
+  --default-btn-text-color: #000;
+
+  --btn-save-color: var(--secondary-color);
+  --btn-delete-color: var(--tertiary-color);
+  --btn-add-color: var(--primary-color);
+
+  // Inputs
+  --input-background: var(--secondary-background);
+
+  // Select
+  --selected-option-bg: #ffdfdf;
+  --marked-option-bg: #fff0f0;
+
+  // Font sizes
+  --font-size-default: 13px;
+  --font-size-action: 14px;
+  --font-size-info: 11px;
+  --font-size-h1: 18px;
+  --font-size-h2: 14px;
+  --font-size-menu: 16px;
+  --font-size-icon-button: 20px;
+  --font-size-menu-mobile: 13px;
+
+  // Navbar
+  --submenu-item-hover-band: var(--accent-color);
+  --menu-item-hover-band: var(--secondary-color);
+  --submenu-item-hover-background: #f3f3f3;
+
+  // Footer
+  --foot-text-color: #6d7ac2;
+
+  // Grids
+  --grid-hover-bg-color: #e7ebf6;
+  --sorted-header-bg-color: #e9e9e9;
+  --pager-button-color: var(--primary-color);
+  --pager-button-bg-color: var(--primary-color);
+  --display-grid-header-background: #f3f3f3;
+
+  // Tabstrips
+  --tabstrip-item-bg: #f3f3f3;
+  --tabstrip-item-hover-bg: #e7ebf6;
+  --tabstrip-item-hover-text: var(--primary-color);
+  --tabstrip-item-success-bg: #e9faf0;
+  --tabstrip-item-success-icon-color: var(--secondary-color);
+
+  // Panelbars
+  --panelbar-header-bg: #f3f3f3;
+  --panelbar-header-selected: var(--primary-color);
+  --panelbar-header-hover: #1b2970;
+
+  // Info icon
+  --info-icon-background: var(--primary-color);
+  --info-icon-color: var(--inverse-text-color);
+
+  // Logistic requests
+  --alert-card-header-color: #ffdd52;
+  --alert-card-title-color: #d6ac00;
+  --people-card-header-color: #6d7ac2;
+  --people-card-title-color: var(--primary-color);
+  --technology-infos-panel: var(--primary-color);
+  --admin-remark-color: var(--tertiary-color);
+
+  // Logistic flow
+  --logistic-flow-portal-color: #46d27d;
+  --logistic-flow-manual-color: #ffcd00;
+  --logistic-flow-global-cost-background: #c3c8e6;
+  --logistic-flow-global-cost-color: #1b2970;
+
+  // Manual schema
+  --manual-scheme-cost-type-toggle-color: var(--tertiary-color);
+  --manual-scheme-technology-status-ok: var(--success-color);
+  --manual-scheme-technology-status-pending: var(--warning-color);
+  --manual-scheme-technology-status-error: var(--error-color);
+
+  // Cards
+  --card-header-bg-color: #e7ebf6;
+
+  // Status
+  --status-toBeProcessed-color: var(--primary-color);
+  --status-refused-color: #d66143;
+  --status-validated-color: #308f55;
+  --status-waiting-background-color: var(--accent-color);
+  --status-waiting-color: #d6ac00;
+  --status-collection-in-progress: #c3c8e6;
+  --status-shipment-order: var(--primary-background);
+
+  // Warning icon
+  --warning-icon-color: var(--accent-color);
+}

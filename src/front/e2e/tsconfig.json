@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+	"paths": {
+		"@helpers/*": ["./helpers/*"],
+    "@/*": ["./"]
+	}
+  }
+}
