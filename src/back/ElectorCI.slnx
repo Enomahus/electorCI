@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Backend/00-Web/00-Web.csproj" Id="72335f85-031c-46ea-bff4-fafbe9cefef6" />
+    <Project Path="src/Backend/01-ServicesConfiguration/01-ServicesConfiguration.csproj" Id="6be7f35a-664c-4503-8fba-ac7d6cb987f6" />
+    <Project Path="src/Backend/10-Application/10-Application.csproj" Id="1e7319a4-3010-46a6-8385-019d1c59f130" />
+    <Project Path="src/Backend/11-Application.Features/11-Application.Features.csproj" Id="ac796fb7-9e9a-4108-bd44-e96a1ef11e54" />
+    <Project Path="src/Backend/12-Application.Common/12-Application.Common.csproj" Id="58cf0be3-5de4-4087-bda9-927d3a49b3ab" />
+    <Project Path="src/Backend/13-Application.Ressources/13-Application.Ressources.csproj" Id="fcbae950-2017-4308-89bc-176aec96662d" />
+    <Project Path="src/Backend/20-Infrastructure/20-Infrastructure.csproj" Id="da3d2b59-608f-40e9-967a-cfe49b0617a7" />
+    <Project Path="src/Backend/21-Infrastructure.Persistence/21-Infrastructure.Persistence.csproj" Id="d283cc58-3f9b-4b07-96cd-e97182b44627" />
+    <Project Path="src/Backend/22-Infrastructure.Persistence.SQLServer/22-Infrastructure.Persistence.SQLServer.csproj" Id="cb2b64b7-9f73-42ad-bd7f-d680c176e79b" />
+    <Project Path="src/Backend/23-Infrastructure.Persistence.File/23-Infrastructure.Persistence.File.csproj" Id="bfb803a6-18a7-4fb2-b0ce-4579f73c0c3f" />
+    <Project Path="src/Backend/99-Tools/99-Tools.csproj" Id="70bbc1fc-5f51-4c43-82d8-ef76c82143a5" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>

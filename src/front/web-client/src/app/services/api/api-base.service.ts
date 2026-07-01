@@ -11,6 +11,7 @@ import { DataResult } from './models/data-result';
 export class ApiBaseService {
   protected toastService = inject(ToastService);
   protected translateService = inject(TranslateService);
+  protected apiClient = inject(ServerClient);
 
   handleDataResult<T, R extends DataResult<T>>(
     options: ApiToastOptions = {},

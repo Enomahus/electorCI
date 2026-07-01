@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>ServicesConfiguration</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.9" />
+    <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\10-Application\10-Application.csproj" />
+    <ProjectReference Include="..\11-Application.Features\11-Application.Features.csproj" />
+    <ProjectReference Include="..\13-Application.Ressources\13-Application.Ressources.csproj" />
+    <ProjectReference Include="..\20-Infrastructure\20-Infrastructure.csproj" />
+    <ProjectReference Include="..\21-Infrastructure.Persistence\21-Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\22-Infrastructure.Persistence.SQLServer\22-Infrastructure.Persistence.SQLServer.csproj" />
+    <ProjectReference Include="..\23-Infrastructure.Persistence.File\23-Infrastructure.Persistence.File.csproj" />
+    <ProjectReference Include="..\99-Tools\99-Tools.csproj" />
+  </ItemGroup>
+</Project>
