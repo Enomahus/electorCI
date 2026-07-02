@@ -20,4 +20,10 @@
     <PackageReference Include="NJsonSchema" Version="11.6.1" />
     <PackageReference Include="NSwag.Annotations" Version="14.7.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\10-Application\10-Application.csproj" />
+    <ProjectReference Include="..\13-Application.Ressources\13-Application.Ressources.csproj" />
+    <ProjectReference Include="..\99-Tools\99-Tools.csproj" />
+  </ItemGroup>
 </Project>

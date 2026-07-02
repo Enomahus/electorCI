@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Features
@@ -37,14 +36,14 @@ namespace Application.Features
             return services;
         }
 
-        public static void UseApplicationFeaturesServices(
-            this IServiceProvider serviceProvider,
-            IConfiguration configuration
-        )
-        {
-            serviceProvider.AddRecurringJob<NotifyEndOfConformityJob>(
-                configuration.GetValue<string>("Jobs:NotifyEndOfConformityCron") ?? Cron.Daily(8)
-            );
-        }
+        //public static void UseApplicationFeaturesServices(
+        //    this IServiceProvider serviceProvider,
+        //    IConfiguration configuration
+        //)
+        //{
+        //    serviceProvider.AddRecurringJob<NotifyEndOfConformityJob>(
+        //        configuration.GetValue<string>("Jobs:NotifyEndOfConformityCron") ?? Cron.Daily(8)
+        //    );
+        //}
     }
 }
