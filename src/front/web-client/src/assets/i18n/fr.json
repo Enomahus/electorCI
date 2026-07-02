@@ -1,0 +1,98 @@
+{
+  "global": {
+    "accept": "Accepter",
+    "createAccount": "Créer un compte",
+    "save": "Enregistrer",
+    "search": "Rechercher",
+    "edit": "Editer",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "refresh": "Actualiser",
+    "login": "Se connecter",
+    "actions": "Actions",
+    "selectFile": "Sélectionner un fichier",
+    "select": "...Veuillez choisir une option...",
+    "no": "Non",
+    "yes": "Oui",
+    "noData": "Aucune données",
+    "noTitleTemplate": "ELector-CI",
+    "titleTemplate": "{{title}} | ELector-CI",
+    "language": "Langue",
+    "lang": {
+      "fr": "Français",
+      "en": "Anglais"
+    }
+  },
+  "breadcrumb": {
+    "pollingStations": "Les bureaux de vote",
+    "pollingStationCreate": "Nouveau bureau de vote",
+    "pollingStationEdit": "Modifier un bureau de vote",
+    "constituencies": "Les circonscriptions",
+    "constituencyCreate": "Nouvelle circonscription",
+    "registrationRequests": "Mes demandes",
+    "registrationRequestAdd": "Nouvelle demande d'inscription",
+    "registrationRequestEdit": "Modifier la demande d'inscription",
+    "registrationRequestsForAdmin": "Liste des demandes",
+    "registrationRequestsForManagement": "Liste des demandes",
+    "stakeholderAdd": "Nouvelle société",
+    "stakeholders": "Liste des sociétés",
+    "userCreate": "Création d'un utilisateur",
+    "userEdit": "Modification de l'utilisateur",
+    "users": "Liste des utilisateurs"
+  },
+  "footer": {
+    "text": "© 2026 Commission Électorale Indépendante (CEI) - Côte d'Ivoire.",
+    "rights": "Tous droits réservés."
+  },
+  "navbar": {
+    "projectName": "E-Lector",
+    "projectCountryCode": "ci",
+    "displayMenu": "Afficher le menu",
+    "logout": "Se déconnecter",
+    "registrationRequest": "Demande d'inscription",
+    "registration": "Nouvelle demande",
+    "myRequests": "Mes demandes",
+    "myRequestsForOrganism": "Les demandes",
+    "myRequestsForAdmin": "Les demandes",
+    "faq": "Faq",
+    "Administration": "Administration",
+    "pollingStation": "Bureaux de vote",
+    "constituency": "Circonscription",
+    "users": "Utilisateurs"
+  },
+  "formError": {
+    "required": "Champ requis",
+    "emailInvalid": "L'email n'est pas au bon format",
+    "positiveNumber": "Doit être un nombre supérieur à zéro",
+    "passwordFormat": "Le mot de passe doit contenir entre 8 et 24 caractères et avoir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caracère spécial",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "emailUnique": "Cet e-mail existe déjà. Merci d'utiliser un autre e-mail",
+    "employeeNumberUnique": "Ce numéro matricule existe déjà.",
+    "phoneInvalid": "Le numéro de téléphone n'est pas au bon format"
+  },
+  "errors": {
+    "backendCodes": {
+      "accessRights": "Droits insuffisants",
+      "notFound": "L'élément demandé n'existe pas",
+      "validation": "",
+      "validationCodes": {
+        "CountryMustExist": "Le pays n'a pas été trouvé.",
+        "InvalidEmail": "Le champ {{field}} n'est pas un email valide.",
+        "InvalidPassword": "Le mot de passe est invalide.",
+        "InvalidPostcode": "Le code postal est invalide.",
+        "MaxLength": "La valeur saisie dans le champ {{field}} est trop longue.",
+        "PanelReferenceMustExist": "La référence de panneau n'a pas été trouvée.",
+        "PositiveNumber": "La valeur saisie dans le champ {{field}} doit être positive.",
+        "RequesterMustExist": "Le demandeur n'a pas été trouvé.",
+        "Required": "Le champ {{field}} est requis.",
+        "StakeholderLinked": "La société ne peut pas être supprimée car des éléments lui sont liés. Vous pouvez cependant la désactiver.",
+        "ConstituencyMustExist": "La circonscription n'a pas été trouvée.",
+        "Unique": "La valeur saisie dans le champ {{field}} existe déjà.",
+        "UserMustExist": "L'utilisateur n'a pas été trouvé.",
+        "PollingStationMustExist": "Le bureau de vote n'a pas été trouvé."
+      }
+    },
+    "gridError": "Une erreur est survenue lors de la récupération des données de la grille",
+    "serverError": "Erreur serveur"
+  }
+}

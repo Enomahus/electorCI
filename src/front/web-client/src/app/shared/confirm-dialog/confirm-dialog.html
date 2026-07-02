@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{ 'dialog.title' | translate }}</h2>
+<div mat-dialog-content>
+  <p [innerHTML]="'dialog.message' | translate: { data: data }"></p>
+</div>
+<div mat-dialog-actions align="center">
+  <button mat-button (click)="onNoClick()">{{ 'dialog.cancel' | translate }}</button>
+  <button mat-flat-button class="btn-delete" [mat-dialog-close]="true">
+    {{ 'dialog.delete' | translate }}
+  </button>
+</div>

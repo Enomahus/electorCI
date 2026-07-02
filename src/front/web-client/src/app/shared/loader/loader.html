@@ -1,0 +1,8 @@
+<div class="loader-containter" [style.font-size.px]="size()">
+  <div class="loader-content">
+    <i class="icon ph ph-circle-notch"></i>
+    @if (message()) {
+      <p class="loader-message">{{ message() }}</p>
+    }
+  </div>
+</div>
