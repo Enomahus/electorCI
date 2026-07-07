@@ -12,7 +12,7 @@ namespace Infrastructure.Persistence.Entities
         public long DistrictId { get; set; }
 
         [ForeignKey(nameof(DistrictId))]
-        public UserDistrictDao District { get; set; }
+        public DistrictDao District { get; set; }
         public virtual ICollection<RoleDao> SpecificRoles { get; set; } = [];
     }
 }

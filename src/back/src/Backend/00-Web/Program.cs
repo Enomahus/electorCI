@@ -33,9 +33,18 @@ public static class Program
 
         builder.Services.AddHttpContextAccessor();
 
+        builder.Services.AddHangfire(config =>
+            config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("AppDb"))
+        );
+        builder.Services.AddHangfireServer();
+
         builder.Services.AddHealthChecks();
 
-        //builder.AddTelemetryServices(logger);
+        builder.AddTelemetryServices(logger);
 
         builder.WebHost.ConfigureKestrel(options =>
         {

@@ -1,0 +1,51 @@
+# OpenTelemetry Collector configuration for local Docker development.
+# Pipeline:
+#   backend --(OTLP)--> collector --(OTLP)--> Jaeger        (traces)
+#                                \--(Prometheus scrape)     (metrics + span metrics)
+# Prometheus scrapes this collector on :8889; Jaeger reads span metrics from Prometheus.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch: {}
+
+connectors:
+  # Generates RED (Requests/Errors/Duration) metrics from spans so Jaeger's
+  # "Monitor" (SPM) tab has data to display.
+  spanmetrics:
+    histogram:
+      explicit:
+        buckets: [2ms, 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s, 10s]
+    dimensions:
+      - name: http.method
+      - name: http.status_code
+    metrics_flush_interval: 15s
+
+exporters:
+  # Traces to Jaeger's native OTLP receiver (enabled by default in all-in-one 1.58).
+  otlp/jaeger:
+    endpoint: electorCI.jaeger:4317
+    tls:
+      insecure: true
+  # Metrics exposed for Prometheus to scrape.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/jaeger, spanmetrics]
+    metrics:
+      receivers: [otlp, spanmetrics]
+      processors: [batch]
+      exporters: [prometheus]

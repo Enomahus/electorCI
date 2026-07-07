@@ -19,6 +19,7 @@
 | Swagger  | http://localhost:44200/swagger/index.html |
 | ReDoc    | http://localhost:44200/docs/index.html    |
 | Jaeger   | http://localhost:41200/search             |
+| Metrics  | http://localhost:48889/metrics            |
 
 ### Database (SQL Server 2022)
 

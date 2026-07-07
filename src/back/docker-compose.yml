@@ -22,13 +22,15 @@ services:
         condition: service_completed_successfully
       electorCI.jaeger:
         condition: service_started
+      electorCI.otel_collector:
+        condition: service_started
   
   electorCI.jaeger:
     container_name: electorCI.jaeger
     image: jaegertracing/all-in-one:1.58
     environment:
       - METRICS_STORAGE_TYPE=prometheus
-      - PROMETHEUS_SERVER_URL=http://electorCI.backend:41200
+      - PROMETHEUS_SERVER_URL=http://electorCI.prometheus:9090
       - PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR=${PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR:-true}
       - PROMETHEUS_QUERY_NAMESPACE=${PROMETHEUS_QUERY_NAMESPACE:-}
       - PROMETHEUS_QUERY_DURATION_UNIT=${PROMETHEUS_QUERY_DURATION_UNIT:-}
@@ -46,6 +48,18 @@ services:
     ports:
       - "41200:9090"
 
+  electorCI.otel_collector:
+    container_name: electorCI.otel_collector
+    image: otel/opentelemetry-collector-contrib:0.88.0
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    ports:
+      - "44317:4317" # OTLP gRPC (host access for debugging)
+      - "48889:8889" # Prometheus metrics endpoint (host access for debugging)
+    depends_on:
+      - electorCI.jaeger
+
   electorCI.database:
     container_name: electorCI.database
     image: 'mcr.microsoft.com/mssql/server:2025-CU2-ubuntu-22.04'
@@ -60,6 +74,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 60s
 
   electorCI.database.init:
     container_name: electorCI.database.init
@@ -70,6 +85,6 @@ services:
       electorCI.database:
         condition: service_healthy
     command: >
-      bash -c "
-        /opt/mssql-tools18/bin/sqlcmd -No -S electorCI.database -U sa -P Inay@h225 -d master -i /docker-entrypoint-initdb.d/init.sql; 
+      bash -c "set -e;
+        /opt/mssql-tools18/bin/sqlcmd -No -S electorCI.database -U sa -P Inay@h225 -d master -i /docker-entrypoint-initdb.d/init.sql &&
         echo 'All done!';"

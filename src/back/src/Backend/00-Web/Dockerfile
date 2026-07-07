@@ -8,7 +8,12 @@ EXPOSE 8080
 EXPOSE 8081
 
 # Ajout ICU pour la gestion des cultures (fr-FR, etc.)
-RUN apk add --no-cache icu-libs icu-data-full
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libicu-dev \
+    && rm -rf /var/lib/apt/lists/*
+USER $APP_UID
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 
 # Cette phase est utilisée pour générer le projet de service
