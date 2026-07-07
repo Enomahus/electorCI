@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
+using System.Reflection;
 using Application.Common.Interfaces.Services;
 using Application.Features;
 using Application.Interfaces.Services;
+using Azure;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Infrastructure.Configurations;
 using Infrastructure.Persistence.Configurations;
 using Infrastructure.Persistence.SQLServer;
@@ -13,7 +13,6 @@ using Infrastructure.Persistence.SQLServer.Seeders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Localization;
 using NSubstitute;
 using Pcea.Core.Net.Authorization;
 using Pcea.Core.Net.Authorization.Application.Interfaces.Services;
@@ -120,6 +119,52 @@ namespace Application.UnitTests.Common
             }
 
             return services;
+        }
+
+        private static BlobServiceClient ConfigureBlobServiceSubstitute(
+            Action<BlobClient>? setupBlobClient
+        )
+        {
+            var blobDownloadResult = CreateBlobDownloadStreamingResult(new MemoryStream());
+            var mockResponse = Substitute.For<Response<BlobDownloadStreamingResult>>();
+            mockResponse.Value.Returns(blobDownloadResult);
+            mockResponse.HasValue.Returns(true);
+            var blobClientSub = Substitute.For<BlobClient>();
+            blobClientSub
+                .DownloadStreamingAsync(
+                    Arg.Any<BlobDownloadOptions?>(),
+                    Arg.Any<CancellationToken>()
+                )
+                .Returns(mockResponse);
+            var blobContainerClientSub = Substitute.For<BlobContainerClient>();
+            blobContainerClientSub.GetBlobClient(Arg.Any<string>()).Returns(blobClientSub);
+            var blobServiceSub = Substitute.For<BlobServiceClient>();
+            blobServiceSub
+                .GetBlobContainerClient(Arg.Any<string>())
+                .Returns(blobContainerClientSub);
+            setupBlobClient?.Invoke(blobClientSub);
+
+            return blobServiceSub;
+        }
+
+        protected static BlobDownloadStreamingResult? CreateBlobDownloadStreamingResult(
+            Stream content
+        )
+        {
+            var result = (BlobDownloadStreamingResult?)
+                Activator.CreateInstance(typeof(BlobDownloadStreamingResult), nonPublic: true);
+            var contentProperty = typeof(BlobDownloadStreamingResult).GetProperty(
+                nameof(BlobDownloadStreamingResult.Content)
+            );
+            contentProperty?.SetValue(
+                result,
+                content,
+                BindingFlags.NonPublic | BindingFlags.Instance,
+                null,
+                null,
+                null
+            );
+            return result;
         }
     }
 }

@@ -22,4 +22,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/Application.UnitTests/Application.UnitTests.csproj" Id="f893ea08-7ed3-412f-8646-ac6f098c92c8" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

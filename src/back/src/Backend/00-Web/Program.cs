@@ -1,5 +1,6 @@
 using System.Net;
 using Hangfire;
+using Infrastructure.Persistence.SQLServer;
 using Microsoft.AspNetCore.Diagnostics;
 using ServicesConfiguration;
 using Web.Common;
@@ -25,7 +26,7 @@ public static class Program
             true
         );
 
-        //builder.Configuration.AddEnvironmentVariables();
+        builder.Configuration.AddEnvironmentVariables();
 
         builder.Services.AddWebServices(builder.Configuration);
         builder.Services.ConfigureAllServices(builder.Configuration);
@@ -55,6 +56,9 @@ public static class Program
         app.UseHangfireDashboard(
             options: new DashboardOptions { Authorization = [new HangfireAuthorizationFilter()] }
         );
+
+        await app.Services.UseInfrastructureSQLServerServicesAsync(app.Environment.EnvironmentName);
+        //app.Services.Use
 
         await app.UseWebServicesAsync();
 
@@ -104,6 +108,6 @@ public static class Program
 
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync();
     }
 }
