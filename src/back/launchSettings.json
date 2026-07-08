@@ -9,7 +9,9 @@
       "serviceActions": {
         "00-web": "StartDebugging",
         "electorCI.database": "StartWithoutDebugging",
-        "electorCI.jaeger": "StartWithoutDebugging"
+        "electorCI.jaeger": "StartWithoutDebugging",
+        "electorCI.otel_collector": "StartWithoutDebugging",
+        "electorCI.prometheus": "StartWithoutDebugging"
       }
     }
   }

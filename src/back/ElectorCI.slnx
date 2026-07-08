@@ -10,6 +10,7 @@
     <Project Path="src/Backend/21-Infrastructure.Persistence/21-Infrastructure.Persistence.csproj" Id="d283cc58-3f9b-4b07-96cd-e97182b44627" />
     <Project Path="src/Backend/22-Infrastructure.Persistence.SQLServer/22-Infrastructure.Persistence.SQLServer.csproj" Id="cb2b64b7-9f73-42ad-bd7f-d680c176e79b" />
     <Project Path="src/Backend/23-Infrastructure.Persistence.File/23-Infrastructure.Persistence.File.csproj" Id="bfb803a6-18a7-4fb2-b0ce-4579f73c0c3f" />
+    <Project Path="src/Backend/24-Infrastructure.ExternalAuth/24-Infrastructure.ExternalAuth.csproj" Id="d37f77f1-48ac-4ffa-8547-93d0c928845d" />
     <Project Path="src/Backend/99-Tools/99-Tools.csproj" Id="70bbc1fc-5f51-4c43-82d8-ef76c82143a5" />
   </Folder>
   <Folder Name="/src/Pcea.Core/">

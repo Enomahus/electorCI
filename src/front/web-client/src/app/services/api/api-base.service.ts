@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, filter, map, Observable, pipe, tap, throwError, UnaryFunction } from 'rxjs';
+import { ErrorDto, ServerClient } from '../nswag/api-nswag-client';
 import { ToastService } from '../toast.service';
 import { ApiToastOptions } from './models/api-toast-options';
 import { DataResult } from './models/data-result';
@@ -99,37 +100,3 @@ export class ApiBaseService {
     return translation !== key && translation !== '';
   }
 }
-
-export interface ErrorDto {
-  code?: ErrorCode;
-  description?: string;
-  kind?: ErrorKind;
-  additionalData?: { [key: string]: string };
-  values?: { [key: string]: string };
-}
-
-export type ErrorCode =
-  | 'none'
-  | 'validation'
-  | 'invalidParameter'
-  | 'invalidStatus'
-  | 'resourceAlreadyExists'
-  | 'notFound'
-  | 'missingData'
-  | 'genericServerError'
-  | 'accessRights'
-  | 'authenticationFailed'
-  | 'configurationMissing'
-  | 'dataSeeding'
-  | 'storage'
-  | 'export'
-  | 'incorrectEntityTypeLinked';
-
-export type ErrorKind =
-  | 'none'
-  | 'authentication'
-  | 'accessRights'
-  | 'validation'
-  | 'technical'
-  | 'requestData'
-  | 'domainRule';

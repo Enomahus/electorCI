@@ -35,6 +35,7 @@ COPY ["src/Backend/11-Application.Features/11-Application.Features.csproj", "src
 COPY ["src/Backend/13-Application.Ressources/13-Application.Ressources.csproj", "src/Backend/13-Application.Ressources/"]
 COPY ["src/Backend/20-Infrastructure/20-Infrastructure.csproj", "src/Backend/20-Infrastructure/"]
 COPY ["src/Backend/23-Infrastructure.Persistence.File/23-Infrastructure.Persistence.File.csproj", "src/Backend/23-Infrastructure.Persistence.File/"]
+COPY ["src/Backend/24-Infrastructure.ExternalAuth/24-Infrastructure.ExternalAuth.csproj", "src/Backend/24-Infrastructure.ExternalAuth/"]
 COPY ["src/Backend/Pcea.Core/Pcea.Core.Net.Authorization.Web/Pcea.Core.Net.Authorization.Web.csproj", "src/Backend/Pcea.Core/Pcea.Core.Net.Authorization.Web/"]
 
 RUN dotnet restore "./src/Backend/00-Web/00-Web.csproj"

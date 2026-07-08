@@ -51,8 +51,6 @@ public static class Program
             options.AddServerHeader = false;
         });
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -67,7 +65,6 @@ public static class Program
         );
 
         await app.Services.UseInfrastructureSQLServerServicesAsync(app.Environment.EnvironmentName);
-        //app.Services.Use
 
         await app.UseWebServicesAsync();
 
@@ -101,16 +98,6 @@ public static class Program
                 }
             })
         );
-
-        // Configure the HTTP request pipeline.
-        //if (app.Environment.IsDevelopment())
-        //{
-        //    app.MapOpenApi();
-        //}
-
-        //app.UseHttpsRedirection();
-
-        //app.UseAuthorization();
 
         app.UseHealthChecks("/health");
         app.UseCors();
