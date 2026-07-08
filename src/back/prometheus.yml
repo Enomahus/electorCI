@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # The backend pushes metrics via OTLP to the collector, which re-exposes
+  # them (plus span metrics) for Prometheus to scrape.
+  - job_name: otel-collector
+    static_configs:
+      - targets: ['electorCI.otel_collector:8889']

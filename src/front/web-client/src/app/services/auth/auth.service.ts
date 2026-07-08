@@ -16,7 +16,9 @@ import {
   tap,
 } from 'rxjs';
 import { ApiBaseService } from '../api/api-base.service';
+import { UserApiService } from '../api/user.api.service';
 import { CurrentUserService } from '../current-user.service';
+import { AppPermission, ResultOfTokenResponse } from '../nswag/api-nswag-client';
 
 const refreshTokenKey = 'refreshTokenKey';
 const currentUserKey = 'currentUserKey';
@@ -31,7 +33,7 @@ export class AuthService extends ApiBaseService {
 
   private readonly router = inject(Router);
   private readonly currentUserService = inject(CurrentUserService);
-  private readonly userApiService = inject(UserService);
+  private readonly userApiService = inject(UserApiService);
 
   constructor() {
     super();
@@ -177,111 +179,3 @@ export class AuthService extends ApiBaseService {
     }
   }
 }
-
-export interface Result {
-  duration?: number;
-}
-
-export interface ResultOfTokenResponse extends Result {
-  data?: TokenResponse | undefined;
-}
-
-export interface TokenResponse {
-  accessToken?: string;
-  refreshToken?: string;
-}
-
-export type AppPermission =
-  | 'superAdmin'
-  | 'getBrands'
-  | 'getCityFromPostCode'
-  | 'getCountries'
-  | 'importExcelData'
-  | 'getDepartmentByPostcode'
-  | 'getAllDepartments'
-  | 'documentDownload'
-  | 'getDocumentInfo'
-  | 'getDocumentsInfos'
-  | 'createGeoZone'
-  | 'deleteGeoZone'
-  | 'getGeoZone'
-  | 'updateGeoZone'
-  | 'createLogisticRequest'
-  | 'validateRemovalLogisticRequest'
-  | 'deleteLogisticRequest'
-  | 'getLogisticRequest'
-  | 'getLogisticRequestForDetail'
-  | 'getLogisticRequests'
-  | 'updateLogisticRequestDraft'
-  | 'updateLogisticRequest'
-  | 'createShippingLogisticRequest'
-  | 'getShippingLogisticRequestForDetail'
-  | 'updateLogisticRequestStatus'
-  | 'validateLogisticScheme'
-  | 'viewLogisticRequestsAlerts'
-  | 'createRemovalLogisticSchemeOptions'
-  | 'createShippingLogisticSchemeOptions'
-  | 'deleteManualLogisticScheme'
-  | 'getLogisiticRequestForSchemeCreation'
-  | 'getLogisticSchemeForUpdate'
-  | 'getLogisticSchemeOptions'
-  | 'saveManualLogisticScheme'
-  | 'validateManualLogisticScheme'
-  | 'createPriceList'
-  | 'deletePriceList'
-  | 'getPriceList'
-  | 'getPriceListByStakeholderId'
-  | 'getPriceLists'
-  | 'getRemovalPriceListRowsByPriceListId'
-  | 'updateRemovalPriceListRow'
-  | 'getShippingPriceListRowsByPriceListId'
-  | 'updateShippingPriceListRow'
-  | 'toggleActivePriceList'
-  | 'updatePriceList'
-  | 'createRemark'
-  | 'exportTransportLabelToPdf'
-  | 'exportShipmentOrderToPdf'
-  | 'getShipmentOrder'
-  | 'getShipmentOrders'
-  | 'uploadShipmentOrderFile'
-  | 'checkSiretAlreadyExists'
-  | 'checkSiretSirene'
-  | 'createStakeholder'
-  | 'deleteStakeholder'
-  | 'getActivities'
-  | 'getSlimStakeholdersByActivity'
-  | 'getStakeholder'
-  | 'getStakeholders'
-  | 'getStakeholdersByActivity'
-  | 'toggleActiveStakeholder'
-  | 'updateStakeholder'
-  | 'searchTransporters'
-  | 'checkIsLastAdminOnStakholder'
-  | 'createUser'
-  | 'deleteUser'
-  | 'getAllUsers'
-  | 'getCurrentUser'
-  | 'getUser'
-  | 'getUsers'
-  | 'toggleActiveUser'
-  | 'updateMyUserInformations'
-  | 'updateUser'
-  | 'impersonateUser'
-  | 'createWasteReceipt'
-  | 'getWasteReceipts'
-  | 'getWasteTrackingForm'
-  | 'getWasteTrackingFormForReception'
-  | 'getWasteTrackingForms'
-  | 'getWasteTrackingFormsByShipmentOrderId'
-  | 'sendRemovalWasteTrackingFormTrackDechets'
-  | 'sendShippingWasteTrackingFormTrackDechets'
-  | 'updateWasteTrackingForm'
-  | 'getRoles'
-  | 'getRole'
-  | 'updateRole'
-  | 'createRole'
-  | 'deleteRole'
-  | 'getAllActions'
-  | 'getOwnStakeholderUsers'
-  | 'getCustomRoles'
-  | 'updateOwnStakeholderUser';

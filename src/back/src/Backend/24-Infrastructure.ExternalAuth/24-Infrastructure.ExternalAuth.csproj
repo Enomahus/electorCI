@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Infrastructure.ExternalAuth</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.PeopleService.v1" Version="1.74.0.3973" />
+    <PackageReference Include="Microsoft.Graph" Version="6.2.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.85.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\20-Infrastructure\20-Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

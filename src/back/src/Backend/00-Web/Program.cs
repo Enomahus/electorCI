@@ -1,5 +1,6 @@
 using System.Net;
 using Hangfire;
+using Infrastructure.Persistence.SQLServer;
 using Microsoft.AspNetCore.Diagnostics;
 using ServicesConfiguration;
 using Web.Common;
@@ -25,23 +26,30 @@ public static class Program
             true
         );
 
-        //builder.Configuration.AddEnvironmentVariables();
+        builder.Configuration.AddEnvironmentVariables();
 
         builder.Services.AddWebServices(builder.Configuration);
         builder.Services.ConfigureAllServices(builder.Configuration);
 
         builder.Services.AddHttpContextAccessor();
 
+        builder.Services.AddHangfire(config =>
+            config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("AppDb"))
+        );
+        builder.Services.AddHangfireServer();
+
         builder.Services.AddHealthChecks();
 
-        //builder.AddTelemetryServices(logger);
+        builder.AddTelemetryServices(logger);
 
         builder.WebHost.ConfigureKestrel(options =>
         {
             options.AddServerHeader = false;
         });
-
-        // Add services to the container.
 
         builder.Services.AddControllers();
 
@@ -55,6 +63,8 @@ public static class Program
         app.UseHangfireDashboard(
             options: new DashboardOptions { Authorization = [new HangfireAuthorizationFilter()] }
         );
+
+        await app.Services.UseInfrastructureSQLServerServicesAsync(app.Environment.EnvironmentName);
 
         await app.UseWebServicesAsync();
 
@@ -89,21 +99,11 @@ public static class Program
             })
         );
 
-        // Configure the HTTP request pipeline.
-        //if (app.Environment.IsDevelopment())
-        //{
-        //    app.MapOpenApi();
-        //}
-
-        //app.UseHttpsRedirection();
-
-        //app.UseAuthorization();
-
         app.UseHealthChecks("/health");
         app.UseCors();
 
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync();
     }
 }

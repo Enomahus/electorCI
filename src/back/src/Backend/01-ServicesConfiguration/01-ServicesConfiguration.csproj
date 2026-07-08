@@ -17,6 +17,7 @@
     <ProjectReference Include="..\21-Infrastructure.Persistence\21-Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\22-Infrastructure.Persistence.SQLServer\22-Infrastructure.Persistence.SQLServer.csproj" />
     <ProjectReference Include="..\23-Infrastructure.Persistence.File\23-Infrastructure.Persistence.File.csproj" />
+    <ProjectReference Include="..\24-Infrastructure.ExternalAuth\24-Infrastructure.ExternalAuth.csproj" />
     <ProjectReference Include="..\99-Tools\99-Tools.csproj" />
   </ItemGroup>
 </Project>

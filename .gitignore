@@ -455,3 +455,26 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/angular,dotnetcore,visualstudio,visualstudiocode
+
+
+*.trx
+**/playwright-report/
+**/.scannerwork/
+
+# Add 3D assets files
+!**/assets/models/*.obj
+
+# Azurite
+**/azurite
+
+# SqlTools
+**/*.session.sql
+
+# Diagnostics
+*.gcdump
+*.nettrace
+k6/*.html
+
+*.env
+*.env.local
+*.env.development

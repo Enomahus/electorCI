@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Application.Features.Security.Common;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +29,7 @@ namespace Application.Features
             //services.AddScoped<CertificateRequestService>();
             //services.AddScoped<StakeholderService>();
             //services.AddScoped<IConformityStatusService, ConformityStatusService>();
-            //services.AddScoped<ITokenHelper, TokenHelper>();
+            services.AddScoped<ITokenHelper, TokenHelper>();
             //services.AddScoped<PanelReferenceCompleteFormValidatorsService>();
             //services.AddScoped<PanelReferenceCompleteSideEffectsService>();
             //services.AddScoped<PanelReferenceService>();

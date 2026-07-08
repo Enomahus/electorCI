@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
+using System.Reflection;
+using Application.Common.Enums;
 using Application.Common.Interfaces.Services;
 using Application.Features;
+using Application.Features.Security.Common;
 using Application.Interfaces.Services;
+using Application.Models.Errors;
+using Azure;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using FluentAssertions;
 using Infrastructure.Configurations;
+using Infrastructure.ExternalAuth;
+using Infrastructure.ExternalAuth.Interfaces;
 using Infrastructure.Persistence.Configurations;
+using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer;
+using Infrastructure.Persistence.SQLServer.Contexts;
 using Infrastructure.Persistence.SQLServer.Seeders;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Localization;
 using NSubstitute;
 using Pcea.Core.Net.Authorization;
 using Pcea.Core.Net.Authorization.Application.Interfaces.Services;
@@ -51,6 +59,7 @@ namespace Application.UnitTests.Common
             timeProviderSub
                 .GetUtcNow()
                 .Returns(new DateTimeOffset(2026, 1, 1, 10, 0, 0, TimeSpan.Zero));
+            var externalAuthSub = Substitute.For<IExternalAuthService>();
             var fileServiceSub = setupFileService != null ? Substitute.For<IFileService>() : null;
 
             setupDateService?.Invoke(timeProviderSub);
@@ -73,13 +82,13 @@ namespace Application.UnitTests.Common
                 .AddSingleton(timeProviderSub)
                 .AddSingleton(blobServiceSub)
                 .AddScoped<ITokenService, TokenService>()
-                //.AddScoped<ITokenHelper, TokenHelper>()
+                .AddScoped<ITokenHelper, TokenHelper>()
                 .AddScoped<IAuthorizationHandler, AuthorizationHandler>()
                 //.AddScoped<CriteriaService>()
                 //.AddScoped<PanelReferenceService>()
                 //.AddScoped<StakeholderService>()
-                //.AddKeyedSingleton(ExternalAuthServiceKeys.GoogleAuthService, externalAuthSub)
-                //.AddKeyedSingleton(ExternalAuthServiceKeys.MicrosoftAuthService, externalAuthSub)
+                .AddKeyedSingleton(ExternalAuthServiceKeys.GoogleAuthService, externalAuthSub)
+                .AddKeyedSingleton(ExternalAuthServiceKeys.MicrosoftAuthService, externalAuthSub)
                 .Configure<TokenConfiguration>(c =>
                     c.Secret = "DEV_SECRET_JWT_KEY_VERY_LONG_FOR_SECURITY"
                 )
@@ -121,5 +130,292 @@ namespace Application.UnitTests.Common
 
             return services;
         }
+
+        private static BlobServiceClient ConfigureBlobServiceSubstitute(
+            Action<BlobClient>? setupBlobClient
+        )
+        {
+            var blobDownloadResult = CreateBlobDownloadStreamingResult(new MemoryStream());
+            var mockResponse = Substitute.For<Response<BlobDownloadStreamingResult>>();
+            mockResponse.Value.Returns(blobDownloadResult);
+            mockResponse.HasValue.Returns(true);
+            var blobClientSub = Substitute.For<BlobClient>();
+            blobClientSub
+                .DownloadStreamingAsync(
+                    Arg.Any<BlobDownloadOptions?>(),
+                    Arg.Any<CancellationToken>()
+                )
+                .Returns(mockResponse);
+            var blobContainerClientSub = Substitute.For<BlobContainerClient>();
+            blobContainerClientSub.GetBlobClient(Arg.Any<string>()).Returns(blobClientSub);
+            var blobServiceSub = Substitute.For<BlobServiceClient>();
+            blobServiceSub
+                .GetBlobContainerClient(Arg.Any<string>())
+                .Returns(blobContainerClientSub);
+            setupBlobClient?.Invoke(blobClientSub);
+
+            return blobServiceSub;
+        }
+
+        protected static BlobDownloadStreamingResult? CreateBlobDownloadStreamingResult(
+            Stream content
+        )
+        {
+            var result = (BlobDownloadStreamingResult?)
+                Activator.CreateInstance(typeof(BlobDownloadStreamingResult), nonPublic: true);
+            var contentProperty = typeof(BlobDownloadStreamingResult).GetProperty(
+                nameof(BlobDownloadStreamingResult.Content)
+            );
+            contentProperty?.SetValue(
+                result,
+                content,
+                BindingFlags.NonPublic | BindingFlags.Instance,
+                null,
+                null,
+                null
+            );
+            return result;
+        }
+
+        #region Data Creation
+
+        public static async Task<UserDao> SetupCurrentUserAsync(
+            IServiceProvider serviceProvider,
+            string email = "dev@yopmail.com",
+            string? password = "Secret1",
+            long? districtId = null,
+            string? firstName = null,
+            string? lastName = null,
+            string? phoneNumber = null,
+            List<AppPermission>? permissions = null
+        )
+        {
+            var user = await CreateUserAsync(
+                serviceProvider,
+                email: email,
+                password: password,
+                districtId: districtId,
+                firstName: firstName,
+                lastName: lastName,
+                phoneNumber: phoneNumber
+            );
+            var userService = serviceProvider.GetRequiredService<ICurrentUserService>();
+            userService.UserId.Returns(user.Id);
+            userService.UserEmail.Returns(user.Email);
+            var currentPermissionService =
+                serviceProvider.GetRequiredService<ICurrentUserPermissionsProvider>();
+            currentPermissionService
+                .GetCurrentUserPermissionsAsync()
+                .Returns(Task.FromResult(permissions?.Select(p => p.ToString()) ?? []));
+            currentPermissionService
+                .IsCurrentUserAuthenticatedAsync()
+                .Returns(Task.FromResult(true));
+            return user;
+        }
+
+        protected static async Task<UserDao> CreateUserAsync(
+            IServiceProvider serviceProvider,
+            string? email = "user@yopmail.com",
+            string? password = "Secret1",
+            long? districtId = null,
+            string? firstName = null,
+            string? lastName = null,
+            DateTimeOffset? disabledDate = null,
+            string? phoneNumber = null,
+            Guid? roleId = null,
+            AuthProvider? authProvider = null,
+            bool isActive = true
+        )
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<UserDao>>();
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+
+            var user = new UserDao()
+            {
+                UserName = email,
+                FirstName = firstName ?? "FirstName",
+                LastName = lastName ?? "LastName",
+                Email = email,
+                DisabledDate = disabledDate,
+                PhoneNumber = phoneNumber,
+                AuthProvider = authProvider,
+            };
+            if (districtId != null)
+            {
+                user.UserDistricts = [new UserDistrictDao() { DistrictId = districtId!.Value }];
+            }
+            if (roleId != null)
+            {
+                user.UserRoles = [new UserRoleDao() { RoleId = roleId!.Value }];
+            }
+            if (password != null)
+            {
+                await userManager.CreateAsync(user, password);
+            }
+            else
+            {
+                await userManager.CreateAsync(user);
+            }
+
+            await context.SaveChangesAsync();
+
+            return user;
+        }
+
+        protected static async Task<DistrictDao> CreateDistrictAsync(
+            WritableDbContext context,
+            string code = "Code",
+            string name = "Name",
+            ElectoralDistrictLevel? level = null,
+            long? parentId = null,
+            bool isEnabled = true,
+            DateTimeOffset dateNow = default
+        )
+        {
+            var district = new DistrictDao()
+            {
+                Code = code,
+                Wording = name,
+                Level = level ?? ElectoralDistrictLevel.VotingLocation,
+                ParentId = parentId ?? 152,
+                DisabledDate = isEnabled ? null : dateNow,
+            };
+
+            await context.Districts.AddAsync(district);
+            await context.SaveChangesAsync();
+
+            return district;
+        }
+
+        #endregion
+
+        #region Asserts
+
+        protected static void AssertValidationException(
+            Application.Exceptions.ValidationException exception,
+            string key,
+            ValidationErrorCode code
+        )
+        {
+            exception.AdditionalData.Should().ContainSingle();
+            var error = exception.AdditionalData.Single();
+            error.Key.Should().Be(key);
+            error.Value.Should().Be(code.ToString());
+        }
+
+        protected static void AssertValidationException(
+            Application.Exceptions.ValidationException exception,
+            string key,
+            string message
+        )
+        {
+            exception.AdditionalData.Should().ContainSingle();
+            var error = exception.AdditionalData.Single();
+            error.Key.Should().Be(key);
+            error.Value.Should().Be(message);
+        }
+
+        protected static void AssertValidationException(
+            IEnumerable<Application.Exceptions.ValidationException> exceptions,
+            string key,
+            ValidationErrorCode code
+        )
+        {
+            exceptions.Should().ContainSingle();
+            var exception = exceptions.Single();
+            AssertValidationException(exception, key, code);
+        }
+
+        protected static void AssertValidationException(
+            IEnumerable<Application.Exceptions.ValidationException> exceptions,
+            params KeyValuePair<string, ValidationErrorCode>[] values
+        )
+        {
+            exceptions.Should().ContainSingle();
+            var exception = exceptions.Single();
+
+            var valuesGroupBy = values
+                .GroupBy(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.Select(v => v.Value).ToArray());
+
+            foreach (var value in valuesGroupBy)
+            {
+                AssertValidationException(exception, value.Key, value.Value);
+            }
+        }
+
+        protected static void AssertValidationException(
+            IEnumerable<Application.Exceptions.ValidationException> exceptions,
+            params KeyValuePair<string, string>[] values
+        )
+        {
+            exceptions.Should().ContainSingle();
+            var exception = exceptions.Single();
+
+            var valuesGroupBy = values
+                .GroupBy(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.Select(v => v.Value).ToArray());
+
+            foreach (var value in valuesGroupBy)
+            {
+                AssertValidationException(exception, value.Key, value.Value);
+            }
+        }
+
+        protected static void AssertValidationException(
+            Application.Exceptions.ValidationException exception,
+            params KeyValuePair<string, ValidationErrorCode>[] values
+        )
+        {
+            var valuesGroupBy = values
+                .GroupBy(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.Select(v => v.Value).ToArray());
+
+            foreach (var value in valuesGroupBy)
+            {
+                AssertValidationException(exception, value.Key, value.Value);
+            }
+        }
+
+        protected static void AssertValidationException(
+            Application.Exceptions.ValidationException exception,
+            params KeyValuePair<string, string>[] values
+        )
+        {
+            var valuesGroupBy = values
+                .GroupBy(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.Select(v => v.Value).ToArray());
+
+            foreach (var value in valuesGroupBy)
+            {
+                AssertValidationException(exception, value.Key, value.Value);
+            }
+        }
+
+        protected static void AssertValidationException(
+            Application.Exceptions.ValidationException exception,
+            string key,
+            params ValidationErrorCode[] codes
+        )
+        {
+            var value = string.Join(" ", codes);
+            exception
+                .AdditionalData.Should()
+                .ContainEquivalentOf(new KeyValuePair<string, string>(key, value));
+        }
+
+        protected static void AssertValidationException(
+            Application.Exceptions.ValidationException exception,
+            string key,
+            params string[] messages
+        )
+        {
+            var rule = exception.AdditionalData.Any(v =>
+                v.Key == key && v.Value == string.Join(" ", messages)
+            );
+            rule.Should().BeTrue();
+        }
+
+        #endregion
     }
 }

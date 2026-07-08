@@ -1,6 +1,7 @@
 ﻿using Application;
 using Application.Features;
 using Infrastructure;
+using Infrastructure.ExternalAuth;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.File;
 using Infrastructure.Persistence.SQLServer;
@@ -24,6 +25,7 @@ namespace ServicesConfiguration
             services.AddInfrastructureSQLServerServices(configuration);
             services.AddInfrastructureIdentityServices(configuration);
             services.AddInfrastructureFileServices(configuration);
+            services.AddInfrastructureExternalAuthServices(configuration);
             services.AddApplicationServices();
             services.AddApplicationFeaturesServices();
 
