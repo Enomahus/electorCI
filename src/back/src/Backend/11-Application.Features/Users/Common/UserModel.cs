@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Common.Enums;
+﻿using Application.Common.Enums;
 using Application.Features.Common.District;
 using Infrastructure.Persistence.Entities;
 

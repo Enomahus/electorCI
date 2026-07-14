@@ -10,6 +10,7 @@ namespace Application.Models.Errors
         MinLength,
         MaxLength,
         Unique,
+        AlreadyExists,
         Base64Format,
         InvalidPassword,
         PositiveNumber,
@@ -18,5 +19,9 @@ namespace Application.Models.Errors
         UserLinked,
         UserCannotBeCurrentUser,
         RoleMustExist,
+        DistrictMustExist,
+        InvalidParent,
+        DistrictMustHaveParent,
+        InvalidLevel
     }
 }

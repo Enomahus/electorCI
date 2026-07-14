@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Application.Common.Enum;
+﻿using Application.Common.Enum;
 using Application.Common.Enums;
 using Infrastructure.Persistence.Common;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.Persistence.Entities
 {
