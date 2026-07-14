@@ -30,7 +30,9 @@ namespace Application.Features.Security.Authenticate
 
             RuleFor(v => v.Password)
                 .NotEmpty()
-                .WithMessage(ValidationErrorCode.Required.ToString());
+                .WithMessage(ValidationErrorCode.Required.ToString())
+                .MinimumLength(8)
+                .WithMessage(ValidationErrorCode.MinLength.ToString());
         }
     }
 

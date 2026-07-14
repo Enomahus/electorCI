@@ -31,14 +31,14 @@ namespace Infrastructure.Persistence.SQLServer.Contexts.Data
                 AppPermission.CheckEmailBeUnique,
             ],
 
-            [AppAction.ConstituencyAdministration] =
+            [AppAction.DistrictAdministration] =
             [
-                AppPermission.AccessConstituenciesAdminPage,
-                AppPermission.GetConstituencies,
-                AppPermission.GetConstituency,
-                AppPermission.CreateConstituency,
-                AppPermission.UpdateConstituency,
-                AppPermission.DeleteConstituency,
+                AppPermission.AccessDistrictsAdminPage,
+                AppPermission.GetDistricts,
+                AppPermission.GetDistrict,
+                AppPermission.CreateDistrict,
+                AppPermission.UpdateDistrict,
+                AppPermission.DeleteDistrict,
             ],
 
             [AppAction.PollingStationAdministration] =
@@ -98,7 +98,7 @@ namespace Infrastructure.Persistence.SQLServer.Contexts.Data
             [
                 AppPermission.GetRoles,
                 AppPermission.GetProfile,
-                AppPermission.GetConstituencies,
+                AppPermission.GetDistricts,
                 AppPermission.GetPollingStations,
                 AppPermission.GetCitizens,
                 AppPermission.CreateBasicCitizen,

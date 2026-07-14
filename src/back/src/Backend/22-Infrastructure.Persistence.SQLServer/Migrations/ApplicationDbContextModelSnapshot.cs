@@ -67,7 +67,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppActions");
+                    b.ToTable("AppActions", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.AppPermissionDao", b =>
@@ -85,7 +85,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPermissions");
+                    b.ToTable("AppPermissions", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.AuditLogDao", b =>
@@ -130,7 +130,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.CitizenDao", b =>
@@ -204,7 +204,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("MotherId");
 
-                    b.ToTable("Citizens");
+                    b.ToTable("Citizens", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.DistrictDao", b =>
@@ -247,7 +247,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                     b.HasIndex("Code", "Level")
                         .IsUnique();
 
-                    b.ToTable("Districts");
+                    b.ToTable("Districts", (string)null);
 
                     b.HasData(
                         new
@@ -2099,7 +2099,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.ElectorDao", b =>
@@ -2135,7 +2135,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                         .IsUnique()
                         .HasFilter("[VoterRegistrationNumber] IS NOT NULL");
 
-                    b.ToTable("Electors");
+                    b.ToTable("Electors", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.PollingStationDao", b =>
@@ -2178,7 +2178,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                     b.HasIndex("StationNumber", "DistrictId")
                         .IsUnique();
 
-                    b.ToTable("PollingStations");
+                    b.ToTable("PollingStations", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RefreshTokenDao", b =>
@@ -2197,7 +2197,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RegistrationRequestDao", b =>
@@ -2247,7 +2247,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("LastUpdaterId");
 
-                    b.ToTable("RegistrationRequests");
+                    b.ToTable("RegistrationRequests", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RegistrationRequestDocumentDao", b =>
@@ -2272,7 +2272,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("RegistrationRequestId");
 
-                    b.ToTable("RegistrationRequestDocuments");
+                    b.ToTable("RegistrationRequestDocuments", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RoleDao", b =>
@@ -2415,7 +2415,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDistricts");
+                    b.ToTable("UserDistricts", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.UserRoleDao", b =>

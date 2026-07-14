@@ -47,7 +47,7 @@ namespace Application.UnitTests.Features.Security
             string password = "Password1@";
             await CreateUserAsync(serviceProvider, "Test", password);
 
-            var command = new AuthenticateCommand() { UserName = "Test", Password = "123456" };
+            var command = new AuthenticateCommand() { UserName = "Test", Password = "WrongPass1" };
 
             // Act & Assert
             await FluentActions
@@ -95,7 +95,7 @@ namespace Application.UnitTests.Features.Security
                 })
                 .BuildServiceProvider();
 
-            var command = new AuthenticateCommand() { UserName = "Test", Password = "123456" };
+            var command = new AuthenticateCommand() { UserName = "Test", Password = "WrongPass1" };
 
             // Act & Assert
             await FluentActions

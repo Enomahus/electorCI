@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Application.Common.Enum;
+﻿using Application.Common.Enum;
 using Application.Common.Enums;
 using Infrastructure.Persistence.Common;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.Persistence.Entities
 {
@@ -27,7 +24,7 @@ namespace Infrastructure.Persistence.Entities
 
         public virtual ICollection<RefreshTokenDao> RefreshTokens { get; set; } = [];
         public virtual ICollection<UserRoleDao> UserRoles { get; set; } = [];
-        public virtual ICollection<RegistrationRequestDao> CreatedRegistrationRequests { get; set; } =
+        public virtual ICollection<RegistrationRequestDao> OwnRegistrationRequests { get; set; } =
         [];
         public virtual ICollection<RegistrationRequestDao> UpdatedRegistrationRequests { get; set; } =
         [];

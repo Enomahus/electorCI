@@ -47,7 +47,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
             foreach (var user in users)
             {
                 if (!_context.Users.Any(u => u.UserName == user.Item1.UserName))
-                    await SeedUserAsync(user.Item1, "Secret1", user.Item2);
+                    await SeedUserAsync(user.Item1, "Secret12", user.Item2);
             }
 
             await _context.SaveChangesAsync();
