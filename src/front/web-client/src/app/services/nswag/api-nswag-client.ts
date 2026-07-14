@@ -319,6 +319,421 @@ export class ServerClient extends CustomApiClient {
     }
 
     /**
+     * Met à jour un utilisateur.
+     */
+    updateUser(id: string, command: UpdateUserCommand): Observable<ResultOfGuid> {
+        let url_ = this.baseUrl + "/user/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGuid>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGuid>;
+        }));
+    }
+
+    protected processUpdateUser(response: HttpResponseBase): Observable<ResultOfGuid> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGuid;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Récupère un utilisateur.
+     */
+    getUser(id: string): Observable<ResultOfUserModel> {
+        let url_ = this.baseUrl + "/user/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfUserModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfUserModel>;
+        }));
+    }
+
+    protected processGetUser(response: HttpResponseBase): Observable<ResultOfUserModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfUserModel;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Supprime un utilisateur.
+     */
+    deleteUser(id: string): Observable<Result> {
+        let url_ = this.baseUrl + "/user/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Result>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Result>;
+        }));
+    }
+
+    protected processDeleteUser(response: HttpResponseBase): Observable<Result> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Result;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Met à jour les informations de l'utilisateur courant.
+     */
+    updateCurrentUser(command: UpdateCurrentUserCommand): Observable<ResultOfGuid> {
+        let url_ = this.baseUrl + "/user/my-information";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateCurrentUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateCurrentUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGuid>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGuid>;
+        }));
+    }
+
+    protected processUpdateCurrentUser(response: HttpResponseBase): Observable<ResultOfGuid> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGuid;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Permet à un utilisateur de s'enregistrer.
+     */
+    registerUser(command: RegisterUserCommand): Observable<ResultOfGuid> {
+        let url_ = this.baseUrl + "/user/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegisterUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegisterUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGuid>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGuid>;
+        }));
+    }
+
+    protected processRegisterUser(response: HttpResponseBase): Observable<ResultOfGuid> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGuid;
+            return _observableOf(result201);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Récupère les utilisateurs.
+     */
+    getUsers(query: GetUsersQuery): Observable<ResultOfGridDataResponseOfGetUsersResponse> {
+        let url_ = this.baseUrl + "/users/get-users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(query);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGridDataResponseOfGetUsersResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGridDataResponseOfGetUsersResponse>;
+        }));
+    }
+
+    protected processGetUsers(response: HttpResponseBase): Observable<ResultOfGridDataResponseOfGetUsersResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGridDataResponseOfGetUsersResponse;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * Récupère les informations de l'utilisateur connecté.
      */
     getCurrentUser(): Observable<ResultOfGetCurrentUserResponse> {
@@ -377,6 +792,78 @@ export class ServerClient extends CustomApiClient {
             let result404: any = null;
             result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Crée un utilisateur.
+     */
+    createUser(command: CreateUserCommand): Observable<ResultOfGuid> {
+        let url_ = this.baseUrl + "/user";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGuid>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGuid>;
+        }));
+    }
+
+    protected processCreateUser(response: HttpResponseBase): Observable<ResultOfGuid> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGuid;
+            return _observableOf(result201);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -589,6 +1076,233 @@ export class ServerClient extends CustomApiClient {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * Récupère une circonscription par son identifiant.
+     */
+    getDistrict(id: number): Observable<ResultOfGetDistrictResponse> {
+        let url_ = this.baseUrl + "/districts/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetDistrict(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetDistrict(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGetDistrictResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGetDistrictResponse>;
+        }));
+    }
+
+    protected processGetDistrict(response: HttpResponseBase): Observable<ResultOfGetDistrictResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGetDistrictResponse;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Récupère les circonscriptions.
+     */
+    getDistricts(query: GetDistrictsQuery): Observable<ResultOfGridDataResponseOfGetDistrictsResponse> {
+        let url_ = this.baseUrl + "/districts/get-districts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(query);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetDistricts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetDistricts(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfGridDataResponseOfGetDistrictsResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfGridDataResponseOfGetDistrictsResponse>;
+        }));
+    }
+
+    protected processGetDistricts(response: HttpResponseBase): Observable<ResultOfGridDataResponseOfGetDistrictsResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGridDataResponseOfGetDistrictsResponse;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * Enregistre une nouvelle Circonscription.
+     */
+    createDistrict(command: CreateDistrictCommand): Observable<ResultOfLong> {
+        let url_ = this.baseUrl + "/districts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = this.customStringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateDistrict(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateDistrict(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfLong>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfLong>;
+        }));
+    }
+
+    protected processCreateDistrict(response: HttpResponseBase): Observable<ResultOfLong> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            result201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfLong;
+            return _observableOf(result201);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export interface WeatherForecast {
@@ -602,43 +1316,9 @@ export interface Result {
     duration?: number;
 }
 
-export interface ResultOfGetCurrentUserResponse extends Result {
-    data?: GetCurrentUserResponse | undefined;
+export interface ResultOfGuid extends Result {
+    data?: string;
 }
-
-export interface UserModel {
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    email?: string | undefined;
-    phone?: string | undefined;
-    roles?: string[];
-    isActive?: boolean;
-    districtId?: number | undefined;
-    newDistrict?: DistrictModel | undefined;
-    authProvider?: AuthProvider | undefined;
-    createdAt?: string;
-    activationDate?: string | undefined;
-}
-
-export interface GetCurrentUserResponse extends UserModel {
-    id?: string;
-    permissions?: AppPermission[];
-    currentUserDistrict?: DistrictModel | undefined;
-}
-
-export type AppPermission = "superAdmin" | "accessUsersAdminPage" | "createUser" | "updateUser" | "deleteUser" | "getCurrentUser" | "getUser" | "getUsers" | "checkEmailBeUnique" | "getRoles" | "getProfile" | "accessConstituenciesAdminPage" | "createConstituency" | "updateConstituency" | "deleteConstituency" | "getConstituency" | "getConstituencies" | "accessPollingStationsAdminPage" | "createPollingStation" | "updatePollingStation" | "deletePollingStation" | "getPollingStation" | "getPollingStations" | "createBasicCitizen" | "getCitizens" | "createRegistrationRequest" | "updateRegistrationRequest" | "deleteRegistrationRequest" | "getRegistrationRequest" | "getRegistrationRequests" | "getRegistrationRequestForManagement" | "getRegistrationRequestsForManagement" | "getRegistrationRequestsForAdmin" | "getRegistrationRequestForAdmin" | "getRegistrationRequestForCurrentUser" | "accessUpdateRegistrationRequest" | "accessRegistrationRequestsForAdminPage" | "accessRegistrationRequestsForManagementPage" | "updateRegistrationRequestsForManagement" | "deleteRegistrationRequestsForManagement" | "triggerActionOnRegistrationRequest" | "checkRegistrationReferenceBeUnique" | "accessRegistrationRequestsPage" | "uploadRegistrationRequestTempDocument" | "updateRegistrationRequestDraft" | "importExcelData" | "exportExcelData";
-
-export interface DistrictModel {
-    code?: string | undefined;
-    wording?: string | undefined;
-    level?: ElectoralDistrictLevel;
-    parentId?: number | undefined;
-    isActive?: boolean;
-}
-
-export type ElectoralDistrictLevel = "region" | "department" | "subPrefecture" | "municipality" | "votingLocation";
-
-export type AuthProvider = "google" | "microsoft" | "email";
 
 export interface ResultOfError extends Result {
     data?: ErrorDto | undefined;
@@ -655,6 +1335,131 @@ export interface ErrorDto {
 export type ErrorCode = "none" | "validation" | "invalidParameter" | "invalidStatus" | "resourceAlreadyExists" | "notFound" | "missingData" | "genericServerError" | "accessRights" | "authenticationFailed" | "configurationMissing" | "incorrectEntityTypeLinked" | "dataSeeding" | "storage" | "export";
 
 export type ErrorKind = "none" | "authentication" | "accessRights" | "validation" | "technical" | "requestData" | "domainRule";
+
+export interface UserModel {
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    roles?: string[];
+    isActive?: boolean;
+    districtId?: number | undefined;
+    newDistrict?: DistrictModel | undefined;
+    authProvider?: AuthProvider | undefined;
+    createdAt?: string;
+    activationDate?: string | undefined;
+}
+
+export interface UpdateUserCommand extends UserModel {
+    userId?: string;
+}
+
+export interface DistrictModel {
+    code?: string | undefined;
+    wording?: string | undefined;
+    level?: ElectoralDistrictLevel;
+    parentId?: number | undefined;
+    isActive?: boolean;
+}
+
+export type ElectoralDistrictLevel = "region" | "department" | "subPrefecture" | "municipality" | "votingLocation";
+
+export type AuthProvider = "google" | "microsoft" | "email";
+
+export interface UpdateCurrentUserCommand extends UserModel {
+}
+
+export interface RegisterUserCommand extends UserModel {
+    password?: string | undefined;
+}
+
+export interface ResultOfUserModel extends Result {
+    data?: UserModel | undefined;
+}
+
+export interface ResultOfGridDataResponseOfGetUsersResponse extends Result {
+    data?: GridDataResponseOfGetUsersResponse | undefined;
+}
+
+export interface GridDataResponseOfGetUsersResponse {
+    data: GetUsersResponse[];
+    total: number;
+}
+
+export interface GetUsersResponse {
+    id: string;
+    lastName: string;
+    firstName: string;
+    email: string | undefined;
+    phone: string | undefined;
+    district: string | undefined;
+    isActive: boolean;
+    canBeDeleted: boolean;
+    canBeToggled: boolean;
+    createdAt?: string;
+    activationDate?: string | undefined;
+    roles?: string[] | undefined;
+    authProvider?: AuthProvider | undefined;
+}
+
+/** Spécification réutilisable d'une requête de grille : filtrage, recherche globale, tri multi-colonnes et pagination. Chaque requête de grille (ex: GetUsersQuery) hérite de cette classe puis implémente IRequest<Result<GridDataResponse<T>>>. L'application concrète des opérations se fait via ApplyGrid``1. */
+export interface GridDataQuery {
+    /** Filtres par colonne (combinés en ET logique). */
+    filters?: GridFilter[];
+    /** Tris appliqués dans l'ordre (le premier est le tri primaire). */
+    sorts?: GridSort[];
+    /** Terme de recherche globale appliqué (en OU logique) sur les champs de SearchFields. */
+    search?: string | undefined;
+    /** Champs texte ciblés par la recherche globale. Si null/vide, tous les champs de type
+string du modèle de réponse sont utilisés. */
+    searchFields?: string[] | undefined;
+    /** Nombre d'éléments à ignorer (pagination). */
+    skip?: number | undefined;
+    /** Nombre d'éléments à retourner (pagination). */
+    take?: number | undefined;
+}
+
+export interface GetUsersQuery extends GridDataQuery {
+}
+
+/** Décrit un filtre appliqué à un champ (colonne) de la grille. */
+export interface GridFilter {
+    /** Nom du champ (propriété) à filtrer. Supporte les chemins imbriqués (ex: "District.Wording"). */
+    field: string;
+    operator?: GridFilterOperator;
+    /** Valeur du filtre sous forme de chaîne. Elle est convertie vers le type du champ ciblé
+(enum, Guid, bool, nombre, date, ...) au moment de l'application du filtre. */
+    value?: string | undefined;
+}
+
+/** Opérateur appliqué à un filtre de colonne de grille. */
+export type GridFilterOperator = "equals" | "notEquals" | "contains" | "startsWith" | "endsWith" | "greaterThan" | "greaterThanOrEqual" | "lessThan" | "lessThanOrEqual";
+
+/** Décrit un tri sur un champ (colonne) de la grille. */
+export interface GridSort {
+    /** Nom du champ (propriété) à trier. Supporte les chemins imbriqués (ex: "District.Wording"). */
+    field: string;
+    direction?: GridSortDirection;
+}
+
+/** Direction d'un tri appliqué à une colonne de grille. */
+export type GridSortDirection = "ascending" | "descending";
+
+export interface ResultOfGetCurrentUserResponse extends Result {
+    data?: GetCurrentUserResponse | undefined;
+}
+
+export interface GetCurrentUserResponse extends UserModel {
+    id?: string;
+    permissions?: AppPermission[];
+    currentUserDistrict?: DistrictModel | undefined;
+}
+
+export type AppPermission = "superAdmin" | "accessUsersAdminPage" | "createUser" | "updateUser" | "deleteUser" | "getCurrentUser" | "getUser" | "getUsers" | "checkEmailBeUnique" | "getRoles" | "getProfile" | "accessDistrictsAdminPage" | "createDistrict" | "updateDistrict" | "deleteDistrict" | "getDistrict" | "getDistricts" | "accessPollingStationsAdminPage" | "createPollingStation" | "updatePollingStation" | "deletePollingStation" | "getPollingStation" | "getPollingStations" | "createBasicCitizen" | "getCitizens" | "createRegistrationRequest" | "updateRegistrationRequest" | "deleteRegistrationRequest" | "getRegistrationRequest" | "getRegistrationRequests" | "getRegistrationRequestForManagement" | "getRegistrationRequestsForManagement" | "getRegistrationRequestsForAdmin" | "getRegistrationRequestForAdmin" | "getRegistrationRequestForCurrentUser" | "accessUpdateRegistrationRequest" | "accessRegistrationRequestsForAdminPage" | "accessRegistrationRequestsForManagementPage" | "updateRegistrationRequestsForManagement" | "deleteRegistrationRequestsForManagement" | "triggerActionOnRegistrationRequest" | "checkRegistrationReferenceBeUnique" | "accessRegistrationRequestsPage" | "uploadRegistrationRequestTempDocument" | "updateRegistrationRequestDraft" | "importExcelData" | "exportExcelData";
+
+export interface CreateUserCommand extends UserModel {
+    password?: string | undefined;
+}
 
 export interface ResetPasswordCommand {
     userEmail?: string | undefined;
@@ -679,6 +1484,51 @@ export interface RefreshTokenCommand {
 export interface AuthenticateCommand {
     userName?: string | undefined;
     password?: string | undefined;
+}
+
+export interface ResultOfGetDistrictResponse extends Result {
+    data?: GetDistrictResponse | undefined;
+}
+
+export interface GetDistrictResponse extends DistrictModel {
+    id: number;
+    code?: string | undefined;
+    createdAt?: string;
+}
+
+export interface ResultOfGridDataResponseOfGetDistrictsResponse extends Result {
+    data?: GridDataResponseOfGetDistrictsResponse | undefined;
+}
+
+export interface GridDataResponseOfGetDistrictsResponse {
+    data: GetDistrictsResponse[];
+    total: number;
+}
+
+export interface GetDistrictsResponse {
+    id?: number;
+    code?: string;
+    wording?: string;
+    level?: ElectoralDistrictLevel;
+    parentId?: number | undefined;
+    children?: GetDistrictsResponse[];
+    pollingStations?: PollingStationModel[];
+}
+
+export interface PollingStationModel {
+    wording?: string;
+    districtId?: number;
+    isActive?: boolean;
+}
+
+export interface GetDistrictsQuery extends GridDataQuery {
+}
+
+export interface ResultOfLong extends Result {
+    data?: number;
+}
+
+export interface CreateDistrictCommand extends DistrictModel {
 }
 
 export class ApiException extends Error {

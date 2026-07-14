@@ -289,6 +289,51 @@ namespace Application.UnitTests.Common
             return district;
         }
 
+        protected static async Task<RegistrationRequestDao> CreateRegistrationRequestAsync(
+            WritableDbContext context,
+            TimeProvider timeProvider,
+            Guid authorId,
+            string reference = "DE-2026-0000001",
+            long? districtId = null
+        )
+        {
+            districtId ??= (
+                await CreateDistrictAsync(context, level: ElectoralDistrictLevel.VotingLocation)
+            ).Id;
+
+            var now = timeProvider.GetUtcNow();
+
+            var registrationRequest = new RegistrationRequestDao()
+            {
+                AuthorId = authorId,
+                RequestType = RegistrationRequestType.RegistrationRequest,
+                Status = RegistrationStatus.ToBeProcessed,
+                SubmissionDate = now,
+                DistrictId = districtId.Value,
+                LastUpdaterId = authorId,
+                ReasonForRejection = "",
+                Reference = reference,
+                Citizen = new CitizenDao()
+                {
+                    Gender = Gender.Masculine,
+                    LastName = "Spector",
+                    FirstName = "Harvey",
+                    BirthDate = timeProvider.GetUtcNow().AddYears(-28),
+                    BirthPlace = "Yamoussoukro",
+                    Nationality = "Ivoirienne",
+                    CreatedAt = now,
+                    MaritalStatus = MaritalStatus.Single,
+                    Email = "harvey.spector@yopmail.com",
+                    ModifiedAt = now,
+                }
+            };
+
+            await context.RegistrationRequests.AddAsync(registrationRequest);
+            await context.SaveChangesAsync();
+
+            return registrationRequest;
+        }
+
         #endregion
 
         #region Asserts

@@ -152,7 +152,7 @@ namespace Infrastructure.Persistence.SQLServer.Contexts
             {
                 entity
                     .HasOne(l => l.Author)
-                    .WithMany(a => a.CreatedRegistrationRequests)
+                    .WithMany(a => a.OwnRegistrationRequests)
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity

@@ -1,13 +1,10 @@
-﻿using Application.Api;
-using Application.Features.Common.DataGrid;
+using System.Diagnostics.CodeAnalysis;
+using Application.Api;
+using Application.Features.Common.GridData;
 using Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using Tools.Exceptions.Errors;
 
 namespace Application.Features.Users.GetUsers
@@ -26,11 +23,14 @@ namespace Application.Features.Users.GetUsers
         /// <returns></returns>
         [HttpPost("get-users")]
         [OpenApiOperation("GetUsers", "Récupère les utilisateurs.", "")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DataGridResponse<GetUsersResponse>>))]
+        [ProducesResponseType(
+            StatusCodes.Status200OK,
+            Type = typeof(Result<GridDataResponse<GetUsersResponse>>)
+        )]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(Result<Error>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Result<Error>))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(Result<Error>))]
-        public Task<Result<DataGridResponse<GetUsersResponse>>> GetUsers(
+        public Task<Result<GridDataResponse<GetUsersResponse>>> GetUsers(
             [FromBody] GetUsersQuery query,
             CancellationToken cancellationToken
         )

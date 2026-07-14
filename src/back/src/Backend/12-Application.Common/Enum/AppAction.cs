@@ -4,7 +4,7 @@ public enum AppAction
 {
     SuperAdmin,
     UsersAdministration,
-    ConstituencyAdministration,
+    DistrictAdministration,
     RegistrationRequestAdministration,
     PollingStationAdministration,
     RegistrationRequestManagement,

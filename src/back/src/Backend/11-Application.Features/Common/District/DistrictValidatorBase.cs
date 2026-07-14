@@ -17,11 +17,6 @@ namespace Application.Features.Common.District
         {
             _context = context;
 
-            //RuleFor(v => v.Code)
-            //   .NotEmpty()
-            //   .WithMessage(ValidationErrorCode.Required.ToString());
-
-
             RuleFor(v => v.Wording)
                 .NotEmpty()
                 .WithMessage(ValidationErrorCode.Required.ToString())

@@ -24,7 +24,7 @@ namespace Infrastructure.Persistence.Entities
 
         public virtual ICollection<RefreshTokenDao> RefreshTokens { get; set; } = [];
         public virtual ICollection<UserRoleDao> UserRoles { get; set; } = [];
-        public virtual ICollection<RegistrationRequestDao> CreatedRegistrationRequests { get; set; } =
+        public virtual ICollection<RegistrationRequestDao> OwnRegistrationRequests { get; set; } =
         [];
         public virtual ICollection<RegistrationRequestDao> UpdatedRegistrationRequests { get; set; } =
         [];

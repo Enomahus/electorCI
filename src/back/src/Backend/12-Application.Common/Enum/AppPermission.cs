@@ -15,12 +15,12 @@ public enum AppPermission
     GetRoles,
     GetProfile,
 
-    AccessConstituenciesAdminPage,
-    CreateConstituency,
-    UpdateConstituency,
-    DeleteConstituency,
-    GetConstituency,
-    GetConstituencies,
+    AccessDistrictsAdminPage,
+    CreateDistrict,
+    UpdateDistrict,
+    DeleteDistrict,
+    GetDistrict,
+    GetDistricts,
 
     AccessPollingStationsAdminPage,
     CreatePollingStation,
