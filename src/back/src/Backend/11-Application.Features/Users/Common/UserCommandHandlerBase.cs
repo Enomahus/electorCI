@@ -2,15 +2,12 @@
 using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer.Contexts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Tools.Configuration;
 
 namespace Application.Features.Users.Common
 {
     public class UserCommandHandlerBase(
         WritableDbContext context,
         UserManager<UserDao> userManager,
-        IOptions<AppConfiguration> config,
         TimeProvider timeProvider,
         DistrictService districtService
     )

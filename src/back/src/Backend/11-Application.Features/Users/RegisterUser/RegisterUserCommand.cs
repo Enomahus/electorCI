@@ -1,13 +1,13 @@
 ﻿using Application.Features.Districts.Common;
 using Application.Features.Users.Common;
 using Application.Models;
+using Application.Models.Errors;
+using FluentValidation;
 using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer.Contexts;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Tools.Configuration;
 using Tools.Constants;
 using Tools.Logging;
 using Tools.Serialization;
@@ -22,19 +22,23 @@ namespace Application.Features.Users.RegisterUser
 
     public class RegisterUserCommandValidator : UserCommandValidatorBase<RegisterUserCommand>
     {
-        public RegisterUserCommandValidator(ReadOnlyDbContext context) : base(context)
+        public RegisterUserCommandValidator(ReadOnlyDbContext context) : base(context, validateRoles: false)
         {
+            RuleFor(v => v.Password)
+                .NotEmpty()
+                .WithMessage(ValidationErrorCode.Required.ToString())
+                .MinimumLength(8)
+                .WithMessage(ValidationErrorCode.MinLength.ToString());
         }
     }
 
     public class RegisterUserCommandHandler(
     WritableDbContext context,
     UserManager<UserDao> userManager,
-    IOptions<AppConfiguration> config,
     TimeProvider timeProvider,
     DistrictService districtService
 )
-    : UserCommandHandlerBase(context, userManager, config, timeProvider, districtService),
+    : UserCommandHandlerBase(context, userManager, timeProvider, districtService),
         IRequestHandler<RegisterUserCommand, Result<Guid>>
     {
         public async Task<Result<Guid>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
@@ -57,7 +61,7 @@ namespace Application.Features.Users.RegisterUser
                     userDao.UserRoles.Clear();
                     userDao.UserRoles.Add(new UserRoleDao() { RoleId = defaultRoleId });
 
-                    await _userManager.CreateAsync(userDao);
+                    await _userManager.CreateAsync(userDao, command.Password!);                    
                 },
                 () => Task.FromResult(true)
             );

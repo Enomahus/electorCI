@@ -11,7 +11,7 @@ namespace Application.Features.Users.Common
     {
         protected readonly ReadOnlyDbContext _context;
 
-        public UserCommandValidatorBase(ReadOnlyDbContext context)
+        public UserCommandValidatorBase(ReadOnlyDbContext context, bool validateRoles = true)
         {
             _context = context;
 
@@ -76,6 +76,19 @@ namespace Application.Features.Users.Common
                         });
                 }
             );
+
+            if (validateRoles)
+            {
+                RuleFor(v => v.Roles)
+                    .NotEmpty()
+                    .WithMessage(ValidationErrorCode.Required.ToString())
+                    .DependentRules(() =>
+                    {
+                        RuleFor(v => v.Roles)
+                            .MustAsync(RolesExistAsync)
+                            .WithMessage(ValidationErrorCode.RoleMustExist.ToString());
+                    });
+            }
 
         }
 

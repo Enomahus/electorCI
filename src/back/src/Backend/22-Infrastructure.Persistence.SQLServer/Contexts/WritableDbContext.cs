@@ -25,6 +25,15 @@ namespace Infrastructure.Persistence.SQLServer.Contexts
             return base.SaveChanges();
         }
 
+        public override Task<int> SaveChangesAsync(
+            bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default
+        )
+        {
+            UpdateTimestamps();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess,cancellationToken);
+        }
+
         private void UpdateTimestamps()
         {
             var now = _timeProvider.GetUtcNow();

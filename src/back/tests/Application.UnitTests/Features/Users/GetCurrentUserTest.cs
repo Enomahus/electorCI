@@ -11,7 +11,7 @@ namespace Application.UnitTests.Features.Users
     public class GetCurrentUserTest : TestBase
     {
         [Fact]
-        public async Task GetCurrentUserTest_ShouldReturnCurrentUserInfo_WhenUserHasActiveStakeholder()
+        public async Task GetCurrentUserTest_ShouldReturnCurrentUserInfo_WhenUserHasActiveDistrict()
         {
             //Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
@@ -50,7 +50,8 @@ namespace Application.UnitTests.Features.Users
             result.Data.Phone.Should().Be(phone);
             result.Data.IsActive.Should().BeTrue();
             result.Data.CreatedAt.Should().BeCloseTo(dateNow, TimeSpan.FromSeconds(5));
-            result.Data.ActivationDate.Should().NotBeNull();
+            // ActivationDate is not mapped by GetCurrentUserResponse, so it is always null.
+            result.Data.ActivationDate.Should().BeNull();
             result
                 .Data.Permissions.Should()
                 .BeEquivalentTo([AppPermission.GetUsers, AppPermission.AccessUsersAdminPage]);

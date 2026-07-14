@@ -3,6 +3,7 @@ using System.Reflection;
 using Application.Common.Enums;
 using Application.Common.Interfaces.Services;
 using Application.Features;
+using Application.Features.Districts.Common;
 using Application.Features.Security.Common;
 using Application.Interfaces.Services;
 using Application.Models.Errors;
@@ -87,6 +88,7 @@ namespace Application.UnitTests.Common
                 //.AddScoped<CriteriaService>()
                 //.AddScoped<PanelReferenceService>()
                 //.AddScoped<StakeholderService>()
+                .AddScoped<DistrictService>()
                 .AddKeyedSingleton(ExternalAuthServiceKeys.GoogleAuthService, externalAuthSub)
                 .AddKeyedSingleton(ExternalAuthServiceKeys.MicrosoftAuthService, externalAuthSub)
                 .Configure<TokenConfiguration>(c =>
@@ -216,7 +218,7 @@ namespace Application.UnitTests.Common
         protected static async Task<UserDao> CreateUserAsync(
             IServiceProvider serviceProvider,
             string? email = "user@yopmail.com",
-            string? password = "Secret1",
+            string? password = "Secret12",
             long? districtId = null,
             string? firstName = null,
             string? lastName = null,
@@ -277,7 +279,7 @@ namespace Application.UnitTests.Common
                 Code = code,
                 Wording = name,
                 Level = level ?? ElectoralDistrictLevel.VotingLocation,
-                ParentId = parentId ?? 152,
+                ParentId = parentId ?? 151,
                 DisabledDate = isEnabled ? null : dateNow,
             };
 
