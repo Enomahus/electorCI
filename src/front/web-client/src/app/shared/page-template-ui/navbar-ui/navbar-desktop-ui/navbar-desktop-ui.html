@@ -1,0 +1,43 @@
+<nav class="nav-desktop">
+  <ul class="menu"></ul>
+
+  <ul class="menu menu-left"></ul>
+
+  <ul class="menu menu-right">
+    <li class="menu-item" [routerLinkActive]="'active'">
+      <a routerLink="/faq">{{ 'navbar.faq' | translate }}</a>
+    </li>
+    <li class="menu-item" [class.active]="isRouteMatching('admin')">
+      <button
+        class="btn btn-no-style dropbtn menu-item-interaction"
+        (click)="isDropdownOpen.set(!isDropdownOpen())"
+      >
+        <span>{{ 'navbar.Administration' | translate }}</span>
+        <i class="ph ph-caret-down"></i>
+      </button>
+      @if (isDropdownOpen()) {
+        <div class="dropdown-content">
+          <a routerLink="admin/district" [routerLinkActive]="'active'">
+            <span>{{ 'navbar.district' | translate }}</span>
+          </a>
+
+          <a routerLink="admin/polling-stations" [routerLinkActive]="'active'">
+            <span>{{ 'navbar.pollingStation' | translate }}</span>
+          </a>
+
+          <a routerLink="admin/users" [routerLinkActive]="'active'">
+            <span>{{ 'navbar.users' | translate }}</span>
+          </a>
+        </div>
+      }
+    </li>
+    <li>
+      <app-language-selector-ui></app-language-selector-ui>
+    </li>
+    <li>
+      <button class="btn primary" type="button" [title]="'navbar.logout' | translate">
+        <i class="ph ph-sign-out"></i>
+      </button>
+    </li>
+  </ul>
+</nav>

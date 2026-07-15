@@ -19,8 +19,8 @@
     "titleTemplate": "{{title}} | ELector-CI",
     "language": "Langue",
     "lang": {
-      "fr": "Français",
-      "en": "Anglais"
+      "fr": "FR",
+      "en": "EN"
     }
   },
   "breadcrumb": {
@@ -57,7 +57,7 @@
     "faq": "Faq",
     "Administration": "Administration",
     "pollingStation": "Bureaux de vote",
-    "constituency": "Circonscription",
+    "district": "Circonscription",
     "users": "Utilisateurs"
   },
   "formError": {

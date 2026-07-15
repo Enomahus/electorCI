@@ -1,0 +1,12 @@
+<select
+  id="langSelect"
+  class="lang-select"
+  [value]="currentLang$ | async"
+  (change)="langChange($any($event.target).value)"
+>
+  @for (lang of langItems; track lang.lang) {
+    <option [value]="lang.lang">
+      {{ 'global.lang.' + lang.lang | translate }}
+    </option>
+  }
+</select>

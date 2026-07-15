@@ -5,12 +5,11 @@ import {
   BehaviorSubject,
   catchError,
   filter,
-  first,
   firstValueFrom,
-  from,
   map,
   Observable,
   of,
+  ReplaySubject,
   switchMap,
   take,
   tap,
@@ -22,6 +21,8 @@ import { AppPermission, ResultOfTokenResponse } from '../nswag/api-nswag-client'
 
 const refreshTokenKey = 'refreshTokenKey';
 const currentUserKey = 'currentUserKey';
+const currentEmailKey = 'currentEmailKey';
+const currentUserIdKey = 'currentUserIdKey';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,7 @@ const currentUserKey = 'currentUserKey';
 export class AuthService extends ApiBaseService {
   private readonly accessToken$ = new BehaviorSubject<string | undefined>(undefined);
   private readonly refreshing$ = new BehaviorSubject<boolean>(false);
-  private readonly permissions$ = new BehaviorSubject<AppPermission[] | undefined>(undefined);
+  private permissions$ = new ReplaySubject<AppPermission[]>(1);
 
   private readonly router = inject(Router);
   private readonly currentUserService = inject(CurrentUserService);
@@ -41,6 +42,7 @@ export class AuthService extends ApiBaseService {
   }
 
   login(userName: string, password: string): Observable<ResultOfTokenResponse> {
+    this.refreshing$.next(true);
     return this.apiClient
       .authenticate({
         userName,
@@ -80,31 +82,35 @@ export class AuthService extends ApiBaseService {
     return this.getAccessToken().pipe(map((token) => !!token));
   }
 
-  isSuperAdmin(): Observable<boolean> {
-    return this.currentUserService.currentUserName$.pipe(
-      switchMap(() =>
-        this.getPermissions().pipe(
-          first(),
-          map((p) => p.includes('superAdmin')),
-        ),
-      ),
+  isAdmin(): Observable<boolean> {
+    return this.permissions$.pipe(
+      take(1),
+      map((perms) => perms?.includes('superAdmin')),
     );
   }
 
   getCurrentUser(): string | null {
-    return localStorage.getItem('currentUserKey');
+    return localStorage.getItem(currentUserKey);
   }
 
   getPermissions(): Observable<AppPermission[]> {
-    return this.permissions$.pipe(filter((p) => !!p)) as Observable<AppPermission[]>;
+    return this.permissions$;
+  }
+
+  getCurrentUserEmail(): string | null {
+    return localStorage.getItem(currentEmailKey);
+  }
+  getCurrentUserId(): string | null {
+    return localStorage.getItem(currentUserIdKey);
   }
 
   logout(): void {
     this.accessToken$.next(undefined);
-    this.permissions$.next(undefined);
+    this.refreshing$.next(false);
+    this.permissions$ = new ReplaySubject<AppPermission[]>(1);
+    this.currentUserService.changeCurrentUserName('');
     localStorage.removeItem(refreshTokenKey);
     localStorage.removeItem(currentUserKey);
-    this.router.navigateByUrl('/login');
   }
 
   private refreshToken(): Observable<string | undefined> {
@@ -129,7 +135,9 @@ export class AuthService extends ApiBaseService {
         this.logout();
         return of(undefined);
       }),
-      switchMap((result) => from(this.storeTokens(result)).pipe(map(() => result))),
+      tap((result) => {
+        this.storeTokens(result);
+      }),
       map((result) => result?.data?.accessToken ?? undefined),
       take(1),
     );
@@ -145,23 +153,27 @@ export class AuthService extends ApiBaseService {
     if (result?.data?.accessToken) {
       const payload = jwtDecode<{
         name: string | undefined;
+        email: string | undefined;
         lastName: string | undefined;
         firstName: string | undefined;
-        role: string | string[] | undefined;
+        sub: string | undefined;
       }>(result?.data?.accessToken);
 
       const name = payload.name;
+      const email = payload.email;
+      const id = payload.sub;
 
-      if (!name) {
+      if (!name || !email || !id) {
         this.logout();
         return;
       }
-      await this.fetchPermissions();
       this.currentUserService.changeCurrentUserName(`${payload.firstName} ${payload.lastName}`);
       localStorage.setItem(currentUserKey, name);
-    } else {
-      await this.fetchPermissions();
+      localStorage.setItem(currentEmailKey, email);
+      localStorage.setItem(currentUserIdKey, id);
     }
+    await this.fetchPermissions();
+
     this.refreshing$.next(false);
   }
 
