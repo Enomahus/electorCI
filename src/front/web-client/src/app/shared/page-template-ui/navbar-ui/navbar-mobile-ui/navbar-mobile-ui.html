@@ -1,1 +1,93 @@
-<p>navbar-mobile-ui works!</p>
+<nav class="nav-mobile">
+  <ul class="menu">
+    <!-- Left menu -->
+    <li class="menu-item">
+      <a routerLink="/registration" [routerLinkActive]="'active'">
+        {{ 'navbar.registrationRequest' | translate }}
+      </a>
+    </li>
+
+    @if (showRequests()) {
+      <li class="menu-item">
+        <a routerLink="/requests" [routerLinkActive]="'active'">
+          @if (showElectorRequestsText()) {
+            {{ 'navbar.myRequests' | translate }}
+          } @else if (showOrganismRequestsText()) {
+            {{ 'navbar.myRequestsForOrganism' | translate }}
+          } @else {
+            {{ 'navbar.myRequestsForAdmin' | translate }}
+          }
+        </a>
+      </li>
+    }
+
+    <li class="separator"></li>
+
+    <!-- Right menu -->
+    <li class="menu-item">
+      <a routerLink="/faq" [routerLinkActive]="'active'">{{ 'navbar.faq' | translate }}</a>
+    </li>
+
+    @if (isAdmin()) {
+      <li class="menu-item">
+        <button class="btn btn-no-style dropbtn" (click)="toggleDropdown('admin')">
+          <span>{{ 'navbar.Administration' | translate }}</span>
+          <i
+            class="ph"
+            [class.ph-caret-down]="!isDropdownOpen('admin')"
+            [class.ph-caret-up]="isDropdownOpen('admin')"
+          ></i>
+        </button>
+        @if (isDropdownOpen('admin')) {
+          <div class="submenu">
+            <a
+              routerLink="admin/district"
+              [routerLinkActive]="'active'"
+              *appHasPermission="'accessDistrictsAdminPage'"
+            >
+              {{ 'navbar.district' | translate }}
+            </a>
+            <a
+              routerLink="admin/polling-stations"
+              [routerLinkActive]="'active'"
+              *appHasPermission="'accessPollingStationsAdminPage'"
+            >
+              {{ 'navbar.pollingStation' | translate }}
+            </a>
+            <a
+              routerLink="admin/users"
+              [routerLinkActive]="'active'"
+              *appHasPermission="'accessUsersAdminPage'"
+            >
+              {{ 'navbar.users' | translate }}
+            </a>
+          </div>
+        }
+      </li>
+    }
+
+    <li class="separator"></li>
+
+    <!-- Connected user -->
+    <li class="menu-item user-item">
+      <span class="user-name"><i class="ph ph-user-circle"></i> {{ userName() }}</span>
+    </li>
+    <li class="menu-item">
+      <a routerLink="/account" [routerLinkActive]="'active'">
+        {{ 'navbar.myAccount' | translate }}
+      </a>
+    </li>
+    <li class="menu-item">
+      <button class="btn btn-no-style dropbtn" type="button" (click)="logout.emit()">
+        <i class="ph ph-sign-out"></i>
+        <span>{{ 'navbar.logout' | translate }}</span>
+      </button>
+    </li>
+
+    <li class="separator"></li>
+
+    <li class="menu-item">
+      <app-language-selector-ui></app-language-selector-ui>
+    </li>
+  </ul>
+</nav>

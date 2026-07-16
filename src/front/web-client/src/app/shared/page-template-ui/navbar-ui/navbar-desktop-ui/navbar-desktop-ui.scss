@@ -54,7 +54,12 @@
         box-shadow: var(--standard-box-shadow);
         z-index: 99;
 
-        a {
+        a,
+        .dropdown-action {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-family: inherit;
           font-size: var(--font-size-action);
           font-weight: normal;
           padding: 16px 24px;

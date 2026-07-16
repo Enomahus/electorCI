@@ -1,12 +1,30 @@
-<select
-  id="langSelect"
-  class="lang-select"
-  [value]="currentLang$ | async"
-  (change)="langChange($any($event.target).value)"
->
-  @for (lang of langItems; track lang.lang) {
-    <option [value]="lang.lang">
-      {{ 'global.lang.' + lang.lang | translate }}
-    </option>
+<div class="switcher" [class.switcher--open]="isOpen()">
+  <button
+    type="button"
+    class="lang-trigger"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="isOpen()"
+    (click)="toggle()"
+  >
+    <span class="flag flag--{{ currentLang() }}" aria-hidden="true"></span>
+    <span class="lang-label">{{ 'global.lang.' + currentLang() | translate }}</span>
+    <i class="ph ph-caret-down caret" aria-hidden="true"></i>
+  </button>
+
+  @if (isOpen()) {
+    <ul class="lang-menu" role="listbox">
+      @for (item of langItems; track item.lang) {
+        <li
+          class="lang-option"
+          role="option"
+          [class.active]="item.lang === currentLang()"
+          [attr.aria-selected]="item.lang === currentLang()"
+          (click)="selectLang(item.lang)"
+        >
+          <span class="flag flag--{{ item.lang }}" aria-hidden="true"></span>
+          <span class="lang-label">{{ 'global.lang.' + item.lang | translate }}</span>
+        </li>
+      }
+    </ul>
   }
-</select>
+</div>

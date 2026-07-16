@@ -6,12 +6,12 @@
   </div>
 
   @if (isToggleMobileMenu()) {
-    <app-navbar-mobile-ui></app-navbar-mobile-ui>
+    <app-navbar-mobile-ui (logout)="handleLogout()"></app-navbar-mobile-ui>
   } @else {
-    <app-navbar-desktop-ui></app-navbar-desktop-ui>
+    <app-navbar-desktop-ui (logout)="handleLogout()"></app-navbar-desktop-ui>
   }
 
-  <div class="mobile-toggle">
+  <div class="mobile-menu">
     <button
       class="btn outline outline-primary"
       type="button"

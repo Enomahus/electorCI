@@ -19,8 +19,8 @@
     "titleTemplate": "{{title}} | ELector-CI",
     "language": "Langue",
     "lang": {
-      "fr": "FR",
-      "en": "EN"
+      "fr": "fr",
+      "en": "en"
     }
   },
   "breadcrumb": {
@@ -58,7 +58,8 @@
     "Administration": "Administration",
     "pollingStation": "Bureaux de vote",
     "district": "Circonscription",
-    "users": "Utilisateurs"
+    "users": "Utilisateurs",
+    "myAccount": "Mon compte"
   },
   "formError": {
     "required": "Champ requis",

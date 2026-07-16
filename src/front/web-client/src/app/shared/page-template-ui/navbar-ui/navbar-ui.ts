@@ -43,7 +43,7 @@ export class NavbarUi {
     this.isToggleMobileMenu.set(!this.isToggleMobileMenu());
   }
 
-  logout() {
+  handleLogout() {
     this.authService.logout();
     this.router.navigate(['/home']);
   }

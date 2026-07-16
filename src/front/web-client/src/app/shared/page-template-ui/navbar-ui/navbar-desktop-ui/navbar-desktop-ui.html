@@ -1,43 +1,102 @@
 <nav class="nav-desktop">
-  <ul class="menu"></ul>
-
-  <ul class="menu menu-left"></ul>
+  <ul class="menu menu-left">
+    @if (showElectorRequestsText()) {
+      <li class="menu-item" [routerLinkActive]="'active'" *appHideIfAdmin>
+        <a routerLink="/registration-requests/new">{{
+          'navbar.registrationRequest' | translate
+        }}</a>
+      </li>
+      <li class="menu-item" [routerLinkActive]="'active'" *appHideIfAdmin>
+        <a class="menu-item-interaction" routerLink="/registration-requests">
+          {{ 'navbar.myRequests' | translate }}
+        </a>
+      </li>
+    }
+    @if (showOrganismRequestsText()) {
+      <li class="menu-item" [routerLinkActive]="'active'" *appHideIfAdmin>
+        <a class="menu-item-interaction" routerLink="registration-requests-for-management">
+          {{ 'navbar.myRequestsForOrganism' | translate }}
+        </a>
+      </li>
+    }
+    @if (showAdminRequestsText()) {
+      <li class="menu-item" [routerLinkActive]="'active'">
+        <a class="menu-item-interaction" routerLink="registration-requests-for-admin">
+          {{ 'navbar.myRequestsForAdmin' | translate }}
+        </a>
+      </li>
+    }
+  </ul>
 
   <ul class="menu menu-right">
     <li class="menu-item" [routerLinkActive]="'active'">
-      <a routerLink="/faq">{{ 'navbar.faq' | translate }}</a>
+      <a class="menu-item-interaction" routerLink="/faq">{{ 'navbar.faq' | translate }}</a>
     </li>
-    <li class="menu-item" [class.active]="isRouteMatching('admin')">
+
+    @if (isAdmin()) {
+      <li class="menu-item" [class.active]="isRouteMatching('admin')">
+        <button
+          class="btn btn-no-style dropbtn menu-item-interaction"
+          (click)="toggleDropdown('admin')"
+        >
+          <span>{{ 'navbar.Administration' | translate }}</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        @if (isDropdownOpen('admin')) {
+          <div class="dropdown-content">
+            <a
+              routerLink="admin/district"
+              [routerLinkActive]="'active'"
+              *appHasPermission="'accessDistrictsAdminPage'"
+            >
+              <span>{{ 'navbar.district' | translate }}</span>
+            </a>
+
+            <a
+              routerLink="admin/polling-stations"
+              [routerLinkActive]="'active'"
+              *appHasPermission="'accessPollingStationsAdminPage'"
+            >
+              <span>{{ 'navbar.pollingStation' | translate }}</span>
+            </a>
+
+            <a
+              routerLink="admin/users"
+              [routerLinkActive]="'active'"
+              *appHasPermission="'accessUsersAdminPage'"
+            >
+              <span>{{ 'navbar.users' | translate }}</span>
+            </a>
+          </div>
+        }
+      </li>
+    }
+
+    <li class="menu-item" [class.active]="isRouteMatching('account')">
       <button
         class="btn btn-no-style dropbtn menu-item-interaction"
-        (click)="isDropdownOpen.set(!isDropdownOpen())"
+        (click)="toggleDropdown('user')"
       >
-        <span>{{ 'navbar.Administration' | translate }}</span>
+        <i class="ph ph-user-circle"></i>
+        <span>{{ userName() }}</span>
         <i class="ph ph-caret-down"></i>
       </button>
-      @if (isDropdownOpen()) {
+      @if (isDropdownOpen('user')) {
         <div class="dropdown-content">
-          <a routerLink="admin/district" [routerLinkActive]="'active'">
-            <span>{{ 'navbar.district' | translate }}</span>
+          <a routerLink="/my-account" [routerLinkActive]="'active'">
+            <span>{{ 'navbar.myAccount' | translate }}</span>
           </a>
 
-          <a routerLink="admin/polling-stations" [routerLinkActive]="'active'">
-            <span>{{ 'navbar.pollingStation' | translate }}</span>
-          </a>
-
-          <a routerLink="admin/users" [routerLinkActive]="'active'">
-            <span>{{ 'navbar.users' | translate }}</span>
+          <a (click)="logout.emit()">
+            <i class="ph ph-sign-out"></i>
+            <span>{{ 'navbar.logout' | translate }}</span>
           </a>
         </div>
       }
     </li>
+
     <li>
       <app-language-selector-ui></app-language-selector-ui>
-    </li>
-    <li>
-      <button class="btn primary" type="button" [title]="'navbar.logout' | translate">
-        <i class="ph ph-sign-out"></i>
-      </button>
     </li>
   </ul>
 </nav>

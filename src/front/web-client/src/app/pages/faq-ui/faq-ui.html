@@ -1,0 +1,40 @@
+<div class="faq-container">
+  <div class="faq-header">
+    <h2>{{ title().toUpperCase() }}</h2>
+    <p>{{ subtitle() }}</p>
+  </div>
+
+  <main class="faq-container-group">
+    <aside class="grid-item faq-category">
+      <div class="category-list">
+        @for (cat of categories(); track cat.id) {
+          <button
+            type="button"
+            class="category-btn"
+            [class.active]="selectedCategoryId() === cat.id"
+            (click)="selectCategory(cat.id)"
+          >
+            <span>{{ cat.name }}</span>
+          </button>
+        }
+      </div>
+    </aside>
+
+    <section class="grid-item faq-category-items">
+      @if (filteredQuestions().length === 0) {
+        <p class="empty-state">Aucune question pour cette catégorie.</p>
+      } @else {
+        <mat-accordion>
+          @for (item of filteredQuestions(); track item.id) {
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ item.question }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              <p class="content" [innerHTML]="item.answer"></p>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      }
+    </section>
+  </main>
+</div>
