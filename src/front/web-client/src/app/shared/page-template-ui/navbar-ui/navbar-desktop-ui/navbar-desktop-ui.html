@@ -72,28 +72,56 @@
       </li>
     }
 
-    <li class="menu-item" [class.active]="isRouteMatching('account')">
-      <button
-        class="btn btn-no-style dropbtn menu-item-interaction"
-        (click)="toggleDropdown('user')"
-      >
-        <i class="ph ph-user-circle"></i>
-        <span>{{ userName() }}</span>
-        <i class="ph ph-caret-down"></i>
-      </button>
-      @if (isDropdownOpen('user')) {
-        <div class="dropdown-content">
-          <a routerLink="/my-account" [routerLinkActive]="'active'">
-            <span>{{ 'navbar.myAccount' | translate }}</span>
-          </a>
+    @if (isLoggedIn()) {
+      <li class="menu-item" [class.active]="isRouteMatching('account')">
+        <button
+          class="btn btn-no-style dropbtn menu-item-interaction"
+          (click)="toggleDropdown('user')"
+        >
+          <i class="ph ph-user-circle"></i>
+          <span>{{ userName() }}</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        @if (isDropdownOpen('user')) {
+          <div class="dropdown-content">
+            <a routerLink="/my-account" [routerLinkActive]="'active'">
+              <span>{{ 'navbar.myAccount' | translate }}</span>
+            </a>
 
-          <a (click)="logout.emit()">
-            <i class="ph ph-sign-out"></i>
-            <span>{{ 'navbar.logout' | translate }}</span>
-          </a>
-        </div>
-      }
-    </li>
+            <a (click)="logout.emit()">
+              <i class="ph ph-sign-out"></i>
+              <span>{{ 'navbar.logout' | translate }}</span>
+            </a>
+          </div>
+        }
+      </li>
+    } @else {
+      <li class="menu-item" [class.active]="isDropdownOpen('login')">
+        <button
+          class="btn btn-no-style dropbtn menu-item-interaction"
+          (click)="toggleDropdown('login')"
+        >
+          <i class="ph ph-sign-in"></i>
+          <span>{{ 'navbar.login' | translate }}</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        @if (isDropdownOpen('login')) {
+          <div class="dropdown-content">
+            <a routerLink="/login" [queryParams]="{ role: 'elector' }">
+              <span>{{ 'navbar.loginAsElector' | translate }}</span>
+            </a>
+
+            <a routerLink="/login" [queryParams]="{ role: 'organism-agent' }">
+              <span>{{ 'navbar.loginAsOrganismAgent' | translate }}</span>
+            </a>
+
+            <a routerLink="/login" [queryParams]="{ role: 'supervisor' }">
+              <span>{{ 'navbar.loginAsSupervisor' | translate }}</span>
+            </a>
+          </div>
+        }
+      </li>
+    }
 
     <li>
       <app-language-selector-ui></app-language-selector-ui>

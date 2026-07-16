@@ -38,4 +38,7 @@ export class ConfigService {
 
 interface Config {
   apiUrl: string;
+  googleClientId: string;
+  microsoftTenantId: string;
+  microsoftClientId: string;
 }

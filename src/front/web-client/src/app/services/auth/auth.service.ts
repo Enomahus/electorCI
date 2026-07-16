@@ -16,6 +16,7 @@ import {
 } from 'rxjs';
 import { ApiBaseService } from '../api/api-base.service';
 import { UserApiService } from '../api/user.api.service';
+import { ConfigService } from '../config.service';
 import { CurrentUserService } from '../current-user.service';
 import { AppPermission, ResultOfTokenResponse } from '../nswag/api-nswag-client';
 
@@ -33,8 +34,17 @@ export class AuthService extends ApiBaseService {
   private permissions$ = new ReplaySubject<AppPermission[]>(1);
 
   private readonly router = inject(Router);
+  private readonly config = inject(ConfigService);
   private readonly currentUserService = inject(CurrentUserService);
   private readonly userApiService = inject(UserApiService);
+
+  private readonly googleAuthScopes = [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/user.phonenumbers.read',
+  ];
+
+  private readonly microsoftAuthScopes = ['openid', 'profile', 'offline_access', 'User.Read'];
 
   constructor() {
     super();
@@ -54,6 +64,62 @@ export class AuthService extends ApiBaseService {
         }),
       );
   }
+
+  getOAuthQuery(
+    clientId: string,
+    scopes: string,
+    redirectUri: string,
+    routerState?: string,
+  ): URLSearchParams {
+    const params = new URLSearchParams();
+    params.append('client_id', clientId);
+    params.append('scope', scopes);
+    params.append('redirect_uri', redirectUri);
+    if (routerState) {
+      params.append('state', routerState);
+    }
+    return params;
+  }
+
+  requestGoogleAuthCode(routerState?: string): void {
+    const searchParams = this.getOAuthQuery(
+      this.config.getConfig().googleClientId,
+      this.googleAuthScopes.join(' '),
+      `${window.location.origin}/login/google`,
+      routerState,
+    );
+    searchParams.append('response_type', 'code');
+    searchParams.append('access_type', 'offline');
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?&${searchParams.toString()}`;
+  }
+
+  // loginGoogle(authCode: string): Observable<ResultOfTokenResponse> {
+  //   return this.apiClient.authenticateGoogle(authCode).pipe(
+  //     tap((result) => {
+  //       this.storeTokens(result);
+  //     })
+  //   );
+  // }
+
+  async requestMicrosoftAuthCodeAsync(routerState?: string): Promise<void> {
+    const searchParams = this.getOAuthQuery(
+      this.config.getConfig().microsoftClientId,
+      this.microsoftAuthScopes.join(' '),
+      `${window.location.origin}/login/microsoft`,
+      routerState,
+    );
+    searchParams.append('response_mode', 'query');
+    searchParams.append('response_type', 'code');
+    window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?&${searchParams.toString()}`;
+  }
+
+  // loginMicrosoft(authCode: string): Observable<ResultOfTokenResponse> {
+  //   return this.apiClient.authenticateMicrosoft(authCode).pipe(
+  //     tap((result) => {
+  //       this.storeTokens(result);
+  //     })
+  //   );
+  // }
 
   getAccessToken(): Observable<string | undefined> {
     return this.accessToken$.pipe(

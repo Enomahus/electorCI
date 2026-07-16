@@ -59,7 +59,11 @@
     "pollingStation": "Bureaux de vote",
     "district": "Circonscription",
     "users": "Utilisateurs",
-    "myAccount": "Mon compte"
+    "myAccount": "Mon compte",
+    "login": "Connexion",
+    "loginAsElector": "Electeur",
+    "loginAsOrganismAgent": "Agent organisme",
+    "loginAsSupervisor": "Superviseur"
   },
   "formError": {
     "required": "Champ requis",
@@ -95,5 +99,15 @@
     },
     "gridError": "Une erreur est survenue lors de la récupération des données de la grille",
     "serverError": "Erreur serveur"
+  },
+  "login": {
+    "externalLoginFailed": "Une erreur est survenue lors de la connexion, veuillez réessayer.",
+    "forgotPassword": "Mot de passe oublié",
+    "loginFailed": "Mot de passe ou identifiant erroné",
+    "password": "Mot de passe",
+    "passwordConfirm": "Confirmation du mot de passe",
+    "title": "Connexion",
+    "username": "Identifiant (email)",
+    "continueWithEmail": "ou continuer avec l'email"
   }
 }

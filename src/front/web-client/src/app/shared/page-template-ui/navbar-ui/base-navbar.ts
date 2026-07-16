@@ -34,6 +34,9 @@ export abstract class BaseNavbar {
 
   readonly userName = toSignal(this.currentUserService.currentUserName$, { initialValue: '' });
 
+  /** True when a user is authenticated (the current user name is set). */
+  readonly isLoggedIn = computed(() => this.userName().trim().length > 0);
+
   private readonly permissions = toSignal(this.authService.getPermissions(), {
     initialValue: [] as AppPermission[],
   });
