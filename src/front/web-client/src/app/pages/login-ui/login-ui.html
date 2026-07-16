@@ -20,41 +20,49 @@
 
     <div class="text-with-bars login-separator">{{ 'login.continueWithEmail' | translate }}</div>
 
-    <form class="basic-form login-form" (submit)="loginEmail()">
-      <div class="input-block required">
-        <label for="username">{{ 'login.username' | translate }}</label>
-        <input type="text" id="username" [formField]="loginForm.userName" />
-        @if (loginForm.userName().touched() && loginForm.userName().errors()) {
-          <ul class="form-errors">
-            @for (error of loginForm.userName().errors(); track error.kind) {
-              <li>{{ error.message }}</li>
-            }
-          </ul>
-        }
+    <form class="basic-form login-form" (submit)="loginEmail($event)">
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="username">{{ 'login.username' | translate }}</label>
+          <input type="text" id="username" [formField]="loginForm.userName" />
+          @if (loginForm.userName().touched() && loginForm.userName().errors()) {
+            <ul class="form-errors">
+              @for (error of loginForm.userName().errors(); track error.kind) {
+                <li>{{ error.message }}</li>
+              }
+            </ul>
+          }
+        </div>
       </div>
 
-      <div class="input-block required">
-        <label for="password">{{ 'login.password' | translate }}</label>
-        <div class="password-container">
-          <input
-            [type]="showPassword() ? 'text' : 'password'"
-            id="password"
-            [formField]="loginForm.password"
-          />
-          <button type="button" class="toggle-password" (click)="showPassword.set(!showPassword())">
-            <i [class]="showPassword() ? 'ph ph-eye' : 'ph ph-eye-slash'"></i>
-          </button>
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="password">{{ 'login.password' | translate }}</label>
+          <div class="password-container">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              id="password"
+              [formField]="loginForm.password"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="showPassword.set(!showPassword())"
+            >
+              <i [class]="showPassword() ? 'ph ph-eye' : 'ph ph-eye-slash'"></i>
+            </button>
+          </div>
+          @if (loginForm.password().touched() && loginForm.password().errors()) {
+            <ul class="form-errors">
+              @for (error of loginForm.password().errors(); track error.kind) {
+                <li>{{ error.message }}</li>
+              }
+            </ul>
+          }
+          <a class="forgot-password" routerLink="/forgot-password">{{
+            'login.forgotPassword' | translate
+          }}</a>
         </div>
-        @if (loginForm.password().touched() && loginForm.password().errors()) {
-          <ul class="form-errors">
-            @for (error of loginForm.password().errors(); track error.kind) {
-              <li>{{ error.message }}</li>
-            }
-          </ul>
-        }
-        <a class="forgot-password" routerLink="/forgot-password">{{
-          'login.forgotPassword' | translate
-        }}</a>
       </div>
 
       @if (loginFailed()) {
@@ -67,7 +75,7 @@
         <button
           [disabled]="loginForm().invalid || isLoggingIn || isLoggingInExternal"
           type="submit"
-          class="btn secondary"
+          class="btn tertiary"
         >
           {{ 'global.login' | translate }}
           @if (isLoggingIn()) {

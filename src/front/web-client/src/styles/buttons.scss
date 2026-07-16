@@ -36,6 +36,11 @@
     background-color: var(--secondary-btn-background);
   }
 
+  &.tertiary {
+    color: var(--tertiary-btn-text-color);
+    background-color: var(--tertiary-btn-background);
+  }
+
   &.accent {
     color: var(--accent-btn-text-color);
     background-color: var(--accent-btn-background);

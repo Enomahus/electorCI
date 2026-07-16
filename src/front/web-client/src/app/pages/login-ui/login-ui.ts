@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { form, FormField, maxLength, minLength, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -10,7 +11,7 @@ import { LoginPageTemplateUi } from './login-page-template-ui/login-page-templat
 
 @Component({
   selector: 'app-login-ui',
-  imports: [TranslatePipe, LoginPageTemplateUi, RouterLink, LoaderUi, FormField],
+  imports: [TranslatePipe, LoginPageTemplateUi, RouterLink, LoaderUi, FormField, JsonPipe],
   templateUrl: './login-ui.html',
   styleUrl: './login-ui.scss',
 })
@@ -66,7 +67,8 @@ export class LoginUi implements OnInit {
       });
   }
 
-  loginEmail(): void {
+  loginEmail(event: Event): void {
+    event.preventDefault();
     if (this.loginForm().invalid()) {
       this.loginForm().markAsTouched();
       return;
