@@ -1,0 +1,113 @@
+{
+  "global": {
+    "accept": "Accept",
+    "createAccount": "Create an account",
+    "save": "Save",
+    "search": "Search",
+    "edit": "Edit",
+    "back": "Back",
+    "cancel": "Cancel",
+    "refresh": "Refresh",
+    "login": "Log in",
+    "actions": "Actions",
+    "selectFile": "Select a file",
+    "select": "...Please select an option...",
+    "no": "No",
+    "yes": "Yes",
+    "noData": "No data",
+    "noTitleTemplate": "ELector-CI",
+    "titleTemplate": "{{title}} | ELector-CI",
+    "language": "Language",
+    "lang": {
+      "fr": "fr",
+      "en": "en"
+    }
+  },
+  "breadcrumb": {
+    "pollingStations": "Polling stations",
+    "pollingStationCreate": "New polling station",
+    "pollingStationEdit": "Edit polling station",
+    "constituencies": "Constituencies",
+    "constituencyCreate": "New constituency",
+    "registrationRequests": "My requests",
+    "registrationRequestAdd": "New registration request",
+    "registrationRequestEdit": "Edit registration request",
+    "registrationRequestsForAdmin": "Request list",
+    "registrationRequestsForManagement": "Request list",
+    "stakeholderAdd": "New stakeholder",
+    "stakeholders": "Stakeholder list",
+    "userCreate": "Create user",
+    "userEdit": "Edit user",
+    "users": "User list"
+  },
+  "footer": {
+    "text": "© 2026 Independent Electoral Commission (IEC) - Côte d'Ivoire.",
+    "rights": "All rights reserved."
+  },
+  "navbar": {
+    "projectName": "E-Lector",
+    "projectCountryCode": "ci",
+    "displayMenu": "Display menu",
+    "logout": "Log out",
+    "registrationRequest": "Registration request",
+    "registration": "Nouvelle demande",
+    "myRequests": "My requests",
+    "myRequestsForOrganism": "Requests",
+    "myRequestsForAdmin": "Requests",
+    "faq": "Faq",
+    "Administration": "Administration",
+    "pollingStation": "Polling station",
+    "district": "Constituencies",
+    "users": "Users",
+    "myAccount": "My account",
+    "login": "Connexion",
+    "loginAsElector": "Elector",
+    "loginAsOrganismAgent": "Agent organisme",
+    "loginAsSupervisor": "Superviseur"
+  },
+  "formError": {
+    "required": "Champ requis",
+    "emailInvalid": "L'email n'est pas au bon format",
+    "positiveNumber": "Doit être un nombre supérieur à zéro",
+    "passwordFormat": "Le mot de passe doit contenir entre 8 et 24 caractères et avoir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caracère spécial",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "emailUnique": "Cet e-mail existe déjà. Merci d'utiliser un autre e-mail",
+    "employeeNumberUnique": "Ce numéro matricule existe déjà.",
+    "phoneInvalid": "Le numéro de téléphone n'est pas au bon format"
+  },
+  "errors": {
+    "backendCodes": {
+      "accessRights": "Droits insuffisants",
+      "notFound": "L'élément demandé n'existe pas",
+      "validation": "",
+      "validationCodes": {
+        "CountryMustExist": "Le pays n'a pas été trouvé.",
+        "InvalidEmail": "Le champ {{field}} n'est pas un email valide.",
+        "InvalidPassword": "Le mot de passe est invalide.",
+        "InvalidPostcode": "Le code postal est invalide.",
+        "MaxLength": "La valeur saisie dans le champ {{field}} est trop longue.",
+        "PanelReferenceMustExist": "La référence de panneau n'a pas été trouvée.",
+        "PositiveNumber": "La valeur saisie dans le champ {{field}} doit être positive.",
+        "RequesterMustExist": "Le demandeur n'a pas été trouvé.",
+        "Required": "Le champ {{field}} est requis.",
+        "StakeholderLinked": "La société ne peut pas être supprimée car des éléments lui sont liés. Vous pouvez cependant la désactiver.",
+        "ConstituencyMustExist": "La circonscription n'a pas été trouvée.",
+        "Unique": "La valeur saisie dans le champ {{field}} existe déjà.",
+        "UserMustExist": "L'utilisateur n'a pas été trouvé.",
+        "PollingStationMustExist": "Le bureau de vote n'a pas été trouvé."
+      }
+    },
+    "gridError": "Une erreur est survenue lors de la récupération des données de la grille",
+    "serverError": "Erreur serveur"
+  },
+  "login": {
+    "externalLoginFailed": "Une erreur est survenue lors de la connexion, veuillez réessayer.",
+    "forgotPassword": "Mot de passe oublié",
+    "loginFailed": "Mot de passe ou identifiant erroné",
+    "password": "Mot de passe",
+    "passwordConfirm": "Confirmation du mot de passe",
+    "title": "Connexion",
+    "username": "Identifiant (email)",
+    "continueWithEmail": "ou continuer avec l'email"
+  }
+}

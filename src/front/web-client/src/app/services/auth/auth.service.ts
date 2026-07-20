@@ -31,7 +31,7 @@ const currentUserIdKey = 'currentUserIdKey';
 export class AuthService extends ApiBaseService {
   private readonly accessToken$ = new BehaviorSubject<string | undefined>(undefined);
   private readonly refreshing$ = new BehaviorSubject<boolean>(false);
-  private permissions$ = new ReplaySubject<AppPermission[]>(1);
+  private readonly permissions$ = new ReplaySubject<AppPermission[]>(1);
 
   private readonly router = inject(Router);
   private readonly config = inject(ConfigService);
@@ -173,10 +173,14 @@ export class AuthService extends ApiBaseService {
   logout(): void {
     this.accessToken$.next(undefined);
     this.refreshing$.next(false);
-    this.permissions$ = new ReplaySubject<AppPermission[]>(1);
+    // Émettre la liste vide plutôt que recréer le sujet : les abonnements
+    // existants (navbar, directives) doivent recevoir la perte des droits.
+    this.permissions$.next([]);
     this.currentUserService.changeCurrentUserName('');
     localStorage.removeItem(refreshTokenKey);
     localStorage.removeItem(currentUserKey);
+    localStorage.removeItem(currentEmailKey);
+    localStorage.removeItem(currentUserIdKey);
   }
 
   private refreshToken(): Observable<string | undefined> {

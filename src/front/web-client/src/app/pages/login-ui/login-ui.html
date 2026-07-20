@@ -5,10 +5,10 @@
     <div class="basic-form">
       <div class="social-login">
         <button type="button" class="btn social-login-btn" (click)="googleAuth()">
-          <img src="assets/images/google.ico" alt="Google" /><span>Google</span>
+          <img src="assets/images/google.ico" alt="Google"/><span>Google</span>
         </button>
         <button type="button" class="btn social-login-btn" (click)="microsoftAuth()">
-          <img src="assets/images/microsoft.ico" alt="Microsoft" /><span>Microsoft</span>
+          <img src="assets/images/microsoft.ico" alt="Microsoft"/><span>Microsoft</span>
         </button>
       </div>
       @if (externalLogingFailed()) {
@@ -73,9 +73,9 @@
 
       <div class="btn-container">
         <button
-          [disabled]="loginForm().invalid || isLoggingIn || isLoggingInExternal"
+          [disabled]="loginForm().invalid()"
           type="submit"
-          class="btn tertiary"
+          class="btn primary"
         >
           {{ 'global.login' | translate }}
           @if (isLoggingIn()) {

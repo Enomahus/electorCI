@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { form, FormField, maxLength, minLength, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -11,7 +10,7 @@ import { LoginPageTemplateUi } from './login-page-template-ui/login-page-templat
 
 @Component({
   selector: 'app-login-ui',
-  imports: [TranslatePipe, LoginPageTemplateUi, RouterLink, LoaderUi, FormField, JsonPipe],
+  imports: [TranslatePipe, LoginPageTemplateUi, RouterLink, LoaderUi, FormField],
   templateUrl: './login-ui.html',
   styleUrl: './login-ui.scss',
 })
