@@ -5,6 +5,7 @@
   .menu {
     display: flex;
     align-items: center;
+    padding: 8px 0px 0px 1px;
 
     .menu-item {
       align-items: center;
@@ -15,7 +16,7 @@
 
       &:hover,
       &.active {
-        border-color: var(--menu-item-hover-band);
+        //border-color: var(--menu-item-hover-band);
 
         a {
           color: var(--secondary-color);

@@ -32,6 +32,7 @@ export const routes: Routes = [
       {
         path: 'home',
         component: HomeUi,
+        title: 'home.title'
       },
       {
         path: 'my-account',

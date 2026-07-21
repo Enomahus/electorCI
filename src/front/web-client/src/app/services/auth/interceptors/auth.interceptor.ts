@@ -22,16 +22,22 @@ export function authInterceptor(
     return next(req);
   }
 
-  if (isAnonymous(req.url)) {
+  let pathName = req.url;
+  if(req.url.startsWith('http')) {
+    const url = new URL(req.url);
+    pathName = url.pathname;
+  }
+
+  if(pathName.startsWith('/auth') || pathName.startsWith('/user/register')) {
     return next(req);
   }
 
   return inject(AuthService)
     .getAccessToken()
     .pipe(
-      switchMap((token) => {
-        if (!token) {
-          const headers = req.headers.append('Authorization', `Bearer ${token}`);
+      switchMap((authToken) => {
+        if (authToken) {
+          const headers = req.headers.set('Authorization', `Bearer ${authToken}`);
           req = req.clone({
             headers,
           });
