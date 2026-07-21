@@ -1,1 +1,24 @@
-<p>navbar-ui works!</p>
+<header>
+  <div class="logo">
+    <a class="site-logo" routerLink="/">
+      <img src="assets/images/Logo.png" alt="logo" height="40px" />
+    </a>
+  </div>
+
+  @if (isToggleMobileMenu()) {
+    <app-navbar-mobile-ui (logout)="handleLogout()"></app-navbar-mobile-ui>
+  } @else {
+    <app-navbar-desktop-ui (logout)="handleLogout()"></app-navbar-desktop-ui>
+  }
+
+  <div class="mobile-menu">
+    <button
+      class="btn outline outline-primary"
+      type="button"
+      (click)="toggleMobileMenu()"
+      [title]="'navbar.displayMenu' | translate"
+    >
+      <i class="ph ph-list"></i>
+    </button>
+  </div>
+</header>

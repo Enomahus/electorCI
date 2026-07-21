@@ -1,0 +1,90 @@
+@if (isLoggingInExternal()) {
+  <app-loader-ui></app-loader-ui>
+} @else {
+  <app-login-page-template-ui>
+    <div class="basic-form">
+      <div class="social-login">
+        <button type="button" class="btn social-login-btn" (click)="googleAuth()">
+          <img src="assets/images/google.ico" alt="Google" /><span>Google</span>
+        </button>
+        <button type="button" class="btn social-login-btn" (click)="microsoftAuth()">
+          <img src="assets/images/microsoft.ico" alt="Microsoft" /><span>Microsoft</span>
+        </button>
+      </div>
+      @if (externalLogingFailed()) {
+        <ul class="form-errors">
+          <li>{{ 'login.externalLoginFailed' | translate }}</li>
+        </ul>
+      }
+    </div>
+
+    <div class="text-with-bars login-separator">{{ 'login.continueWithEmail' | translate }}</div>
+
+    <form class="basic-form login-form" (submit)="loginEmail($event)">
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="username">{{ 'login.username' | translate }}</label>
+          <input type="text" id="username" [formField]="loginForm.userName" />
+          @if (loginForm.userName().touched() && loginForm.userName().errors()) {
+            <ul class="form-errors">
+              @for (error of loginForm.userName().errors(); track error.kind) {
+                <li>{{ error.message }}</li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="password">{{ 'login.password' | translate }}</label>
+          <div class="password-container">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              id="password"
+              [formField]="loginForm.password"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="showPassword.set(!showPassword())"
+            >
+              <i [class]="showPassword() ? 'ph ph-eye' : 'ph ph-eye-slash'"></i>
+            </button>
+          </div>
+          @if (loginForm.password().touched() && loginForm.password().errors()) {
+            <ul class="form-errors">
+              @for (error of loginForm.password().errors(); track error.kind) {
+                <li>{{ error.message }}</li>
+              }
+            </ul>
+          }
+          <a class="forgot-password" routerLink="/forgot-password">{{
+            'login.forgotPassword' | translate
+          }}</a>
+        </div>
+      </div>
+
+      @if (loginFailed()) {
+        <ul class="form-errors">
+          <li>{{ 'login.loginFailed' | translate }}</li>
+        </ul>
+      }
+
+      <div class="btn-container">
+        <button [disabled]="loginForm().invalid()" type="submit" class="btn secondary">
+          {{ 'global.login' | translate }}
+          @if (isLoggingIn()) {
+            <app-loader-ui></app-loader-ui>
+          }
+        </button>
+        <button type="button" class="btn primary" routerLink="/register">
+          {{ 'global.createAccount' | translate }}
+        </button>
+      </div>
+      <div class="text-with-bars login-separator"></div>
+
+      <div class="other-actions"></div>
+    </form>
+  </app-login-page-template-ui>
+}

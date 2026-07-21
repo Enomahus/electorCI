@@ -1,0 +1,29 @@
+@let breadcrumbs = breadcrumbs$ | async;
+<div class="breadcrumb">
+  <div class="breadcrumb-content">
+    <a class="breadcrumb-element breadcrumb-icon" routerLink="/home">
+      <i class="ph ph-house home-icon"></i>
+    </a>
+
+    @if (breadcrumbs && breadcrumbs.length > 0) {
+      <i class="ph ph-caret-right caret-icon"></i>
+    }
+    @for (breadcrumb of breadcrumbs; track $index; let isLast = $last) {
+      @if (breadcrumb.url) {
+        <a
+          class="breadcrumb-element"
+          [routerLink]="breadcrumb.url"
+          [queryParams]="breadcrumb.queryParams"
+        >
+          {{ breadcrumb.label }}
+        </a>
+      } @else {
+        {{ breadcrumb.label }}
+      }
+
+      @if (!isLast) {
+        <i class="ph ph-caret-right caret-icon"></i>
+      }
+    }
+  </div>
+</div>

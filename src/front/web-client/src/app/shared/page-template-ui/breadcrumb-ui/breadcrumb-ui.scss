@@ -1,0 +1,19 @@
+.breadcrumb {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--secondary-background);
+  font-size: var(--font-size-info);
+
+  .breadcrumb-content {
+    width: 95%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .home-icon {
+      font-size: var(--font-size-icon-breadcrumb);
+    }
+  }
+}

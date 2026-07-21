@@ -2,7 +2,7 @@ body {
   //default colors
   --primary-color: #283ca5;
   --secondary-color: #46d27d;
-  --tertiary-color: #ff7350;
+  --tertiary-color: #f77f00;
   --accent-color: #ffcd00;
   --gradient-color: linear-gradient(90deg, #00e6ac 0%, #ffde00 100%);
 
@@ -41,6 +41,9 @@ body {
 
   --secondary-btn-background: var(--secondary-color);
   --secondary-btn-text-color: var(--inverse-text-color);
+
+  --tertiary-btn-background: var(--tertiary-color);
+  --tertiarybtn-text-color: var(--inverse-text-color);
 
   --accent-btn-background: var(--accent-color);
   --accent-btn-text-color: var(--inverse-text-color);
