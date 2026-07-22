@@ -1157,7 +1157,7 @@ export class ServerClient extends CustomApiClient {
     /**
      * Récupère les circonscriptions.
      */
-    getDistricts(query: GetDistrictsQuery): Observable<ResultOfGridDataResponseOfGetDistrictsResponse> {
+    getDistricts(query: GetDistrictsQuery): Observable<ResultOfIEnumerableOfGetDistrictsResponse> {
         let url_ = this.baseUrl + "/districts/get-districts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1180,14 +1180,14 @@ export class ServerClient extends CustomApiClient {
                 try {
                     return this.processGetDistricts(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ResultOfGridDataResponseOfGetDistrictsResponse>;
+                    return _observableThrow(e) as any as Observable<ResultOfIEnumerableOfGetDistrictsResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ResultOfGridDataResponseOfGetDistrictsResponse>;
+                return _observableThrow(response_) as any as Observable<ResultOfIEnumerableOfGetDistrictsResponse>;
         }));
     }
 
-    protected processGetDistricts(response: HttpResponseBase): Observable<ResultOfGridDataResponseOfGetDistrictsResponse> {
+    protected processGetDistricts(response: HttpResponseBase): Observable<ResultOfIEnumerableOfGetDistrictsResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1197,7 +1197,7 @@ export class ServerClient extends CustomApiClient {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfGridDataResponseOfGetDistrictsResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfIEnumerableOfGetDistrictsResponse;
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -1496,13 +1496,8 @@ export interface GetDistrictResponse extends DistrictModel {
     createdAt?: string;
 }
 
-export interface ResultOfGridDataResponseOfGetDistrictsResponse extends Result {
-    data?: GridDataResponseOfGetDistrictsResponse | undefined;
-}
-
-export interface GridDataResponseOfGetDistrictsResponse {
-    data: GetDistrictsResponse[];
-    total: number;
+export interface ResultOfIEnumerableOfGetDistrictsResponse extends Result {
+    data?: GetDistrictsResponse[] | undefined;
 }
 
 export interface GetDistrictsResponse {
@@ -1521,7 +1516,7 @@ export interface PollingStationModel {
     isActive?: boolean;
 }
 
-export interface GetDistrictsQuery extends GridDataQuery {
+export interface GetDistrictsQuery {
 }
 
 export interface ResultOfLong extends Result {

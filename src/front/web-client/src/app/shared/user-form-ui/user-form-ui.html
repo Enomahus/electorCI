@@ -1,0 +1,62 @@
+<div class="user-form-container">
+  <form class="user-form">
+    <section class="district-layout">
+      <div class="inputs-container">
+        <div class="input-block">
+          <label for="regionId">Region</label>
+          <select id="regionId">
+            <option value="" selected>{{ 'global.select' | translate }}</option>
+            @for (region of allRegion(); track region.id) {
+              <option [value]="region.id">{{ region.code }} {{ region.wording }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block">
+          <label for="departmentId">{{
+            'registrationRequests.fields.department' | translate
+          }}</label>
+          <select id="departmentId">
+            <option value="" selected>{{ 'global.select' | translate }}</option>
+            @for (department of allDepartement(); track department.id) {
+              <option [value]="department.id">
+                {{ department.code }} {{ department.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block ">
+            <label for="subPrefecture">{{
+              'registrationRequests.fields.subPrefecture' | translate
+            }}</label>
+            <select id="subPrefecture">
+              <option value="" selected>{{ 'global.select' | translate }}</option>
+              @for (subPrefecture of allSubPrefectures(); track subPrefecture.id) {
+                <option [value]="subPrefecture.id">
+                  {{ subPrefecture.code }} {{ subPrefecture.wording }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="input-block required">
+            <label for="municipalityId">{{
+              'registrationRequests.fields.municipality' | translate
+            }}</label>
+            <select id="municipalityId">
+              <option value="" selected>{{ 'global.select' | translate }}</option>
+              @for (municipality of allMunicipalities(); track municipality.id) {
+                <option [value]="municipality.id">
+                  {{ municipality.code }} {{ municipality.wording }}
+                </option>
+              }
+            </select>
+          </div>
+
+
+      </div>
+    </section>
+    <section class="user-layout"></section>
+  </form>
+</div>

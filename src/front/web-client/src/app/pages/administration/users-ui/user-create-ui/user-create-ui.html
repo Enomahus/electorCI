@@ -1,0 +1,7 @@
+<h1>{{ 'users.createUser' | translate }}</h1>
+<app-user-form-ui
+  [isSaving]="isSaving()"
+  [form]="form"
+  (formSubmitted)="onSubmit($event)"
+  (goBack)="goBack()"
+></app-user-form-ui>

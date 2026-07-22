@@ -1,0 +1,81 @@
+<div class="data-grid">
+  @if (showSearch()) {
+    <mat-form-field class="data-grid__search" appearance="outline">
+      <mat-label>{{ 'global.search' | translate }}</mat-label>
+      <input
+        matInput
+        [value]="search()"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  }
+
+  <div class="data-grid__table-wrapper">
+    @if (loading()) {
+      <mat-progress-bar class="data-grid__progress" mode="indeterminate" />
+    }
+
+    <table mat-table [dataSource]="data()" matSort (matSortChange)="onSortChange($event)">
+      @for (col of columns(); track col.field) {
+        <!-- Colonne : en-tête + cellule -->
+        <ng-container [matColumnDef]="col.field">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            [mat-sort-header]="col.field"
+            [disabled]="col.sortable === false"
+          >
+            {{ col.header | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            @if (col.cellTemplate) {
+              <ng-container
+                *ngTemplateOutlet="col.cellTemplate; context: { $implicit: row }"
+              />
+            } @else {
+              {{ cellValue(col, row) }}
+            }
+          </td>
+        </ng-container>
+
+        <!-- Cellule de filtre (2e ligne d'en-tête) -->
+        <ng-container [matColumnDef]="filterColumnId(col.field)">
+          <th mat-header-cell *matHeaderCellDef class="data-grid__filter-cell">
+            @if (col.filterable !== false) {
+              <mat-form-field class="data-grid__filter" appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  [value]="columnFilters()[col.field] || ''"
+                  [placeholder]="'global.search' | translate"
+                  (input)="onColumnFilterChange(col.field, $any($event.target).value)"
+                />
+              </mat-form-field>
+            }
+          </th>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="headerColumns()"></tr>
+      @if (showColumnFilters()) {
+        <tr mat-header-row *matHeaderRowDef="filterColumns()"></tr>
+      }
+      <tr mat-row *matRowDef="let row; columns: headerColumns()"></tr>
+
+      <tr *matNoDataRow>
+        <td class="data-grid__no-data" [attr.colspan]="headerColumns().length">
+          {{ 'global.noData' | translate }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <mat-paginator
+    [length]="total()"
+    [pageSize]="pageSize()"
+    [pageIndex]="pageIndex()"
+    [pageSizeOptions]="pageSizeOptions()"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  />
+</div>

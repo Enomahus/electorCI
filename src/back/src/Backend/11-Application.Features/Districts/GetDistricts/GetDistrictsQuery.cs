@@ -1,6 +1,7 @@
 using Application.Common.Enums;
 using Application.Features.Common.GridData;
 using Application.Models;
+using FluentValidation;
 using Infrastructure.Persistence.SQLServer.Contexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +11,17 @@ using Tools.Logging;
 namespace Application.Features.Districts.GetDistricts
 {
     [WithPermission(nameof(AppPermission.GetDistricts))]
-    public class GetDistrictsQuery : GridDataQuery, IRequest<Result<GridDataResponse<GetDistrictsResponse>>>
-    {
-    }
+    public class GetDistrictsQuery : IRequest<Result<IEnumerable<GetDistrictsResponse>>> { }
 
-    public class GetDistrictsQueryValidator : GridDataQueryValidator<GetDistrictsQuery>
+    public class GetDistrictsQueryValidator : AbstractValidator<GetDistrictsQuery>
     {
         public GetDistrictsQueryValidator() { }
     }
 
-    public class GetDistrictsQueryHandler(
-        ReadOnlyDbContext context,
-        TimeProvider timeProvider
-    ) : IRequestHandler<GetDistrictsQuery, Result<GridDataResponse<GetDistrictsResponse>>>
+    public class GetDistrictsQueryHandler(ReadOnlyDbContext context, TimeProvider timeProvider)
+        : IRequestHandler<GetDistrictsQuery, Result<IEnumerable<GetDistrictsResponse>>>
     {
-        public async Task<Result<GridDataResponse<GetDistrictsResponse>>> Handle(
+        public async Task<Result<IEnumerable<GetDistrictsResponse>>> Handle(
             GetDistrictsQuery request,
             CancellationToken cancellationToken
         )
@@ -32,23 +29,24 @@ namespace Application.Features.Districts.GetDistricts
             using var activity = ActivitySourceLog.CQRS.Start();
             var dateNow = timeProvider.GetUtcNow();
 
-            var districts = await context
+            var rootsDistricts = await context
                 .Districts.AsNoTracking()
                 .AsSplitQuery()
                 .Include(r => r.Subconstituency)
-                .ThenInclude(d => d.Subconstituency)
-                .ThenInclude(sp => sp.Subconstituency)
-                .ThenInclude(m => m.Subconstituency)
-                .ThenInclude(vs => vs.Subconstituency)
+                    .ThenInclude(d => d.Subconstituency)
+                        .ThenInclude(sp => sp.Subconstituency)
+                            .ThenInclude(m => m.Subconstituency)
+                                .ThenInclude(vs => vs.Subconstituency)
                 .Include(p => p.PollingStations)
                 .Where(r => r.ParentId == null)
                 .ToListAsync(cancellationToken);
 
-            var rows = districts.Select(d => GetDistrictsResponse.From(d, dateNow)).AsQueryable();
+            //var rows = districts.Select(d => GetDistrictsResponse.From(d, dateNow)).AsQueryable();
+            var rows = rootsDistricts.Select(d => GetDistrictsResponse.From(d, dateNow));
 
-            var result = rows.ApplyGrid(request);
+            //var result = rows.ApplyGrid(request);
 
-            return Result<GridDataResponse<GetDistrictsResponse>>.From(result);
+            return Result<IEnumerable<GetDistrictsResponse>>.From(rows);
         }
     }
 }

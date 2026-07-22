@@ -6,6 +6,7 @@ import {
   GetUsersQuery,
   GridDataResponseOfGetUsersResponse,
   RegisterUserCommand,
+  Result,
   UpdateCurrentUserCommand,
   UpdateUserCommand,
   UserModel,
@@ -30,6 +31,10 @@ export class UserApiService extends ApiBaseService {
 
   getUser(id: string, options: ApiToastOptions = {}): Observable<UserModel> {
     return this.apiClient.getUser(id).pipe(this.handleDataResult(options));
+  }
+
+  deleteUser(id: string, options: ApiToastOptions = {}): Observable<Result> {
+    return this.apiClient.deleteUser(id).pipe(this.handleResult(options));
   }
 
   createUser(command: CreateUserCommand, options: ApiToastOptions = {}): Observable<string> {

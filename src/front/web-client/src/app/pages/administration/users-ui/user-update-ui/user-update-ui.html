@@ -1,0 +1,11 @@
+<h1>{{ 'users.editUser' | translate }}</h1>
+@if (user()) {
+  <app-user-form-ui
+    [isSaving]="isSaving()"
+    [form]="form"
+    (formSubmitted)="onSave($event)"
+    (goBack)="goBack()"
+  ></app-user-form-ui>
+} @else {
+  <app-loader-ui></app-loader-ui>
+}

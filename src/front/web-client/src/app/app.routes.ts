@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { DistrictsUi } from './pages/administration/districts-ui/districts-ui';
 import { PollingStationsUi } from './pages/administration/polling-stations-ui/polling-stations-ui';
+import { UserCreateUi } from './pages/administration/users-ui/user-create-ui/user-create-ui';
+import { UserUpdateUi } from './pages/administration/users-ui/user-update-ui/user-update-ui';
 import { UsersUi } from './pages/administration/users-ui/users-ui';
 import { FaqUi } from './pages/faq-ui/faq-ui';
 import { HomeUi } from './pages/home-ui/home-ui';
@@ -32,7 +34,7 @@ export const routes: Routes = [
       {
         path: 'home',
         component: HomeUi,
-        title: 'home.title'
+        title: 'home.title',
       },
       {
         path: 'my-account',
@@ -73,6 +75,23 @@ export const routes: Routes = [
             title: 'users.title',
             data: {
               permission: perm('accessUsersAdminPage'),
+            },
+          },
+          {
+            path: 'users/new',
+            component: UserCreateUi,
+            canActivate: [PermissionsGuard],
+            title: 'users.titleNewUser',
+            data: {
+              permission: perm('createUser'),
+            },
+          },
+          {
+            path: 'users/:id/edit',
+            component: UserUpdateUi,
+            title: 'users.titleEditUser',
+            data: {
+              permission: perm('updateUser'),
             },
           },
         ],

@@ -5,6 +5,7 @@
     "save": "Enregistrer",
     "search": "Rechercher",
     "edit": "Editer",
+    "delete": "Supprimer",
     "back": "Retour",
     "cancel": "Annuler",
     "refresh": "Actualiser",
@@ -22,6 +23,12 @@
       "fr": "fr",
       "en": "en"
     }
+  },
+  "dialog": {
+    "title": "Confirmation",
+    "message": "Êtes-vous sûr de vouloir supprimer <strong>{{ data.name }}</strong> ?",
+    "delete": "Supprimer",
+    "cancel": "Annuler"
   },
   "breadcrumb": {
     "pollingStations": "Les bureaux de vote",
@@ -109,5 +116,56 @@
     "title": "Connexion",
     "username": "Identifiant (email)",
     "continueWithEmail": "ou continuer avec l'email"
+  },
+  "districts": {
+    "title": "Circonscriptions",
+    "subtitle": "Consultez et gérez la liste des circonscriptions électorales.",
+    "columns": {
+      "code": "Code",
+      "wording": "Libellé",
+      "level": "Niveau"
+    },
+    "levels": {
+      "region": "Région",
+      "department": "Département",
+      "subPrefecture": "Sous-préfecture",
+      "municipality": "Commune",
+      "votingLocation": "Lieu de vote"
+    }
+  },
+  "users": {
+    "title": "Liste des Utilisateurs",
+    "createUser": "Créer un utilisateur",
+    "editUser": "Modifier un utilisateur",
+    "subtitle": "Consultez et gérez la liste des utilisateurs.",
+    "columns": {
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "district": "Circonscription",
+      "roles": "Rôles",
+      "status": "Statut",
+      "isAdmin": "Administrateur",
+      "createdAt": "Créé le",
+      "authMethods": {
+        "label": "Authentification",
+        "google": "Google",
+        "microsoft": "Microsoft",
+        "email": "Email"
+      }
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    }
+  },
+  "user": {
+    "errorCreating": "Erreur lors de la création de l'utilisateur.",
+    "successCreating": "Utilisateur créé avec succès",
+    "errorUpdating": "Erreur lors de la mise à jour de l'utilisateur.",
+    "successUpdating": "Utilisateur mis à jour avec succès",
+    "errorDeleting": "Erreur lors de la suppression de l'utilisateur.",
+    "successDeleting": "Utilisateur supprimé avec succès"
   }
 }
