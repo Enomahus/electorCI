@@ -1,0 +1,52 @@
+<div class="phone-container" [class.disabled]="disabled()">
+  <div class="country-selector">
+    <button
+      type="button"
+      class="selector-trigger"
+      (click)="toggleDropdown()"
+      [disabled]="disabled()"
+      [attr.aria-expanded]="showDropdown()"
+    >
+      <span class="selected-flag">{{ getSelectedFlag() }}</span>
+      <span class="dial-code">+{{ getDialCode() }}</span>
+      <span class="dropdown-arrow" [class.open]="showDropdown()">▼</span>
+    </button>
+
+    @if (showDropdown()) {
+      <div class="dropdown-panel" (click)="$event.stopPropagation()">
+        <input
+          type="text"
+          class="search-input"
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+          placeholder="Rechercher..."
+          autofocus
+        />
+        <ul class="country-list">
+          @for (country of filteredCountries(); track country.code) {
+            <li
+              class="country-option"
+              [class.selected]="country.code === selectedCountry()"
+              (click)="selectCountry(country.code)"
+            >
+              {{ country.flag }} {{ country.name }} (+{{ country.dial }})
+            </li>
+          } @empty {
+            <li class="no-result">Aucun résultat</li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+
+  <input
+    type="tel"
+    inputmode="numeric"
+    [value]="phoneNumber()"
+    (input)="onNumberInput($event)"
+    (blur)="onTouched()"
+    [disabled]="disabled()"
+    [required]="required()"
+  />
+</div>
+

@@ -11,6 +11,7 @@ namespace Application.Features.Users.Common
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public List<Guid> Roles { get; set; } = [];
+        public string EmployeeNumber { get; set; }
         public bool IsActive { get; set; }
 
         public long? DistrictId { get; set; }
@@ -36,6 +37,7 @@ namespace Application.Features.Users.Common
             model.Phone = dao.PhoneNumber;
             model.IsActive = dao.DisabledDate is null || dao.DisabledDate > now;
             model.Roles = [.. dao.UserRoles.Select(ur => ur.RoleId)];
+            model.EmployeeNumber = dao.EmployeeNumber;
             model.DistrictId = dao.UserDistricts.FirstOrDefault()?.DistrictId;
             model.CreatedAt = dao.CreatedAt;
             model.AuthProvider = dao.AuthProvider;

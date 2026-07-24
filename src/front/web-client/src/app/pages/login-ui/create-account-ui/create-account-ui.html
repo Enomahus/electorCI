@@ -1,7 +1,7 @@
-<h1 class="title">{{ 'users.createUser' | translate }}</h1>
+<h1 class="title">{{ 'register.title' | translate }}</h1>
 <app-user-form-ui
-  [isSaving]="isSaving()"
   [form]="form"
+  [isSaving]="isSaving()"
   (formSubmitted)="onSubmit($event)"
   (goBack)="goBack()"
 ></app-user-form-ui>

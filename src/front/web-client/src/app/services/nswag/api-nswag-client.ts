@@ -1342,6 +1342,7 @@ export interface UserModel {
     email?: string | undefined;
     phone?: string | undefined;
     roles?: string[];
+    employeeNumber?: string;
     isActive?: boolean;
     districtId?: number | undefined;
     newDistrict?: DistrictModel | undefined;

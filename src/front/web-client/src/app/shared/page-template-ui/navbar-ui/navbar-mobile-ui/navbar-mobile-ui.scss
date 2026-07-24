@@ -17,12 +17,12 @@
       font-size: var(--font-size-menu);
 
       a,
-      .dropbtn,
-      .user-name {
+      .dropbtn {
         display: flex;
-        align-items: center;
+        align-items:center;
+        justify-content: flex-start;
         gap: 8px;
-        padding: 16px 24px;
+        padding: 8px 12px;
         font-family: inherit;
         font-size: var(--font-size-menu);
         color: var(--primary-color);

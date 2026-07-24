@@ -166,6 +166,31 @@
     "errorUpdating": "Erreur lors de la mise à jour de l'utilisateur.",
     "successUpdating": "Utilisateur mis à jour avec succès",
     "errorDeleting": "Erreur lors de la suppression de l'utilisateur.",
-    "successDeleting": "Utilisateur supprimé avec succès"
+    "successDeleting": "Utilisateur supprimé avec succès",
+    "myInformations": "Modifier mes informations",
+    "lastName": "Nom",
+    "firstName": "Prénom",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmation mot de passe",
+    "phone": "Téléphone",
+    "employeNumber": "Numéro matricule",
+    "district": "Circonscription",
+    "authMethods": {
+      "label": "Authentification",
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "email": "Email"
+    }
+  },
+  "register": {
+    "title": "Créer un compte",
+    "subtitle": "Je m'inscris !",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "register": "S'inscrire",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "login": "Connectez-vous"
   }
 }

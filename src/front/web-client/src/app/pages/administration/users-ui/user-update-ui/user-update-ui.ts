@@ -61,18 +61,21 @@ export class UserUpdateUi implements OnInit {
   }
 
   updateFormContent(user: UserModel): void {
-    this.form.patchValue({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      email: user.email,
-      // password: user.password,
-      // confirmPassword: user.password,
-      // employeNumber: user.employeNumber,
-      roles: user.roles,
-      districtId: user.districtId,
-      authProvider: user.authProvider,
-    });
+    this.form.patchValue(
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+        // password: user.password,
+        // confirmPassword: user.password,
+        employeeNumber: user.employeeNumber,
+        roles: user.roles,
+        districtId: user.districtId,
+        authProvider: user.authProvider,
+      },
+      { emitEvent: false },
+    );
   }
 
   onSave(user: UserModel): void {

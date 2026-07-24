@@ -1,4 +1,4 @@
-import { effect, Injector, runInInjectionContext } from '@angular/core';
+import { effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -20,13 +20,13 @@ export type UserFormFactory = FormGroup<{
   email: FormControl<string | undefined>;
   password: FormControl<string | undefined>;
   confirmPassword: FormControl<string | undefined>;
-  employeNumber: FormControl<string | undefined>;
+  employeeNumber: FormControl<string | undefined>;
   roles: FormControl<string[]>;
   authProvider: FormControl<AuthProvider | undefined>;
   districtId: FormControl<number | undefined>;
 }>;
 
-export function createUserForm(isEditMode: boolean, injector?: Injector): UserFormFactory {
+export function createUserForm(isEditMode: boolean): UserFormFactory {
   const form = new FormGroup(
     {
       //civility: new FormControl<PersonTitle>('mr', { nonNullable: true }),
@@ -36,7 +36,7 @@ export function createUserForm(isEditMode: boolean, injector?: Injector): UserFo
       firstName: new FormControl<string | undefined>(undefined, {
         validators: [Validators.required],
       }),
-      employeNumber: new FormControl<string | undefined>(undefined),
+      employeeNumber: new FormControl<string | undefined>(undefined),
       phone: new FormControl<string | undefined>(undefined, {
         validators: [Validators.required, phoneNumberValidator()],
       }),
@@ -76,7 +76,7 @@ export function createUserForm(isEditMode: boolean, injector?: Injector): UserFo
     // L'effet réagit automatiquement aux changements du signal
     effect(() => {
       const roles = rolesSignal();
-      const employeeControl = form.controls.employeNumber;
+      const employeeControl = form.controls.employeeNumber;
 
       const isOnlyDemandeur =
         Array.isArray(roles) && roles.length === 1 && roles[0] === 'requester';
@@ -90,13 +90,13 @@ export function createUserForm(isEditMode: boolean, injector?: Injector): UserFo
     });
   };
 
-  // Si on est dans une méthode statique hors injection context, on utilise l'Injector fourni
-  if (injector) {
-    runInInjectionContext(injector, setupReactivity);
-  } else {
-    // Supposé être appelé directement dans un constructor() ou lors de l'initialisation des champs d'un composant
-    setupReactivity();
-  }
+  // // Si on est dans une méthode statique hors injection context, on utilise l'Injector fourni
+  // if (injector) {
+  //   runInInjectionContext(injector, setupReactivity);
+  // } else {
+  //   // Supposé être appelé directement dans un constructor() ou lors de l'initialisation des champs d'un composant
+  //   setupReactivity();
+  // }
 
   return form;
 }

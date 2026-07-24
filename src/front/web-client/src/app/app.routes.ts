@@ -6,6 +6,7 @@ import { UserUpdateUi } from './pages/administration/users-ui/user-update-ui/use
 import { UsersUi } from './pages/administration/users-ui/users-ui';
 import { FaqUi } from './pages/faq-ui/faq-ui';
 import { HomeUi } from './pages/home-ui/home-ui';
+import { CreateAccountUi } from './pages/login-ui/create-account-ui/create-account-ui';
 import { LoginUi } from './pages/login-ui/login-ui';
 import { MyAccountUi } from './pages/my-account-ui/my-account-ui';
 import { PermissionsGuard } from './services/auth/permission.guard';
@@ -40,6 +41,11 @@ export const routes: Routes = [
         path: 'my-account',
         component: MyAccountUi,
         canActivate: [PermissionsGuard],
+        title: 'register.title',
+      },
+      {
+        path: 'register',
+        component: CreateAccountUi,
         title: 'register.title',
       },
       {

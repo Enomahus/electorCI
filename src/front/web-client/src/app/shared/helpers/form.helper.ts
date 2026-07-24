@@ -1,5 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import * as lpn from 'google-libphonenumber';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { CountryData } from '../../models/country.model';
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
@@ -26,4 +28,27 @@ export function phoneNumberValidator() {
       return { pattern: true };
     }
   };
+}
+
+export function getCountriesList(lang: string): CountryData[] {
+  const phoneUtil = lpn.PhoneNumberUtil.getInstance();
+  const regions = phoneUtil.getSupportedRegions();
+  const countryList: CountryData[] = [];
+
+  const regionNames = new Intl.DisplayNames([lang], { type: 'region' });
+
+  regions.forEach((regionCode) => {
+    try {
+      const dialCode = phoneUtil.getCountryCodeForRegion(regionCode).toString();
+      const countryName = regionNames.of(regionCode) || regionCode;
+
+      countryList.push({
+        name: countryName,
+        code: regionCode,
+        dial: dialCode,
+        flag: regionCode.toLowerCase(),
+      });
+    } catch (e) {}
+  });
+  return countryList;
 }
