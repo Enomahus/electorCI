@@ -1,4 +1,5 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { startWith } from 'rxjs';
 import { ElectoralDistrictLevel } from '../../../../services/nswag/api-nswag-client';
 
 export type DistrictForm = FormGroup<{
@@ -10,7 +11,7 @@ export type DistrictForm = FormGroup<{
 }>;
 
 export function createDistrictForm(): DistrictForm {
-  return new FormGroup({
+  const form = new FormGroup({
     code: new FormControl<string>('', { nonNullable: true }),
     wording: new FormControl<string>('', { validators: Validators.required, nonNullable: true }),
     level: new FormControl<ElectoralDistrictLevel>('region', {
@@ -18,7 +19,6 @@ export function createDistrictForm(): DistrictForm {
       nonNullable: true,
     }),
     parentId: new FormControl<number | undefined>(undefined, {
-      validators: Validators.required,
       nonNullable: false,
     }),
     isActive: new FormControl<boolean>(true, {
@@ -26,4 +26,19 @@ export function createDistrictForm(): DistrictForm {
       nonNullable: true,
     }),
   }) as DistrictForm;
+
+  // Une région n'a pas de parent : parentId n'est requis que pour les niveaux inférieurs.
+  form.controls.level.valueChanges
+    .pipe(startWith(form.controls.level.value))
+    .subscribe((level) => {
+      const parentIdControl = form.controls.parentId;
+      if (level === 'region') {
+        parentIdControl.clearValidators();
+      } else {
+        parentIdControl.setValidators(Validators.required);
+      }
+      parentIdControl.updateValueAndValidity({ emitEvent: false });
+    });
+
+  return form;
 }

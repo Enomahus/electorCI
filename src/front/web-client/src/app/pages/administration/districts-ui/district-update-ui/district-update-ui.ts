@@ -6,7 +6,11 @@ import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { DistrictApiService } from '../../../../services/api/district.api.service';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
-import { DistrictModel, GetDistrictResponse } from '../../../../services/nswag/api-nswag-client';
+import {
+  DistrictModel,
+  GetDistrictResponse,
+  UpdateDistrictCommand,
+} from '../../../../services/nswag/api-nswag-client';
 import { createDistrictForm, DistrictForm } from '../district-ui/district-form';
 import { DistrictUi } from '../district-ui/district-ui';
 
@@ -28,6 +32,7 @@ export class DistrictUpdateUi implements OnInit {
   district = signal<GetDistrictResponse | null>(null);
   districtId$: Observable<number>;
   isLoading = signal(false);
+  isSaving = signal(false);
 
   constructor() {
     this.districtId$ = this.route.params.pipe(map((params) => parseInt(params['id'])));
@@ -82,7 +87,26 @@ export class DistrictUpdateUi implements OnInit {
     this.breadcrumbService.setBreadcrumbs(breadcrumbs);
   }
 
-  onSubmit(model: DistrictModel): void {}
+  onSubmit(model: DistrictModel): void {
+    const id = this.district()?.id;
+    if (!id) return;
+
+    this.isSaving.set(true);
+
+    const command: UpdateDistrictCommand = { ...model, id };
+    this.districtService
+      .updateDistrict(id, command, {
+        successMessage: this.translateService.instant('district.successUpdating'),
+        errorMessage: this.translateService.instant('district.errorUpdating'),
+      })
+      .subscribe({
+        next: () => {
+          this.isSaving.set(false);
+          this.goBack();
+        },
+        error: () => this.isSaving.set(false),
+      });
+  }
 
   goBack(): void {
     this.router.navigate(['admin', 'districts']);
