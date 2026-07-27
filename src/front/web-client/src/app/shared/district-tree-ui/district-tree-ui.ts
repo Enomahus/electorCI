@@ -23,7 +23,7 @@ import { NgTemplateOutlet } from '@angular/common';
   styleUrl: './district-tree-ui.scss',
 })
 export class DistrictTreeUi {
-  nodes = input.required<DistrictNode[]>();
+  nodes = input<DistrictNode[]>([]);
   initialSelectedId = input<number | undefined>(undefined);
 
   // Outputs pour les actions du menu

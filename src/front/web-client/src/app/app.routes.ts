@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { DistrictCreateUi } from './pages/administration/districts-ui/district-create-ui/district-create-ui';
+import { DistrictUpdateUi } from './pages/administration/districts-ui/district-update-ui/district-update-ui';
 import { DistrictsUi } from './pages/administration/districts-ui/districts-ui';
 import { PollingStationsUi } from './pages/administration/polling-stations-ui/polling-stations-ui';
 import { UserCreateUi } from './pages/administration/users-ui/user-create-ui/user-create-ui';
@@ -64,6 +66,24 @@ export const routes: Routes = [
               permission: perm('accessDistrictsAdminPage'),
             },
             title: 'districts.title',
+          },
+          {
+            path: 'districts/new',
+            component: DistrictCreateUi,
+            canActivate: [PermissionsGuard],
+            title: 'district.title',
+            data: {
+              permission: perm('createDistrict'),
+            },
+          },
+          {
+            path: 'districts/:id/edit',
+            component: DistrictUpdateUi,
+            canActivate: [PermissionsGuard],
+            title: 'district.title',
+            data: {
+              permission: perm('updateDistrict'),
+            },
           },
           {
             path: 'polling-stations',

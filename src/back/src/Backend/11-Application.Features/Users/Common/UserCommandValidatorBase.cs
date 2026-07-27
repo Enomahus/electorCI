@@ -47,30 +47,24 @@ namespace Application.Features.Users.Common
                         .WithMessage(ValidationErrorCode.Unique.ToString());
                 });
 
-            RuleFor(v => v.EmployeeNumber)
-                .NotEmpty()
-                .WithMessage(ValidationErrorCode.Required.ToString())
-                .MustAsync(
-                    async (model, employerNumber, token) =>
-                    {
-                        bool needsEmployeeNumber = await _context.Roles.AnyAsync(
-                            r =>
-                                model.Roles.Contains(r.Id)
-                                && (
-                                    r.Name == AppConstants.SuperAdminRole
-                                    || r.Name == AppConstants.OrganismAgentRole
-                                ),
-                            token
-                        );
-
-                        if (needsEmployeeNumber)
-                        {
-                            return !string.IsNullOrWhiteSpace(employerNumber);
-                        }
-
-                        return true;
-                    }
-                );
+            WhenAsync(
+                async (model, token) =>
+                    await _context.Roles.AnyAsync(
+                        r =>
+                            model.Roles.Contains(r.Id)
+                            && (
+                                r.Name == AppConstants.SuperAdminRole
+                                || r.Name == AppConstants.OrganismAgentRole
+                            ),
+                        token
+                    ),
+                () =>
+                {
+                    RuleFor(v => v.EmployeeNumber)
+                        .NotEmpty()
+                        .WithMessage(ValidationErrorCode.Required.ToString());
+                }
+            );
 
             When(
                 v => v.NewDistrict is null,

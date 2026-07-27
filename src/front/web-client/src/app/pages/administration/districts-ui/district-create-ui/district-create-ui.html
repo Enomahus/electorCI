@@ -1,0 +1,8 @@
+<h1>{{ 'district.createDistrict' | translate }}</h1>
+<app-district-ui
+  [form]="form()"
+  [isSaving]="isSaving()"
+  (saveDistrict)="onSubmit($event)"
+  (goBack)="goBack()"
+>
+</app-district-ui>

@@ -34,8 +34,8 @@
     "pollingStations": "Les bureaux de vote",
     "pollingStationCreate": "Nouveau bureau de vote",
     "pollingStationEdit": "Modifier un bureau de vote",
-    "constituencies": "Les circonscriptions",
-    "constituencyCreate": "Nouvelle circonscription",
+    "districts": "Les circonscriptions",
+    "createDistrict": "Nouvelle circonscription",
     "registrationRequests": "Mes demandes",
     "registrationRequestAdd": "Nouvelle demande d'inscription",
     "registrationRequestEdit": "Modifier la demande d'inscription",
@@ -139,15 +139,22 @@
       "toggleEnable": "Activer",
       "toggleDisable": "Désactiver"
     }
-
   },
   "district": {
-    "errorCreating": "Erreur lors de la création de la circonscription.",
-    "errorUpdating": "Erreur lors de la mise à jour de la circonscription.",
     "successCreating": "Circonscription créée avec succès",
+    "errorCreating": "Erreur lors de la création de la circonscription.",
     "successUpdating": "Circonscription mise à jour avec succès",
+    "errorUpdating": "Erreur lors de la mise à jour de la circonscription.",
+    "successDeleting": "Circonscription supprimée avec succès",
     "errorDeleting": "Erreur lors de la suppression de la circonscription.",
-    "successDeleting": "Circonscription supprimée avec succès"
+    "createDistrict": "Créer une circonscription",
+    "gleInfos": "Informations générale",
+    "parent":"Rattachement électoral",
+    "wording": "Libellé",
+    "level": "Hierarchie",
+    "parentId": "Rattachement",
+    "isActive": "Activé",
+    "code": "Code"
   },
   "districtLevels": {
     "region": "Région",
