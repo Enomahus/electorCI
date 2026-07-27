@@ -1,3 +1,4 @@
+using Application.Common.Enum;
 using Application.Exceptions;
 using Application.Features.Users.RegisterUser;
 using Application.Models.Errors;
@@ -24,6 +25,7 @@ namespace Application.UnitTests.Features.Users
         {
             return new RegisterUserCommand
             {
+                Title = PersonTitle.Mr,
                 FirstName = "John",
                 LastName = "Doe",
                 Email = email,
@@ -58,6 +60,7 @@ namespace Application.UnitTests.Features.Users
             created.FirstName.Should().Be("John");
             created.LastName.Should().Be("Doe");
             created.PhoneNumber.Should().Be("+33 1 23 45 67 89");
+            created.Civility.Should().Be(PersonTitle.Mr);
             created.UserDistricts.Should().ContainSingle(ud => ud.DistrictId == district.Id);
         }
 

@@ -18,30 +18,38 @@ namespace Application.Features.Users.RegisterUser
     {
         [SensitiveData]
         public string? Password { get; set; }
+        //public string? RoleName { get; set; }
     }
 
     public class RegisterUserCommandValidator : UserCommandValidatorBase<RegisterUserCommand>
     {
-        public RegisterUserCommandValidator(ReadOnlyDbContext context) : base(context, validateRoles: false)
+        public RegisterUserCommandValidator(ReadOnlyDbContext context)
+            : base(context, validateRoles: false)
         {
             RuleFor(v => v.Password)
                 .NotEmpty()
                 .WithMessage(ValidationErrorCode.Required.ToString())
                 .MinimumLength(8)
                 .WithMessage(ValidationErrorCode.MinLength.ToString());
+            //RuleFor(v => v.RoleName)
+            //    .NotEmpty()
+            //    .WithMessage(ValidationErrorCode.Required.ToString());
         }
     }
 
     public class RegisterUserCommandHandler(
-    WritableDbContext context,
-    UserManager<UserDao> userManager,
-    TimeProvider timeProvider,
-    DistrictService districtService
-)
-    : UserCommandHandlerBase(context, userManager, timeProvider, districtService),
-        IRequestHandler<RegisterUserCommand, Result<Guid>>
+        WritableDbContext context,
+        UserManager<UserDao> userManager,
+        TimeProvider timeProvider,
+        DistrictService districtService
+    )
+        : UserCommandHandlerBase(context, userManager, timeProvider, districtService),
+            IRequestHandler<RegisterUserCommand, Result<Guid>>
     {
-        public async Task<Result<Guid>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(
+            RegisterUserCommand command,
+            CancellationToken cancellationToken
+        )
         {
             using var activity = ActivitySourceLog.CQRS.Start();
 
@@ -52,16 +60,18 @@ namespace Application.Features.Users.RegisterUser
             await strategy.ExecuteInTransactionAsync(
                 async () =>
                 {
+                    //string userRoleName = GetUserRoleName(command.RoleName!);
                     await MapToDaoAsync(command, userDao, skipAdminFields: true, cancellationToken);
 
                     var defaultRoleId = await _context
                         .Roles.Where(r => r.Name == AppConstants.ElectorRole)
+                        //.Roles.Where(r => r.Name == userRoleName)
                         .Select(r => r.Id)
                         .FirstAsync(cancellationToken);
                     userDao.UserRoles.Clear();
                     userDao.UserRoles.Add(new UserRoleDao() { RoleId = defaultRoleId });
 
-                    await _userManager.CreateAsync(userDao, command.Password!);                    
+                    await _userManager.CreateAsync(userDao, command.Password!);
                 },
                 () => Task.FromResult(true)
             );
@@ -69,7 +79,16 @@ namespace Application.Features.Users.RegisterUser
             activity.AddParameter(userDao, u => u.Id);
 
             return Result<Guid>.From(userDao.Id);
+        }
 
+        private static string GetUserRoleName(string roleName)
+        {
+            return roleName switch
+            {
+                "supervisor" => AppConstants.SuperAdminRole,
+                "agent" => AppConstants.OrganismAgentRole,
+                _ => AppConstants.OrganismAgentRole,
+            };
         }
     }
 }

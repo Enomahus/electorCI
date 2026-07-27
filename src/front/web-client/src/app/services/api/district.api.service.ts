@@ -4,7 +4,9 @@ import {
   CreateDistrictCommand,
   GetDistrictResponse,
   GetDistrictsQuery,
-  GridDataResponseOfGetDistrictsResponse,
+  GetDistrictsResponse,
+  Result,
+  UpdateDistrictCommand,
 } from '../nswag/api-nswag-client';
 import { ApiBaseService } from './api-base.service';
 import { ApiToastOptions } from './models/api-toast-options';
@@ -16,7 +18,7 @@ export class DistrictApiService extends ApiBaseService {
   getDistricts(
     query: GetDistrictsQuery,
     options: ApiToastOptions = {},
-  ): Observable<GridDataResponseOfGetDistrictsResponse> {
+  ): Observable<GetDistrictsResponse[]> {
     return this.apiClient.getDistricts(query).pipe(this.handleDataResult(options));
   }
 
@@ -29,5 +31,17 @@ export class DistrictApiService extends ApiBaseService {
     options: ApiToastOptions = {},
   ): Observable<number> {
     return this.apiClient.createDistrict(command).pipe(this.handleDataResult(options));
+  }
+
+  updateDistrict(
+    id: number,
+    command: UpdateDistrictCommand,
+    options: ApiToastOptions = {},
+  ): Observable<number> {
+    return this.apiClient.updateDistrict(id, command).pipe(this.handleDataResult(options));
+  }
+
+  deleteDistrict(id: number, options: ApiToastOptions = {}): Observable<Result> {
+    return this.apiClient.deleteDistrict(id).pipe(this.handleResult(options));
   }
 }

@@ -1,1 +1,11 @@
-<p>my-account-ui works!</p>
+<h1 class="title-my-account">{{ 'user.myInformations' | translate }}</h1>
+@if (!isLoading()) {
+  <app-user-form-ui
+    [isSaving]="isSaving()"
+    [isEditMode]="true"
+    [form]="form"
+    (goBack)="reloadUi()"
+  ></app-user-form-ui>
+} @else {
+  <app-loader-ui></app-loader-ui>
+}

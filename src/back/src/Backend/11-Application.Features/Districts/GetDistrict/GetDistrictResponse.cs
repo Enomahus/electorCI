@@ -17,8 +17,9 @@ namespace Application.Features.Districts.GetDistrict
                 Code = dao.Code,
                 Wording = dao.Wording,
                 Level = dao.Level,
+                ParentId = dao.ParentId,
                 CreatedAt = dao.CreatedAt,
-                IsActive = dao.DisabledDate == null || dao.DisabledDate > dateNow
+                IsActive = dao.DisabledDate == null || dao.DisabledDate > dateNow,
             };
         }
     }

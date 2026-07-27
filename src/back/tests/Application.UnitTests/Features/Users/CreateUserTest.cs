@@ -1,4 +1,5 @@
-﻿using Application.Common.Enums;
+﻿using Application.Common.Enum;
+using Application.Common.Enums;
 using Application.Exceptions;
 using Application.Exceptions.Auth;
 using Application.Features.Common.District;
@@ -19,7 +20,8 @@ namespace Application.UnitTests.Features.Users
         public async Task CreateUserTest_ShouldFail_WhenPermissionMissing()
         {
             //Arrange
-            var serviceProvider = CreateServiceCollection(mockAuthorization: false).BuildServiceProvider();
+            var serviceProvider = CreateServiceCollection(mockAuthorization: false)
+                .BuildServiceProvider();
 
             var command = new CreateUserCommand();
 
@@ -37,16 +39,20 @@ namespace Application.UnitTests.Features.Users
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
             await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.CreateUser]);
 
-            var user = await CreateUserAsync(serviceProvider, email: "test@email", authProvider: AuthProvider.Email);
+            var user = await CreateUserAsync(
+                serviceProvider,
+                email: "test@email",
+                authProvider: AuthProvider.Email
+            );
 
-            var command = new CreateUserCommand() 
+            var command = new CreateUserCommand()
             {
-                Email = "test@email", 
+                Email = "test@email",
                 Password = "Password123!",
                 FirstName = "firstnamea",
                 LastName = "lastname",
                 Phone = "+225 01 02 03 04 05",
-                DistrictId = 1
+                DistrictId = 1,
             };
 
             // Act
@@ -69,14 +75,14 @@ namespace Application.UnitTests.Features.Users
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
             await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.CreateUser]);
 
-            var command = new CreateUserCommand() 
-            { 
+            var command = new CreateUserCommand()
+            {
                 Email = "test@email",
                 Password = "Password123!",
                 Phone = "+225 01 02 03 04 05",
-                FirstName = "firstname", 
-                LastName = "lastname", 
-                DistrictId = 1000 
+                FirstName = "firstname",
+                LastName = "lastname",
+                DistrictId = 1000,
             };
 
             // Act
@@ -112,12 +118,14 @@ namespace Application.UnitTests.Features.Users
             var command = new CreateUserCommand()
             {
                 Email = "test@email",
+                Title = PersonTitle.Ms,
                 Password = "1P@ssword!",
                 FirstName = "firstname",
                 LastName = "lastname",
                 Phone = "+33 1 02 03 04 05",
                 IsActive = isUserActive,
                 Roles = [role.Id],
+                EmployeeNumber = "221167P",
                 DistrictId = district.Id,
             };
 
@@ -126,17 +134,25 @@ namespace Application.UnitTests.Features.Users
 
             // Assert
             result.Should().NotBeNull();
-            var user = await context.Users.FirstOrDefaultAsync(s => s.UserName == command.Email);
+            result.Data.Should().NotBe(Guid.Empty);
+
+            var user = await context
+                .Users.AsNoTracking()
+                .Include(u => u.UserRoles)
+                .Include(u => u.UserDistricts)
+                .FirstOrDefaultAsync(s => s.UserName == command.Email);
             user.Should().NotBeNull();
             result.Data.Should().Be(user!.Id);
             user.FirstName.Should().Be(command.FirstName);
+            user.Civility.Should().Be(PersonTitle.Ms);
             user.LastName.Should().Be(command.LastName);
             user.Email.Should().Be(command.Email);
+            user.EmployeeNumber.Should().Be(command.EmployeeNumber);
             user.UserRoles.Should().ContainSingle();
             user.UserRoles.ElementAt(0).RoleId.Should().Be(role.Id);
             user.UserDistricts.Should().ContainSingle();
             user.UserDistricts.ElementAt(0).DistrictId.Should().Be(district.Id);
-            
+
             if (isUserActive)
             {
                 user.DisabledDate.Should().BeNull();
@@ -146,7 +162,6 @@ namespace Application.UnitTests.Features.Users
                 user.DisabledDate.Should().NotBeNull();
             }
         }
-
 
         [Fact]
         public async Task CreateUserTest_ShouldSucceedWithNewDistrict()
@@ -161,19 +176,20 @@ namespace Application.UnitTests.Features.Users
             var command = new CreateUserCommand()
             {
                 Email = "test@email",
+                Title = PersonTitle.Mr,
                 Password = "1P@ssword!",
                 FirstName = "firstname",
                 LastName = "lastname",
                 Phone = "+33 1 02 03 04 05",
                 IsActive = false,
                 Roles = [role.Id],
+                EmployeeNumber = "12249K",
                 NewDistrict = new DistrictModel()
                 {
                     Code = "code",
                     Wording = "Test district",
                     Level = ElectoralDistrictLevel.VotingLocation,
                     ParentId = 151,
-                    
                 },
             };
 
@@ -184,12 +200,14 @@ namespace Application.UnitTests.Features.Users
             result.Should().NotBeNull();
             var user = await context
                 .Users.Include(u => u.UserDistricts)
-                .ThenInclude(us => us.District)
+                    .ThenInclude(us => us.District)
                 .FirstOrDefaultAsync(s => s.UserName == command.Email);
             user.Should().NotBeNull();
             result.Data.Should().Be(user!.Id);
             user.FirstName.Should().Be(command.FirstName);
             user.LastName.Should().Be(command.LastName);
+            user.Civility.Should().Be(command.Title);
+            user.EmployeeNumber.Should().Be(command.EmployeeNumber);
             user.Email.Should().Be(command.Email);
             user.UserRoles.Should().ContainSingle();
             user.UserRoles.ElementAt(0).RoleId.Should().Be(role.Id);
@@ -200,10 +218,6 @@ namespace Application.UnitTests.Features.Users
             district.Wording.Should().Be(command.NewDistrict.Wording);
             district.Level.Should().Be(command.NewDistrict.Level);
             district.ParentId.Should().Be(command.NewDistrict.ParentId);
-
-
-            
         }
-
     }
 }

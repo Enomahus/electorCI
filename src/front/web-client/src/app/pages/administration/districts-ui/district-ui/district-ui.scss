@@ -1,0 +1,51 @@
+@use '../../../../../styles/themes/variable.scss' as *;
+
+.district-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+
+  .district-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+
+    .grid-item {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 8px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    .district-layout,
+    .parent-layout {
+      min-height: 70px;
+    }
+  }
+}
+
+@media screen and (max-width: $mobile-screen-max-width) {
+  .district-container {
+    padding: 10px;
+
+    .district-form {
+      .grid-item {
+        padding: 16px;
+      }
+
+      .inputs-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

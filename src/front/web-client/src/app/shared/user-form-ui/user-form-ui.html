@@ -1,0 +1,320 @@
+<div class="user-form-container">
+  <form class="user-form" [formGroup]="form()">
+    <section class="grid-item district-layout">
+      <h2>Circonscription</h2>
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="regionId">Region</label>
+          <select
+            id="regionId"
+            [value]="selectedRegionId() ?? ''"
+            (change)="onRegionChange(parseDistrictId($event))"
+          >
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (region of allRegions(); track region.id) {
+              <option [value]="region.id">{{ region.code }} {{ region.wording }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="departmentId">Département</label>
+          <select
+            id="departmentId"
+            [value]="selectedDepartmentId() ?? ''"
+            [disabled]="isDepartmentDisabled()"
+            (change)="onDepartmentChange(parseDistrictId($event))"
+          >
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (department of allDepartments(); track department.id) {
+              <option [value]="department.id">
+                {{ department.code }} {{ department.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="subPrefecture">Sous-Préfecture</label>
+          <select
+            id="subPrefecture"
+            [value]="selectedSubPrefectureId() ?? ''"
+            [disabled]="isSubPrefectureDisabled()"
+            (change)="onSubPrefectureChange(parseDistrictId($event))"
+          >
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (subPrefecture of allSubPrefectures(); track subPrefecture.id) {
+              <option [value]="subPrefecture.id">
+                {{ subPrefecture.code }} {{ subPrefecture.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="municipalityId">Municipalité</label>
+          <select
+            id="municipalityId"
+            [value]="selectedMunicipalityId() ?? ''"
+            [disabled]="isMunicipalityDisabled()"
+            (change)="onMunicipalityChange(parseDistrictId($event))"
+          >
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (municipality of allMunicipalities(); track municipality.id) {
+              <option [value]="municipality.id">
+                {{ municipality.code }} {{ municipality.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="votingLocationId">Lieu de vote</label>
+          <select
+            id="votingLocationId"
+            [value]="selectedVotingLocationId() ?? ''"
+            [disabled]="isVotingLocationDisabled()"
+            (change)="onVotingLocationChange(parseDistrictId($event))"
+          >
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (votingLocation of allVotingLocations(); track votingLocation.id) {
+              <option [value]="votingLocation.id">
+                {{ votingLocation.code }} {{ votingLocation.wording }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+    </section>
+    <section class="grid-item user-layout">
+      <h2>Information d'identification</h2>
+      <!-- Nom et Prénom -->
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="firstName">{{ 'user.firstName' | translate }}</label>
+          <input id="firstName" type="text" formControlName="firstName" />
+          @if (form().controls.firstName.touched && form().controls.firstName.errors) {
+            <ul class="form-error">
+              @if (form().controls.firstName.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="input-block required">
+          <label for="lastName">{{ 'user.lastName' | translate }}</label>
+          <input id="lastName" type="text" formControlName="lastName" />
+          @if (form().controls.lastName.touched && form().controls.lastName.errors) {
+            <ul class="form-error">
+              @if (form().controls.lastName.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <!-- Téléphone et Email -->
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="phone">{{ 'user.phone' | translate }}</label>
+          <app-phone-input-ui [required]="true" formControlName="phone"></app-phone-input-ui>
+          @if (form().controls.phone.touched && form().controls.phone.errors) {
+            <ul class="form-error">
+              @if (form().controls.phone.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+              @if (form().controls.phone.errors?.['pattern']) {
+                <li>
+                  {{ 'formError.phoneInvalid' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        <div class="input-block required">
+          <label for="email">{{ 'user.email' | translate }}</label>
+          <input id="email" type="email" formControlName="email" [readOnly]="isEditMode()" />
+          @if (form().controls.email.touched && form().controls.email.errors) {
+            <ul class="form-error">
+              @if (form().controls.email.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+              @if (form().controls.email.errors?.['pattern']) {
+                <li>
+                  {{ 'formError.emailInvalid' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <!-- Mots de passe -->
+      @if (!isEditMode()) {
+        <div class="inputs-container">
+          <div class="input-block required">
+            <label for="password">{{ 'user.password' | translate }}</label>
+            <div class="password-container">
+              <input
+                id="password"
+                [type]="hidePassword() ? 'password' : 'text'"
+                formControlName="password"
+              />
+              <button type="button" class="toggle-password" (click)="togglePassword()">
+                <i [class]="hidePassword() ? 'ph ph-eye' : 'ph ph-eye-slash'"></i>
+              </button>
+            </div>
+            @if (form().controls.password.touched && form().controls.password.errors) {
+              <ul class="form-error">
+                @if (form().controls.password.errors?.['required']) {
+                  <li>
+                    {{ 'formError.required' | translate }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <div class="input-block required">
+            <label for="confirmPassword">{{ 'user.confirmPassword' | translate }}</label>
+            <div class="password-container">
+              <input
+                id="confirmPassword"
+                [type]="hideConfirmPassword() ? 'password' : 'text'"
+                formControlName="confirmPassword"
+              />
+              <button type="button" class="toggle-password" (click)="toggleConfirmPassword()">
+                <i [class]="hideConfirmPassword() ? 'ph ph-eye' : 'ph ph-eye-slash'"></i>
+              </button>
+            </div>
+            @if (
+              form().controls.confirmPassword.touched && form().controls.confirmPassword.errors
+            ) {
+              <ul class="form-error">
+                @if (form().controls.confirmPassword.errors?.['required']) {
+                  <li>
+                    {{ 'formError.required' | translate }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- activité user et matricule -->
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="roles-select">{{ 'users.role' | translate }}</label>
+          <select id="roles-select" formControlName="roles">
+            <!-- @for (role of roles; track role.id) {
+              <option [value]="role.id">{{ 'roles.' + role.name | translate }}</option>
+            } -->
+          </select>
+          @if (form().controls.roles.touched && form().controls.roles.errors) {
+            <ul class="form-error">
+              @if (form().controls.roles.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        @if (requiredEmployeeNumber()) {
+          <div class="input-block required">
+            <label for="employeNumber">{{ 'users.employeeNumber' | translate }}</label>
+            <input type="text" id="employeNumber" formControlName="employeNumber" />
+            @if (form().controls.employeeNumber.touched && form().controls.employeeNumber.errors) {
+              <ul class="form-error">
+                @if (form().controls.employeeNumber.errors?.['required']) {
+                  <li>
+                    {{ 'formError.required' | translate }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- circonscription et authentification -->
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="districtId">{{ 'user.district' | translate }}</label>
+          <input id="districtId" type="number" formControlName="districtId" />
+          @if (form().controls.districtId.touched && form().controls.districtId.errors) {
+            <ul class="form-error">
+              @if (form().controls.districtId.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        <div class="input-block">
+          <div class="label-container">
+            <span class="label">{{ 'user.authMethods.label' | translate }}</span>
+          </div>
+          <div class="options-container">
+            <label for="email-method" class="radio">
+              <input type="radio" id="email-method" [value]="null" formControlName="authProvider" />
+              {{ 'user.authMethods.email' | translate }}
+            </label>
+            <label for="microsoft-method" class="radio">
+              <input
+                type="radio"
+                id="microsoft-method"
+                [value]="'microsoft'"
+                formControlName="authProvider"
+              />
+              {{ 'user.authMethods.microsoft' | translate }}
+            </label>
+            <label for="google-method" class="radio">
+              <input
+                type="radio"
+                id="google-method"
+                [value]="'google'"
+                formControlName="authProvider"
+              />
+              {{ 'user.authMethods.google' | translate }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>
+
+<app-sticky-buttons-container>
+  <button
+    type="button"
+    class="btn primary"
+    (click)="onSubmit()"
+    [disabled]="form().invalid || isSaving()"
+  >
+    {{ 'global.save' | translate }}
+    @if (isSaving()) {
+      <app-loader-ui></app-loader-ui>
+    }
+  </button>
+  <button
+    type="button"
+    class="btn outline outline-primary"
+    (click)="goBack.emit()"
+    [disabled]="isSaving()"
+  >
+    {{ 'global.back' | translate }}
+  </button>
+</app-sticky-buttons-container>

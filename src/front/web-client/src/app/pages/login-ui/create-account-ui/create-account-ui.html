@@ -1,0 +1,7 @@
+<h1 class="title">{{ 'register.title' | translate }}</h1>
+<app-user-form-ui
+  [form]="form"
+  [isSaving]="isSaving()"
+  (formSubmitted)="onSubmit($event)"
+  (goBack)="goBack()"
+></app-user-form-ui>

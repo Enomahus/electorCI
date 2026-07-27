@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.Common.Enum;
+using Application.Exceptions;
 using Application.Features.Users.UpdateCurrentUser;
 using Application.Models.Errors;
 using Application.UnitTests.Common;
@@ -51,7 +52,6 @@ namespace Application.UnitTests.Features.Users
             );
         }
 
-
         [Fact]
         public async Task UpdateCurrentUserTest_ShouldReturnValidationException_WhenEmailIsNotCurrentUser()
         {
@@ -99,7 +99,6 @@ namespace Application.UnitTests.Features.Users
             );
         }
 
-
         [Fact]
         public async Task UpdateCurrentUserTest_ShouldSucceed()
         {
@@ -113,11 +112,13 @@ namespace Application.UnitTests.Features.Users
 
             var command = new UpdateCurrentUserCommand()
             {
+                Title = PersonTitle.Mrs,
                 Email = "test@email",
                 FirstName = "firstname",
                 LastName = "lastname",
                 Phone = "+33 1 02 03 04 05",
                 IsActive = false,
+                EmployeeNumber = "12345M",
                 DistrictId = district.Id,
             };
 
@@ -129,6 +130,7 @@ namespace Application.UnitTests.Features.Users
             var user = await context.Users.FirstOrDefaultAsync(s => s.Id == currentUser.Id);
             user.Should().NotBeNull();
             result.Data.Should().Be(user!.Id);
+            user.Civility.Should().Be(PersonTitle.Mrs);
             user.FirstName.Should().Be(command.FirstName);
             user.LastName.Should().Be(command.LastName);
             user.Email.Should().Be(command.Email);

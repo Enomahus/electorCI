@@ -1,0 +1,62 @@
+.users-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__search {
+    max-width: 24rem;
+  }
+
+  &__table-wrapper {
+    position: relative;
+    overflow-x: auto;
+  }
+
+  &__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+
+  &__table {
+    width: 100%;
+  }
+
+  &__actions-header,
+  &__actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__no-data {
+    padding: 1rem;
+    text-align: center;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__status {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+
+    &--active {
+      background-color: var(--secondary-color);
+      color: #fff;
+    }
+
+    &--inactive {
+      background-color: red;
+      color: #fff;
+    }
+  }
+}

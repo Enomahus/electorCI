@@ -1,6 +1,5 @@
 using Application.Common.Enums;
 using Application.Exceptions.Auth;
-using Application.Features.Common.GridData;
 using Application.Features.Districts.GetDistricts;
 using Application.UnitTests.Common;
 using FluentAssertions;
@@ -31,169 +30,108 @@ namespace Application.UnitTests.Features.Districts
         }
 
         [Fact]
-        public async Task GetDistrictsTest_ShouldReturnOnlyRootDistricts_WithChildrenAndPollingStations()
+        public async Task GetDistrictsTest_ShouldReturnRootDistrictsWithHierarchy_WhenDataExists()
         {
             // Arrange
-            var serviceProvider = await SetupDistrictsAsync();
-
-            // On isole le tout premier root grâce à un libellé unique.
-            var query = new GetDistrictsQuery { Search = $"{Token} Alpha" };
-
-            // Act
-            var result = await serviceProvider.SendAsync(query);
-
-            // Assert
-            result.Data!.Data.Should().ContainSingle();
-            var root = result.Data.Data.Single();
-            root.Wording.Should().Be($"{Token} Alpha");
-            root.Level.Should().Be(ElectoralDistrictLevel.Region);
-            root.ParentId.Should().BeNull();
-
-            root.Children.Should().ContainSingle();
-            root.Children.Single().Wording.Should().Be($"{Token} Alpha Child");
-
-            root.PollingStations.Should().ContainSingle();
-            root.PollingStations.Single().Wording.Should().Be("PS-One");
-        }
-
-        [Fact]
-        public async Task GetDistrictsTest_ShouldSearchGlobally()
-        {
-            // Arrange
-            var serviceProvider = await SetupDistrictsAsync();
-
-            var query = new GetDistrictsQuery { Search = Token };
-
-            // Act
-            var result = await serviceProvider.SendAsync(query);
-
-            // Assert
-            result.Data!.Total.Should().Be(3);
-            result.Data.Data.Should().OnlyContain(d => d.Wording.Contains(Token));
-        }
-
-        [Fact]
-        public async Task GetDistrictsTest_ShouldFilterByField()
-        {
-            // Arrange
-            var serviceProvider = await SetupDistrictsAsync();
-
-            var query = new GetDistrictsQuery
-            {
-                Filters =
-                [
-                    new GridFilter
-                    {
-                        Field = nameof(GetDistrictsResponse.Wording),
-                        Operator = GridFilterOperator.Contains,
-                        Value = $"{Token} Bravo",
-                    },
-                ],
-            };
-
-            // Act
-            var result = await serviceProvider.SendAsync(query);
-
-            // Assert
-            result.Data!.Data.Should().ContainSingle();
-            result.Data.Data.Single().Wording.Should().Be($"{Token} Bravo");
-        }
-
-        [Fact]
-        public async Task GetDistrictsTest_ShouldSortDescending()
-        {
-            // Arrange
-            var serviceProvider = await SetupDistrictsAsync();
-
-            var query = new GetDistrictsQuery
-            {
-                Search = Token,
-                Sorts =
-                [
-                    new GridSort
-                    {
-                        Field = nameof(GetDistrictsResponse.Code),
-                        Direction = GridSortDirection.Descending,
-                    },
-                ],
-            };
-
-            // Act
-            var result = await serviceProvider.SendAsync(query);
-
-            // Assert
-            result
-                .Data!.Data.Select(d => d.Wording)
-                .Should()
-                .ContainInOrder($"{Token} Charlie", $"{Token} Bravo", $"{Token} Alpha");
-        }
-
-        [Fact]
-        public async Task GetDistrictsTest_ShouldPaginate()
-        {
-            // Arrange
-            var serviceProvider = await SetupDistrictsAsync();
-
-            var query = new GetDistrictsQuery
-            {
-                Search = Token,
-                Sorts = [new GridSort { Field = nameof(GetDistrictsResponse.Code) }],
-                Skip = 1,
-                Take = 1,
-            };
-
-            // Act
-            var result = await serviceProvider.SendAsync(query);
-
-            // Assert
-            result.Data!.Total.Should().Be(3); // total avant pagination
-            result.Data.Data.Should().ContainSingle();
-            result.Data.Data.Single().Wording.Should().Be($"{Token} Bravo"); // 2e après tri croissant
-        }
-
-        private static async Task<IServiceProvider> SetupDistrictsAsync()
-        {
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetDistricts]);
-
+            await SetupCurrentUserAsync(
+                serviceProvider,
+                permissions: [AppPermission.GetDistricts]
+            );
             var context = serviceProvider.GetRequiredService<WritableDbContext>();
 
-            var root1 = new DistrictDao
+            var region = new DistrictDao()
             {
-                Code = "ZT001",
-                Wording = $"{Token} Alpha",
+                Code = "REG1",
+                Wording = "Region1",
                 Level = ElectoralDistrictLevel.Region,
-                Subconstituency =
-                [
-                    new DistrictDao
-                    {
-                        Code = "ZT001001",
-                        Wording = $"{Token} Alpha Child",
-                        Level = ElectoralDistrictLevel.Department,
-                    },
-                ],
-                PollingStations =
-                [
-                    new PollingStationDao { StationNumber = "01", Wording = "PS-One" },
-                ],
+                ParentId = null,
             };
-            var root2 = new DistrictDao
-            {
-                Code = "ZT002",
-                Wording = $"{Token} Bravo",
-                Level = ElectoralDistrictLevel.Region,
-            };
-            var root3 = new DistrictDao
-            {
-                Code = "ZT003",
-                Wording = $"{Token} Charlie",
-                Level = ElectoralDistrictLevel.Region,
-            };
-
-            await context.Districts.AddRangeAsync(root1, root2, root3);
+            await context.Districts.AddAsync(region);
             await context.SaveChangesAsync();
 
-            return serviceProvider;
+            var department = new DistrictDao()
+            {
+                Code = "DEP1",
+                Wording = "Department1",
+                Level = ElectoralDistrictLevel.Department,
+                ParentId = region.Id,
+            };
+            await context.Districts.AddAsync(department);
+            await context.SaveChangesAsync();
+
+            var votingLocation = new DistrictDao()
+            {
+                Code = "VL1",
+                Wording = "VotingLocation1",
+                Level = ElectoralDistrictLevel.VotingLocation,
+                ParentId = department.Id,
+            };
+            await context.Districts.AddAsync(votingLocation);
+            await context.SaveChangesAsync();
+
+            var query = new GetDistrictsQuery();
+
+            // Act
+            var result = await serviceProvider.SendAsync(query);
+
+            // Assert
+            result.Should().NotBeNull();
+            var districts = result.Data!.ToList();
+
+            var regionResponse = districts.Should().ContainSingle(d => d.Id == region.Id).Subject;
+            regionResponse.Code.Should().Be(region.Code);
+            regionResponse.Wording.Should().Be(region.Wording);
+            regionResponse.Level.Should().Be(ElectoralDistrictLevel.Region);
+            regionResponse.ParentId.Should().BeNull();
+
+            districts.Should().NotContain(d => d.Id == department.Id);
+            districts.Should().NotContain(d => d.Id == votingLocation.Id);
+
+            var departmentResponse = regionResponse
+                .Children.Should()
+                .ContainSingle(c => c.Id == department.Id)
+                .Subject;
+            departmentResponse.Code.Should().Be(department.Code);
+            departmentResponse.ParentId.Should().Be(region.Id);
+            departmentResponse.PollingStations.Should().BeEmpty();
+
+            var votingLocationResponse = departmentResponse
+                .Children.Should()
+                .ContainSingle(c => c.Id == votingLocation.Id)
+                .Subject;
+            votingLocationResponse.Code.Should().Be(votingLocation.Code);
+            votingLocationResponse.Level.Should().Be(ElectoralDistrictLevel.VotingLocation);
+            votingLocationResponse.ParentId.Should().Be(department.Id);
+            votingLocationResponse.Children.Should().BeEmpty();
+            votingLocationResponse.PollingStations.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task GetDistrictsTest_ShouldReturnEmptyList_WhenNoDistrictsExist()
+        {
+            // Arrange
+            var serviceProvider = CreateServiceCollection().BuildServiceProvider();
+            await SetupCurrentUserAsync(
+                serviceProvider,
+                permissions: [AppPermission.GetDistricts]
+            );
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+
+            // Removing only the root districts would leave their children dangling,
+            // and the InMemory provider nulls out the orphaned ParentId on save
+            // (turning them into new roots), so every district must be removed instead.
+            context.Districts.RemoveRange(context.Districts.ToList());
+            await context.SaveChangesAsync();
+
+            var query = new GetDistrictsQuery();
+
+            // Act
+            var result = await serviceProvider.SendAsync(query);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Data.Should().BeEmpty();
         }
     }
 }

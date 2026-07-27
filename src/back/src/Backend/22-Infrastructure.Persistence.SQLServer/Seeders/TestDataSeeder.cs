@@ -166,6 +166,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         LastName = "Doe",
                         Email = "john.doe@pcea.com",
                         PhoneNumber = "01 02 03 04 05",
+                        EmployeeNumber = "221167P",
                         UserDistricts = [new() { DistrictId = 16 }],
                     },
                     new List<string> { AppConstants.SuperAdminRole }
@@ -178,6 +179,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         LastName = "Gamegie",
                         Email = "sam.gamegie@pcea.com",
                         PhoneNumber = "01 02 03 04 05",
+                        EmployeeNumber = "221157T",
                         UserDistricts = [new() { DistrictId = 16 }],
                     },
                     new List<string> { AppConstants.OrganismAgentRole }
@@ -214,6 +216,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         LastName = "RiderOfRohan",
                         PhoneNumber = "01 02 03 04 05",
                         Email = "eomer.riderofrohan@pcea.com",
+                        EmployeeNumber = "221168K",
                         UserDistricts = [new() { DistrictId = 16 }],
                     },
                     new List<string> { AppConstants.OrganismAgentRole }

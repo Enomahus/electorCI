@@ -1,0 +1,149 @@
+<div class="district-container">
+  <form class="district-form" [formGroup]="form()">
+    <section class="grid-item district-layout">
+      <h2>{{ 'district.gleInfos' | translate }}</h2>
+      <div class="inputs-container">
+        @if (isEditMode()) {
+          <div class="input-block">
+            <label for="code">{{ 'district.code' | translate }}</label>
+            <input id="code" type="text" formControlName="code" readonly />
+          </div>
+        }
+
+        <div class="input-block required">
+          <label for="wording">{{ 'district.wording' | translate }}</label>
+          <input id="wording" type="text" formControlName="wording" />
+          @if (form().controls.wording.touched && form().controls.wording.errors) {
+            <ul class="form-error">
+              @if (form().controls.wording.errors?.['required']) {
+                <li>{{ 'formError.required' | translate }}</li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="input-block required">
+          <label for="level">{{ 'district.level' | translate }}</label>
+          <select id="level" formControlName="level" (change)="onLevelChange()">
+            @for (level of levels; track level) {
+              <option [value]="level">{{ 'districtLevels.' + level | translate }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block">
+          <label class="checkbox" for="isActive">
+            <input id="isActive" type="checkbox" formControlName="isActive" />
+            {{ 'district.isActive' | translate }}
+          </label>
+        </div>
+      </div>
+    </section>
+
+    @if (ancestorLevels().length > 0) {
+      <section class="grid-item parent-layout">
+        <h2>{{ 'district.parent' | translate }}</h2>
+        <div class="inputs-container">
+          <div class="input-block required">
+            <label for="regionId">{{ 'districtLevels.region' | translate }}</label>
+            <select id="regionId" (change)="onRegionChange(parseDistrictId($event))">
+              <option value="" [selected]="selectedRegionId() == null">
+                {{ 'global.select' | translate }}
+              </option>
+              @for (region of allRegions(); track region.id) {
+                <option [value]="region.id" [selected]="region.id === selectedRegionId()">
+                  {{ region.code }} {{ region.wording }}
+                </option>
+              }
+            </select>
+          </div>
+
+          @if (showDepartment()) {
+            <div class="input-block required">
+              <label for="departmentId">{{ 'districtLevels.department' | translate }}</label>
+              <select
+                id="departmentId"
+                [disabled]="isDepartmentDisabled()"
+                (change)="onDepartmentChange(parseDistrictId($event))"
+              >
+                <option value="" [selected]="selectedDepartmentId() == null">
+                  {{ 'global.select' | translate }}
+                </option>
+                @for (department of allDepartments(); track department.id) {
+                  <option [value]="department.id" [selected]="department.id === selectedDepartmentId()">
+                    {{ department.code }} {{ department.wording }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+
+          @if (showSubPrefecture()) {
+            <div class="input-block required">
+              <label for="subPrefectureId">{{ 'districtLevels.subPrefecture' | translate }}</label>
+              <select
+                id="subPrefectureId"
+                [disabled]="isSubPrefectureDisabled()"
+                (change)="onSubPrefectureChange(parseDistrictId($event))"
+              >
+                <option value="" [selected]="selectedSubPrefectureId() == null">
+                  {{ 'global.select' | translate }}
+                </option>
+                @for (subPrefecture of allSubPrefectures(); track subPrefecture.id) {
+                  <option
+                    [value]="subPrefecture.id"
+                    [selected]="subPrefecture.id === selectedSubPrefectureId()"
+                  >
+                    {{ subPrefecture.code }} {{ subPrefecture.wording }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+
+          @if (showMunicipality()) {
+            <div class="input-block required">
+              <label for="municipalityId">{{ 'districtLevels.municipality' | translate }}</label>
+              <select
+                id="municipalityId"
+                [disabled]="isMunicipalityDisabled()"
+                (change)="onMunicipalityChange(parseDistrictId($event))"
+              >
+                <option value="" [selected]="selectedMunicipalityId() == null">
+                  {{ 'global.select' | translate }}
+                </option>
+                @for (municipality of allMunicipalities(); track municipality.id) {
+                  <option
+                    [value]="municipality.id"
+                    [selected]="municipality.id === selectedMunicipalityId()"
+                  >
+                    {{ municipality.code }} {{ municipality.wording }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  </form>
+</div>
+
+<pre>{{form().value |json}}</pre>
+
+<app-sticky-buttons-container>
+  <button type="button" class="btn primary" (click)="onSubmit()" [disabled]="form().invalid || isSaving()">
+    {{ 'global.save' | translate }}
+    @if (isSaving()) {
+      <app-loader-ui></app-loader-ui>
+    }
+  </button>
+  <button
+    type="button"
+    class="btn outline outline-primary"
+    (click)="goBack.emit()"
+    [disabled]="isSaving()"
+  >
+    {{ 'global.back' | translate }}
+  </button>
+</app-sticky-buttons-container>

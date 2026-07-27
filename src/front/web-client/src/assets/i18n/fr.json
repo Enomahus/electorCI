@@ -5,6 +5,7 @@
     "save": "Enregistrer",
     "search": "Rechercher",
     "edit": "Editer",
+    "delete": "Supprimer",
     "back": "Retour",
     "cancel": "Annuler",
     "refresh": "Actualiser",
@@ -23,12 +24,18 @@
       "en": "en"
     }
   },
+  "dialog": {
+    "title": "Confirmation",
+    "message": "Êtes-vous sûr de vouloir supprimer <strong>{{ data.name }}</strong> ?",
+    "delete": "Supprimer",
+    "cancel": "Annuler"
+  },
   "breadcrumb": {
     "pollingStations": "Les bureaux de vote",
     "pollingStationCreate": "Nouveau bureau de vote",
     "pollingStationEdit": "Modifier un bureau de vote",
-    "constituencies": "Les circonscriptions",
-    "constituencyCreate": "Nouvelle circonscription",
+    "districts": "Les circonscriptions",
+    "createDistrict": "Nouvelle circonscription",
     "registrationRequests": "Mes demandes",
     "registrationRequestAdd": "Nouvelle demande d'inscription",
     "registrationRequestEdit": "Modifier la demande d'inscription",
@@ -109,5 +116,111 @@
     "title": "Connexion",
     "username": "Identifiant (email)",
     "continueWithEmail": "ou continuer avec l'email"
+  },
+  "districts": {
+    "title": "Les Circonscriptions électorales",
+    "subtitle": "Consultez et gérez la liste des circonscriptions électorales.",
+    "createDistrict": "Créer une circonscription",
+    "columns": {
+      "code": "Code",
+      "wording": "Libellé",
+      "level": "Hierarchie"
+    },
+    "levels": {
+      "region": "Région",
+      "department": "Département",
+      "subPrefecture": "Sous-préfecture",
+      "municipality": "Commune",
+      "votingLocation": "Lieu de vote"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "toggleEnable": "Activer",
+      "toggleDisable": "Désactiver"
+    }
+  },
+  "district": {
+    "successCreating": "Circonscription créée avec succès",
+    "errorCreating": "Erreur lors de la création de la circonscription.",
+    "successUpdating": "Circonscription mise à jour avec succès",
+    "errorUpdating": "Erreur lors de la mise à jour de la circonscription.",
+    "successDeleting": "Circonscription supprimée avec succès",
+    "errorDeleting": "Erreur lors de la suppression de la circonscription.",
+    "createDistrict": "Créer une circonscription",
+    "gleInfos": "Informations générale",
+    "parent":"Rattachement électoral",
+    "wording": "Libellé",
+    "level": "Hierarchie",
+    "parentId": "Rattachement",
+    "isActive": "Activé",
+    "code": "Code"
+  },
+  "districtLevels": {
+    "region": "Région",
+    "department": "Département",
+    "subPrefecture": "Sous-préfecture",
+    "municipality": "Commune / Village",
+    "votingLocation": "Lieu de vote"
+  },
+  "users": {
+    "title": "Liste des Utilisateurs",
+    "createUser": "Créer un utilisateur",
+    "editUser": "Modifier un utilisateur",
+    "subtitle": "Consultez et gérez la liste des utilisateurs.",
+    "columns": {
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "district": "Circonscription",
+      "roles": "Rôles",
+      "status": "Statut",
+      "isAdmin": "Administrateur",
+      "createdAt": "Créé le",
+      "authMethods": {
+        "label": "Authentification",
+        "google": "Google",
+        "microsoft": "Microsoft",
+        "email": "Email"
+      }
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    }
+  },
+  "user": {
+    "errorCreating": "Erreur lors de la création de l'utilisateur.",
+    "successCreating": "Utilisateur créé avec succès",
+    "errorUpdating": "Erreur lors de la mise à jour de l'utilisateur.",
+    "successUpdating": "Utilisateur mis à jour avec succès",
+    "errorDeleting": "Erreur lors de la suppression de l'utilisateur.",
+    "successDeleting": "Utilisateur supprimé avec succès",
+    "myInformations": "Modifier mes informations",
+    "lastName": "Nom",
+    "firstName": "Prénom",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmation mot de passe",
+    "phone": "Téléphone",
+    "employeNumber": "Numéro matricule",
+    "district": "Circonscription",
+    "authMethods": {
+      "label": "Authentification",
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "email": "Email"
+    }
+  },
+  "register": {
+    "title": "Créer un compte",
+    "subtitle": "Je m'inscris !",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "register": "S'inscrire",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "login": "Connectez-vous"
   }
 }

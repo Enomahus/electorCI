@@ -126,37 +126,19 @@
   }
 
   &.btn-disable {
-    color: var(--tertiary-text-color);
+    color: var(--btn-disable-color);
 
     &:hover {
-      background-color: var(--tertiary-text-color);
+      background-color: var(--btn-disable-color);
       color: var(--inverse-text-color);
     }
   }
 
-  &.btn-disable {
-    color: var(--tertiary-text-color);
+  &.btn-enable {
+    color: var(--secondary-color);
 
     &:hover {
-      background-color: var(--tertiary-text-color);
-      color: var(--inverse-text-color);
-    }
-  }
-
-  &.btn-disable {
-    color: var(--tertiary-text-color);
-
-    &:hover {
-      background-color: var(--tertiary-text-color);
-      color: var(--inverse-text-color);
-    }
-  }
-
-  &.btn-disable {
-    color: var(--tertiary-text-color);
-
-    &:hover {
-      background-color: var(--tertiary-text-color);
+      background-color: var(--secondary-color);
       color: var(--inverse-text-color);
     }
   }

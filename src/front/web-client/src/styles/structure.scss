@@ -194,3 +194,18 @@ a {
     background-color: var(--display-grid-header-background);
   }
 }
+
+.text-with-bars {
+  display: flex;
+  align-items: center;
+}
+
+.text-with-bars::before,
+.text-with-bars::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background-color: var(--border-color);
+  vertical-align: middle;
+  margin: 0 4px;
+}

@@ -1,0 +1,103 @@
+<div class="ditrict-tree-container">
+  <ul ngTree [values]="selectedIds()" (valuesChange)="onSelectionChange($event)" #tree="ngTree">
+    <ng-template
+      [ngTemplateOutlet]="treeNodes"
+      [ngTemplateOutletContext]="{ nodes: nodes(), parent: tree }"
+    />
+  </ul>
+
+  <ng-template #treeNodes let-nodes="nodes" let-parent="parent">
+    @for (node of nodes; track node.id) {
+      <li
+        ngTreeItem
+        [parent]="parent"
+        [value]="node.id"
+        [label]="node.wording"
+        [expanded]="!!node.expanded"
+        #treeItem="ngTreeItem"
+        [class.is-leaf]="isLeaf(node)"
+        [class.is-parent]="!isLeaf(node)"
+        [selectable]="isLeaf(node)"
+      >
+        <div class="tree-item-content">
+          @if (node.children?.length) {
+            <button class="tree-toggle" (click)="$event.stopPropagation()">
+              {{ treeItem.expanded() ? '▾' : '▸' }}
+            </button>
+          } @else {
+            <span class="tree-toggle-placeholder"></span>
+          }
+          <span class="tree-item-label" [title]="node.wording">{{ node.wording }}</span>
+
+          <div
+            class="context-menu-trigger"
+            cdkMenuTriggerFor="leafMenu"
+            (click)="$event.stopPropagation()"
+          >
+            <span class="tag-level">{{ 'districtLevels.' + node.level | translate }}</span>
+            <!-- Menu Contextuel pour les feuilles -->
+            @if (isLeaf(node)) {
+              <button
+                *appHasPermission="'updateDistrict'"
+                class="btn-menu"
+                [cdkMenuTriggerFor]="leafMenu"
+                (click)="$event.stopPropagation()"
+                aria-label="Actions"
+              >
+                ⋮
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Définition du Menu (Template) -->
+        <ng-template #leafMenu>
+          <div class="context-menu" cdkMenu>
+            <button
+              *appHasPermission="'updateDistrict'"
+              class="menu-item"
+              cdkMenuItem
+              (cdkMenuItemTriggered)="onEdit(node)"
+            >
+              <span class="icon">✎</span>{{ 'districts.actions.edit' | translate }}
+            </button>
+            <button
+              *appHasPermission="'updateDistrict'"
+              class="menu-item"
+              cdkMenuItem
+              (cdkMenuItemTriggered)="onToggleStatus(node)"
+            >
+              <span class="icon">{{ node.active ? '⊘' : '✓' }}</span>
+              {{
+                (node.active
+                  ? 'districts.actions.toggleDisable'
+                  : 'districts.actions.toggleEnable'
+                ) | translate
+              }}
+            </button>
+            <div class="menu-separator"></div>
+            <button
+              *appHasPermission="'deleteDistrict'"
+              class="menu-item delete"
+              cdkMenuItem
+              (cdkMenuItemTriggered)="onDelete(node)"
+            >
+              <span class="icon">🗑</span>{{ 'districts.actions.delete' | translate }}
+            </button>
+          </div>
+        </ng-template>
+
+        @if (node.children?.length) {
+          <ul role="group">
+            <ng-template ngTreeItemGroup [ownedBy]="treeItem" #group="ngTreeItemGroup">
+              <ng-template
+                [ngTemplateOutlet]="treeNodes"
+                [ngTemplateOutletContext]="{ nodes: node.children, parent: group }"
+              />
+            </ng-template>
+          </ul>
+        }
+      </li>
+    }
+  </ng-template>
+</div>

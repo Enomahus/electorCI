@@ -21,23 +21,29 @@ namespace Application.Features.Users.Common
             UserDao dao,
             bool skipAdminFields = false,
             CancellationToken cancellationToken = default
-        ) 
+        )
         {
-            if(dao.UserName == dao.Email)
+            if (dao.UserName == dao.Email)
             {
                 dao.UserName = model.Email;
             }
             dao.Email = model.Email;
 
+            dao.Civility = model.Title;
             dao.FirstName = model.FirstName;
             dao.LastName = model.LastName;
             dao.PhoneNumber = model.Phone;
             dao.ModifiedAt = _timeProvider.GetUtcNow();
+            dao.EmployeeNumber = model.EmployeeNumber;
 
             if (!skipAdminFields)
             {
-                var rolesToRemove = dao.UserRoles.Where(ur => !model.Roles.Contains(ur.RoleId)).ToList();
-                var roleIdsToAdd = model.Roles.Where(r => !dao.UserRoles.Any(ur => ur.RoleId == r)).ToList();
+                var rolesToRemove = dao
+                    .UserRoles.Where(ur => !model.Roles.Contains(ur.RoleId))
+                    .ToList();
+                var roleIdsToAdd = model
+                    .Roles.Where(r => !dao.UserRoles.Any(ur => ur.RoleId == r))
+                    .ToList();
                 foreach (var role in rolesToRemove)
                 {
                     dao.UserRoles.Remove(role);
@@ -59,7 +65,6 @@ namespace Application.Features.Users.Common
                     dao.CreatedAt = dao.ModifiedAt;
                 }
             }
-
 
             if (model.NewDistrict is not null)
             {

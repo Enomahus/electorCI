@@ -12,6 +12,7 @@
         </a>
       </li>
     }
+
     @if (showOrganismRequestsText()) {
       <li class="menu-item" [routerLinkActive]="'active'" *appHideIfAdmin>
         <a class="menu-item-interaction" routerLink="registration-requests-for-management">
@@ -19,6 +20,7 @@
         </a>
       </li>
     }
+    
     @if (showAdminRequestsText()) {
       <li class="menu-item" [routerLinkActive]="'active'">
         <a class="menu-item-interaction" routerLink="registration-requests-for-admin">
@@ -45,7 +47,7 @@
         @if (isDropdownOpen('admin')) {
           <div class="dropdown-content">
             <a
-              routerLink="admin/district"
+              routerLink="admin/districts"
               [routerLinkActive]="'active'"
               *appHasPermission="'accessDistrictsAdminPage'"
             >

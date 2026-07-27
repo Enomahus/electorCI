@@ -1,10 +1,12 @@
-﻿using Application.Common.Enums;
+﻿using Application.Common.Enum;
+using Application.Common.Enums;
 
 namespace Application.Features.Users.GetUsers
 {
     public class GetUsersResponse
     {
         public required Guid Id { get; init; }
+        public PersonTitle Title { get; init; }
         public required string LastName { get; init; }
         public required string FirstName { get; init; }
         public required string? Email { get; init; }
