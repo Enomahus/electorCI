@@ -1,5 +1,4 @@
 using Application.Common.Enums;
-using Application.Features.Common.GridData;
 using Application.Models;
 using FluentValidation;
 using Infrastructure.Persistence.SQLServer.Contexts;
@@ -41,10 +40,7 @@ namespace Application.Features.Districts.GetDistricts
                 .Where(r => r.ParentId == null)
                 .ToListAsync(cancellationToken);
 
-            //var rows = districts.Select(d => GetDistrictsResponse.From(d, dateNow)).AsQueryable();
             var rows = rootsDistricts.Select(d => GetDistrictsResponse.From(d, dateNow));
-
-            //var result = rows.ApplyGrid(request);
 
             return Result<IEnumerable<GetDistrictsResponse>>.From(rows);
         }

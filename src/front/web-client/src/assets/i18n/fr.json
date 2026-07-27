@@ -118,12 +118,13 @@
     "continueWithEmail": "ou continuer avec l'email"
   },
   "districts": {
-    "title": "Circonscriptions",
+    "title": "Les Circonscriptions électorales",
     "subtitle": "Consultez et gérez la liste des circonscriptions électorales.",
+    "createDistrict": "Créer une circonscription",
     "columns": {
       "code": "Code",
       "wording": "Libellé",
-      "level": "Niveau"
+      "level": "Hierarchie"
     },
     "levels": {
       "region": "Région",
@@ -131,7 +132,29 @@
       "subPrefecture": "Sous-préfecture",
       "municipality": "Commune",
       "votingLocation": "Lieu de vote"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "toggleEnable": "Activer",
+      "toggleDisable": "Désactiver"
     }
+
+  },
+  "district": {
+    "errorCreating": "Erreur lors de la création de la circonscription.",
+    "errorUpdating": "Erreur lors de la mise à jour de la circonscription.",
+    "successCreating": "Circonscription créée avec succès",
+    "successUpdating": "Circonscription mise à jour avec succès",
+    "errorDeleting": "Erreur lors de la suppression de la circonscription.",
+    "successDeleting": "Circonscription supprimée avec succès"
+  },
+  "districtLevels": {
+    "region": "Région",
+    "department": "Département",
+    "subPrefecture": "Sous-préfecture",
+    "municipality": "Commune / Village",
+    "votingLocation": "Lieu de vote"
   },
   "users": {
     "title": "Liste des Utilisateurs",

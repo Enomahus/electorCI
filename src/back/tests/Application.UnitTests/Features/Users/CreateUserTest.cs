@@ -1,4 +1,5 @@
-﻿using Application.Common.Enums;
+﻿using Application.Common.Enum;
+using Application.Common.Enums;
 using Application.Exceptions;
 using Application.Exceptions.Auth;
 using Application.Features.Common.District;
@@ -117,6 +118,7 @@ namespace Application.UnitTests.Features.Users
             var command = new CreateUserCommand()
             {
                 Email = "test@email",
+                Title = PersonTitle.Ms,
                 Password = "1P@ssword!",
                 FirstName = "firstname",
                 LastName = "lastname",
@@ -132,10 +134,17 @@ namespace Application.UnitTests.Features.Users
 
             // Assert
             result.Should().NotBeNull();
-            var user = await context.Users.FirstOrDefaultAsync(s => s.UserName == command.Email);
+            result.Data.Should().NotBe(Guid.Empty);
+
+            var user = await context
+                .Users.AsNoTracking()
+                .Include(u => u.UserRoles)
+                .Include(u => u.UserDistricts)
+                .FirstOrDefaultAsync(s => s.UserName == command.Email);
             user.Should().NotBeNull();
             result.Data.Should().Be(user!.Id);
             user.FirstName.Should().Be(command.FirstName);
+            user.Civility.Should().Be(PersonTitle.Ms);
             user.LastName.Should().Be(command.LastName);
             user.Email.Should().Be(command.Email);
             user.EmployeeNumber.Should().Be(command.EmployeeNumber);
@@ -167,12 +176,14 @@ namespace Application.UnitTests.Features.Users
             var command = new CreateUserCommand()
             {
                 Email = "test@email",
+                Title = PersonTitle.Mr,
                 Password = "1P@ssword!",
                 FirstName = "firstname",
                 LastName = "lastname",
                 Phone = "+33 1 02 03 04 05",
                 IsActive = false,
                 Roles = [role.Id],
+                EmployeeNumber = "12249K",
                 NewDistrict = new DistrictModel()
                 {
                     Code = "code",
@@ -195,6 +206,8 @@ namespace Application.UnitTests.Features.Users
             result.Data.Should().Be(user!.Id);
             user.FirstName.Should().Be(command.FirstName);
             user.LastName.Should().Be(command.LastName);
+            user.Civility.Should().Be(command.Title);
+            user.EmployeeNumber.Should().Be(command.EmployeeNumber);
             user.Email.Should().Be(command.Email);
             user.UserRoles.Should().ContainSingle();
             user.UserRoles.ElementAt(0).RoleId.Should().Be(role.Id);

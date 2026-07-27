@@ -11,7 +11,9 @@ using Tools.Logging;
 namespace Application.Features.Users.GetUsers
 {
     [WithPermission(nameof(AppPermission.GetUsers))]
-    public class GetUsersQuery : GridDataQuery, IRequest<Result<GridDataResponse<GetUsersResponse>>> { }
+    public class GetUsersQuery
+        : GridDataQuery,
+            IRequest<Result<GridDataResponse<GetUsersResponse>>> { }
 
     public class GetUsersQueryValidator : GridDataQueryValidator<GetUsersQuery> { }
 
@@ -33,9 +35,9 @@ namespace Application.Features.Users.GetUsers
 
             var users = await context
                 .Users.Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
+                    .ThenInclude(ur => ur.Role)
                 .Include(u => u.UserDistricts)
-                .ThenInclude(ud => ud.District)
+                    .ThenInclude(ud => ud.District)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
@@ -43,6 +45,7 @@ namespace Application.Features.Users.GetUsers
                 .Select(u => new GetUsersResponse
                 {
                     Id = u.Id,
+                    Title = u.Civility,
                     LastName = u.LastName,
                     FirstName = u.FirstName,
                     Email = u.Email,

@@ -1,4 +1,5 @@
-﻿using Application.Common.Enums;
+﻿using Application.Common.Enum;
+using Application.Common.Enums;
 using Application.Exceptions;
 using Application.Exceptions.Auth;
 using Application.Features.Users.UpdateUser;
@@ -17,7 +18,8 @@ namespace Application.UnitTests.Features.Users
         public async Task UpdateUserTest_ShouldFail_WhenPermissionMissing()
         {
             //Arrange
-            var serviceProvider = CreateServiceCollection(mockAuthorization: false).BuildServiceProvider();
+            var serviceProvider = CreateServiceCollection(mockAuthorization: false)
+                .BuildServiceProvider();
 
             var command = new UpdateUserCommand();
 
@@ -70,10 +72,7 @@ namespace Application.UnitTests.Features.Users
                     "DistrictId",
                     ValidationErrorCode.Required
                 ),
-                new KeyValuePair<string, ValidationErrorCode>(
-                    "Roles",
-                    ValidationErrorCode.Required
-                )
+                new KeyValuePair<string, ValidationErrorCode>("Roles", ValidationErrorCode.Required)
             );
         }
 
@@ -168,14 +167,21 @@ namespace Application.UnitTests.Features.Users
 
             DateTimeOffset? disabledDate = isUserActive ? null : timeProvider.GetUtcNow();
 
-            var existingUser = await CreateUserAsync(serviceProvider, roleId: roles[0].Id, isActive: isUserActive, disabledDate: disabledDate);
+            var existingUser = await CreateUserAsync(
+                serviceProvider,
+                roleId: roles[0].Id,
+                isActive: isUserActive,
+                disabledDate: disabledDate
+            );
 
             var command = new UpdateUserCommand()
             {
                 UserId = existingUser.Id,
+                Title = PersonTitle.Mrs,
                 Email = "test@email",
                 FirstName = "firstname",
                 LastName = "lastname",
+                EmployeeNumber = "12654K",
                 Phone = "+33 1 02 03 04 05",
                 IsActive = !isUserActive,
                 Roles = [roles[1].Id],
@@ -192,6 +198,8 @@ namespace Application.UnitTests.Features.Users
             result.Data.Should().Be(user!.Id);
             user.FirstName.Should().Be(command.FirstName);
             user.LastName.Should().Be(command.LastName);
+            user.Civility.Should().Be(command.Title);
+            user.EmployeeNumber.Should().Be(command.EmployeeNumber);
             user.Email.Should().Be(command.Email);
             user.UserRoles.Should().ContainSingle();
             user.UserRoles.ElementAt(0).RoleId.Should().Be(roles[1].Id);
@@ -205,7 +213,6 @@ namespace Application.UnitTests.Features.Users
             {
                 user.DisabledDate.Should().BeNull();
             }
-
         }
     }
 }

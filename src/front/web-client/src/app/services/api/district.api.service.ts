@@ -13,13 +13,6 @@ import { ApiToastOptions } from './models/api-toast-options';
   providedIn: 'root',
 })
 export class DistrictApiService extends ApiBaseService {
-  // getDistricts(
-  //   query: GetDistrictsQuery,
-  //   options: ApiToastOptions = {},
-  // ): Observable<GridDataResponseOfGetDistrictsResponse> {
-  //   return this.apiClient.getDistricts(query).pipe(this.handleDataResult(options));
-  // }
-
   getDistricts(
     query: GetDistrictsQuery,
     options: ApiToastOptions = {},

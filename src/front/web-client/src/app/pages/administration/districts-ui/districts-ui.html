@@ -1,0 +1,28 @@
+<section class="districts-page">
+  <header class="districts-page__header">
+    <h1>{{ 'districts.title' | translate }}</h1>
+    <div class="districts-page-actions">
+      <button class="btn outline outline-primary" (click)="refresh()" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner">⏳</span>
+        } @else {
+          <span class="icon">🔄</span>
+        }
+        {{ 'global.refresh' | translate }}
+      </button>
+      <a mat-flat-button class="btn primary" routerLink="/admin/districts/new">
+        <i class="ph ph-plus"></i>
+        {{ 'districts.createDistrict' | translate }}
+      </a>
+    </div>
+  </header>
+
+  <div class="tree-wrapper">
+    <app-district-tree-ui
+      [nodes]="nodes()"
+      (editNode)="onEdit($event)"
+      (deleteNode)="onDelete($event)"
+      (toggleStatus)="onToggleStatus($event)"
+    ></app-district-tree-ui>
+  </div>
+</section>
