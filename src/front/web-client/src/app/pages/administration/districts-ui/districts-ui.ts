@@ -45,20 +45,20 @@ export class DistrictsUi {
 
     this.isDeleting.set(true);
 
-    // this.districtService
-    //   .deleteDistrict(node.id, {
-    //     successMessage: this.translateService.instant('district.successDeleting'),
-    //     errorMessage: this.translateService.instant('district.errorDeleting'),
-    //   })
-    //   .subscribe({
-    //     next: () => {
-    //       this.isDeleting.set(false);
-    //       this.nodes();
-    //     },
-    //     error: () => {
-    //       this.isDeleting.set(false);
-    //     },
-    //   });
+    this.districtService
+      .deleteDistrict(node.id, {
+        successMessage: this.translateService.instant('district.successdeleting'),
+        errorMessage: this.translateService.instant('district.errordeleting'),
+      })
+      .subscribe({
+        next: () => {
+          this.isDeleting.set(false);
+          this.nodes();
+        },
+        error: () => {
+          this.isDeleting.set(false);
+        },
+      });
   }
 
   onToggleStatus(node: DistrictNode): void {

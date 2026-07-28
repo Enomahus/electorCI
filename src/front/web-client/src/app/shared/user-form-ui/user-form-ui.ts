@@ -14,9 +14,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, filter, startWith, take } from 'rxjs';
 import { DistrictNode } from '../../models/district.model';
+import { allLocationLevel } from '../../pages/types/enumerations';
 import { UserApiService } from '../../services/api/user.api.service';
 import { DistrictTreeHelperService } from '../../services/district-tree-helper.service';
-import { UserModel } from '../../services/nswag/api-nswag-client';
+import { ElectoralDistrictLevel, UserModel } from '../../services/nswag/api-nswag-client';
 import { LoaderUi } from '../loader/loader';
 import { PhoneInputUi } from '../phone-input-ui/phone-input-ui';
 import { StickyButtonsContainerComponent } from '../sticky-buttons-container/sticky-buttons-container.component';
@@ -37,6 +38,7 @@ import { UserFormFactory } from './user-form';
 })
 export class UserFormUi implements OnInit {
   form = input.required<UserFormFactory>();
+  user = input<UserModel>();
   isSaving = input<boolean>(false);
   isEditMode = input<boolean>(false);
   formSubmitted = output<UserModel>();
@@ -47,7 +49,8 @@ export class UserFormUi implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly nodes$ = toObservable(this.store.nodesData);
 
-  //roles!: RoleModel[];
+  private readonly user$ = toObservable(this.user);
+  readonly levels: ElectoralDistrictLevel[] = allLocationLevel;
 
   hidePassword = signal(true);
   hideConfirmPassword = signal(true);
@@ -103,28 +106,32 @@ export class UserFormUi implements OnInit {
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(([, districtId]) => this.initializeChainFromVotingLocation(districtId!));
+      .subscribe(([, districtId]) => this.initializeChainFromDistrict(districtId!));
   }
 
   onRegionChange(regionId: number | null): void {
     this.selectedRegionId.set(regionId);
     this.selectedDepartmentId.set(null);
     this.selectedSubPrefectureId.set(null);
+    this.selectedMunicipalityId.set(null);
     this.setMunicipality(null);
   }
 
   onDepartmentChange(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
     this.selectedSubPrefectureId.set(null);
+    this.selectedMunicipalityId.set(null);
     this.setMunicipality(null);
   }
 
   onSubPrefectureChange(subPrefectureId: number | null): void {
     this.selectedSubPrefectureId.set(subPrefectureId);
+    this.selectedMunicipalityId.set(null);
     this.setMunicipality(null);
   }
 
   onMunicipalityChange(municipalityId: number | null): void {
+    this.selectedMunicipalityId.set(municipalityId);
     this.setMunicipality(municipalityId);
   }
 
@@ -141,6 +148,7 @@ export class UserFormUi implements OnInit {
     this.selectedMunicipalityId.set(municipalityId);
     this.form().controls.districtId.setValue(municipalityId ?? undefined);
   }
+
   private setVotingLocation(votingLocationId: number | null): void {
     this.selectedVotingLocationId.set(votingLocationId);
     this.form().controls.districtId.setValue(votingLocationId ?? undefined);
@@ -151,20 +159,38 @@ export class UserFormUi implements OnInit {
     return nodes.find((n) => n.id === parentId)?.children ?? [];
   }
 
-  // Le districtId d'un utilisateur pointe toujours une municipalité : on remonte
-  // l'arbre via parentId pour retrouver la sous-préfecture, le département et la région.
-  private initializeChainFromVotingLocation(votingLocationId: number): void {
-    const votingLocation = this.store.findNode(votingLocationId);
-    const municipality = this.store.findNode(votingLocation?.parentId!);
-    const subPrefecture = municipality ? this.store.findNode(municipality.parentId) : undefined;
-    const department = subPrefecture ? this.store.findNode(subPrefecture.parentId) : undefined;
-    const region = department ? this.store.findNode(department.parentId) : undefined;
+  // Le districtId d'un utilisateur peut pointer n'importe quel niveau (municipalité si aucun
+  // lieu de vote n'a été choisi, lieu de vote sinon) : on remonte l'arbre via parentId en se
+  // basant sur le niveau de chaque nœud rencontré, jusqu'à la région.
+  private initializeChainFromDistrict(districtId: number): void {
+    this.selectedRegionId.set(null);
+    this.selectedDepartmentId.set(null);
+    this.selectedSubPrefectureId.set(null);
+    this.selectedMunicipalityId.set(null);
+    this.selectedVotingLocationId.set(null);
 
-    this.selectedRegionId.set(region?.id ?? null);
-    this.selectedDepartmentId.set(department?.id ?? null);
-    this.selectedSubPrefectureId.set(subPrefecture?.id ?? null);
-    this.selectedMunicipalityId.set(municipality?.id ?? null);
-    this.selectedVotingLocationId.set(votingLocation?.id ?? null);
+    let node = this.store.findNode(districtId);
+
+    while (node) {
+      switch (node.level) {
+        case 'region':
+          this.selectedRegionId.set(node.id);
+          break;
+        case 'department':
+          this.selectedDepartmentId.set(node.id);
+          break;
+        case 'subPrefecture':
+          this.selectedSubPrefectureId.set(node.id);
+          break;
+        case 'municipality':
+          this.selectedMunicipalityId.set(node.id);
+          break;
+        case 'votingLocation':
+          this.selectedVotingLocationId.set(node.id);
+          break;
+      }
+      node = node.parentId ? this.store.findNode(node.parentId) : undefined;
+    }
   }
 
   requiredEmployeeNumber(): boolean {

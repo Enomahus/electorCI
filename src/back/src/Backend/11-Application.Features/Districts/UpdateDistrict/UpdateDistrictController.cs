@@ -18,10 +18,10 @@ namespace Application.Features.Districts.UpdateDistrict
         /// Update a district.
         /// </summary>
         /// <param name="command"></param>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpPut()]
+        [HttpPut("{id}")]
         [OpenApiOperation("UpdateDistrict", "Met à jour une Circonscrption.", "")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<long>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Result<Error>))]
@@ -30,11 +30,11 @@ namespace Application.Features.Districts.UpdateDistrict
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Result<Error>))]
         public async Task<Result<long>> UpdateDistrictAsync(
             [FromBody] UpdateDistrictCommand command,
-            [FromRoute] long Id,
+            [FromRoute] long id,
             CancellationToken token
         )
         {
-            command.Id = Id;
+            command.Id = id;
             return await Mediator.Send(command, token);
         }
     }
