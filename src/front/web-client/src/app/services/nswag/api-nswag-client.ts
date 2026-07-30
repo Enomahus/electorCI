@@ -734,6 +734,74 @@ export class ServerClient extends CustomApiClient {
     }
 
     /**
+     * Récupère tous les rôles possibles pour un utilisateur.
+     */
+    getUserRoles(): Observable<ResultOfListOfRoleModel> {
+        let url_ = this.baseUrl + "/user/roles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserRoles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserRoles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ResultOfListOfRoleModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ResultOfListOfRoleModel>;
+        }));
+    }
+
+    protected processGetUserRoles(response: HttpResponseBase): Observable<ResultOfListOfRoleModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfListOfRoleModel;
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result403: any = null;
+            result403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ResultOfError;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result403);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * Récupère les informations de l'utilisateur connecté.
      */
     getCurrentUser(): Observable<ResultOfGetCurrentUserResponse> {
@@ -1484,6 +1552,7 @@ export type ErrorKind = "none" | "authentication" | "accessRights" | "validation
 
 export interface UserModel {
     title?: PersonTitle;
+    userName?: string;
     firstName?: string | undefined;
     lastName?: string | undefined;
     email?: string | undefined;
@@ -1595,6 +1664,15 @@ export interface GridSort {
 
 /** Direction d'un tri appliqué à une colonne de grille. */
 export type GridSortDirection = "ascending" | "descending";
+
+export interface ResultOfListOfRoleModel extends Result {
+    data?: RoleModel[] | undefined;
+}
+
+export interface RoleModel {
+    name?: string;
+    id?: string;
+}
 
 export interface ResultOfGetCurrentUserResponse extends Result {
     data?: GetCurrentUserResponse | undefined;

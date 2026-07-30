@@ -12,6 +12,26 @@
     gap: 8px;
     width: 100%;
 
+    .civility-group {
+      display: flex;
+      justify-content: space-between;
+
+      .radio-card {
+        flex: 1;
+        display: flex;
+        gap: 8px;
+        margin: 0 5px;
+        border: 1px solid #ccc;
+        padding: 12px;
+        border-radius: 8px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        color: #999;
+      }
+    }
+
     .grid-item {
       background-color: #ffffff;
       border: 1px solid #e0e0e0;

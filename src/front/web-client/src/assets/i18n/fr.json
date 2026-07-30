@@ -22,6 +22,11 @@
     "lang": {
       "fr": "fr",
       "en": "en"
+    },
+    "civility": {
+      "mr": "M.",
+      "mrs": "Mme",
+      "ms": "Mademoiselle"
     }
   },
   "dialog": {
@@ -80,7 +85,8 @@
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "emailUnique": "Cet e-mail existe déjà. Merci d'utiliser un autre e-mail",
     "employeeNumberUnique": "Ce numéro matricule existe déjà.",
-    "phoneInvalid": "Le numéro de téléphone n'est pas au bon format"
+    "phoneInvalid": "Le numéro de téléphone n'est pas au bon format",
+    "requireEmployeeNumber": "Le numéro matricule est requis pour ce rôle"
   },
   "errors": {
     "backendCodes": {
@@ -149,7 +155,7 @@
     "errorDeleting": "Erreur lors de la suppression de la circonscription.",
     "createDistrict": "Créer une circonscription",
     "gleInfos": "Informations générale",
-    "parent":"Rattachement électoral",
+    "parent": "Rattachement électoral",
     "wording": "Libellé",
     "level": "Hierarchie",
     "parentId": "Rattachement",
@@ -204,14 +210,20 @@
     "password": "Mot de passe",
     "confirmPassword": "Confirmation mot de passe",
     "phone": "Téléphone",
-    "employeNumber": "Numéro matricule",
+    "employeeNumber": "Numéro matricule",
     "district": "Circonscription",
+    "activity": "Activité",
     "authMethods": {
       "label": "Authentification",
       "google": "Google",
       "microsoft": "Microsoft",
       "email": "Email"
     }
+  },
+  "roles": {
+    "OrganismAgentRole": "Agent d'organisme",
+    "ElectorRole": "Electeur",
+    "SuperAdmin": "Administrateur"
   },
   "register": {
     "title": "Créer un compte",

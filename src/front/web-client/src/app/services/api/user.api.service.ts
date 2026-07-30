@@ -7,6 +7,7 @@ import {
   GridDataResponseOfGetUsersResponse,
   RegisterUserCommand,
   Result,
+  RoleModel,
   UpdateCurrentUserCommand,
   UpdateUserCommand,
   UserModel,
@@ -58,5 +59,9 @@ export class UserApiService extends ApiBaseService {
 
   registerUser(command: RegisterUserCommand, options: ApiToastOptions = {}): Observable<string> {
     return this.apiClient.registerUser(command).pipe(this.handleDataResult(options));
+  }
+
+  getUserRoles(options: ApiToastOptions = {}): Observable<RoleModel[]> {
+    return this.apiClient.getUserRoles().pipe(this.handleDataResult(options));
   }
 }

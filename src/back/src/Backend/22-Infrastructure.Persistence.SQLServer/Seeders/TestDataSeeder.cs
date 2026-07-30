@@ -221,6 +221,19 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                     },
                     new List<string> { AppConstants.OrganismAgentRole }
                 ),
+                Tuple.Create(
+                    new UserDao()
+                    {
+                        UserName = "user5",
+                        FirstName = "Harvey",
+                        LastName = "Spector",
+                        PhoneNumber = "01 02 03 04 05",
+                        Email = "harvey.spector@pcea.com",
+                        EmployeeNumber = "221169T",
+                        UserDistricts = [new() { DistrictId = 152 }],
+                    },
+                    new List<string> { AppConstants.OrganismAgentRole }
+                ),
             ];
         }
 
