@@ -1,0 +1,46 @@
+.polling-station {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 10px 4px 2px 8px;
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table-container {
+    position: relative;
+    overflow: auto;
+    min-height: 200px;
+
+    table {
+      width: 100%;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .mat-mdc-row:hover {
+      background-color: rgba(24, 241, 107, 0.04);
+    }
+
+    .mat-column-actions {
+      width: 120px;
+      text-align: center;
+    }
+
+    .mat-mdc-header-row {
+      background-color: orange;
+      z-index: 100;
+    }
+
+    .loading-container {
+      z-index: 200;
+    }
+  }
+}

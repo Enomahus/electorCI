@@ -169,11 +169,35 @@
     "municipality": "Commune / Village",
     "votingLocation": "Lieu de vote"
   },
+  "pollingStations": {
+    "title": "Les Bureaux de vote",
+    "votingLocationName": "Lieu de vote",
+    "stationNumber": "Bureau",
+    "municipalityName": "Commune / Village",
+    "subPrefectureName": "Sous-préfecture",
+    "departmentName": "Département",
+    "regionName": "Région",
+    "action": "Actions",
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "toggleEnable": "Activer",
+      "toggleDisable": "Désactiver"
+    },
+    "updatePollingStationSuccess": "Bureau de vote modifier avec succès",
+    "updatePollingStationError": "Erreur lors de la mise à jour du Bureau de vote",
+    "deletePollingStationSuccess": "Bureau de vote supprimer avec succès",
+    "deletePollingStationError": "Erreur lors de la suppression du bureau de vote",
+    "disablePollinStationError": "Erreur lors de la désactivation du bureai de vote",
+    "disablePollinStationSuccess": "Bureau de vote désactivé avec succès"
+  },
   "users": {
     "title": "Liste des Utilisateurs",
     "createUser": "Créer un utilisateur",
     "editUser": "Modifier un utilisateur",
     "subtitle": "Consultez et gérez la liste des utilisateurs.",
+    "disableUserError": "Erreur lors de la désactivation de l'utilisateur",
+    "disableUserSuccess": "Utilisateur désactivé avec succès",
     "columns": {
       "lastName": "Nom",
       "firstName": "Prénom",

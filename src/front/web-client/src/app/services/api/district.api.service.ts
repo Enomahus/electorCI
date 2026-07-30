@@ -6,6 +6,7 @@ import {
   GetDistrictsQuery,
   GetDistrictsResponse,
   Result,
+  ToggleActiveDistrictCommand,
   UpdateDistrictCommand,
 } from '../nswag/api-nswag-client';
 import { ApiBaseService } from './api-base.service';
@@ -43,5 +44,12 @@ export class DistrictApiService extends ApiBaseService {
 
   deleteDistrict(id: number, options: ApiToastOptions = {}): Observable<Result> {
     return this.apiClient.deleteDistrict(id).pipe(this.handleResult(options));
+  }
+
+  toggleActiveDistrict(
+    cmd: ToggleActiveDistrictCommand,
+    options: ApiToastOptions = {},
+  ): Observable<Result> {
+    return this.apiClient.toggleActiveDistrict(cmd).pipe(this.handleResult(options));
   }
 }

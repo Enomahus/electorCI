@@ -1,4 +1,4 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
@@ -14,10 +14,9 @@ import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, filter, startWith, take } from 'rxjs';
 import { DistrictNode } from '../../models/district.model';
-import { allLocationLevel } from '../../pages/types/enumerations';
 import { UserApiService } from '../../services/api/user.api.service';
 import { DistrictTreeHelperService } from '../../services/district-tree-helper.service';
-import { ElectoralDistrictLevel, UserModel } from '../../services/nswag/api-nswag-client';
+import { UserModel } from '../../services/nswag/api-nswag-client';
 import { LoaderUi } from '../loader/loader';
 import { PhoneInputUi } from '../phone-input-ui/phone-input-ui';
 import { StickyButtonsContainerComponent } from '../sticky-buttons-container/sticky-buttons-container.component';
@@ -48,8 +47,6 @@ export class UserFormUi implements OnInit {
   private readonly store = inject(DistrictTreeHelperService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly nodes$ = toObservable(this.store.nodesData);
-
-  readonly levels: ElectoralDistrictLevel[] = allLocationLevel;
 
   hidePassword = signal(true);
   hideConfirmPassword = signal(true);
@@ -84,16 +81,10 @@ export class UserFormUi implements OnInit {
 
   // En création, chaque niveau reste verrouillé tant que son parent n'est pas choisi.
   // En édition, tous les niveaux sont actifs car ils sont déjà déduits du districtId existant.
-  isDepartmentDisabled = computed(() => !this.isEditMode() && this.selectedRegionId() == null);
-  isSubPrefectureDisabled = computed(
-    () => !this.isEditMode() && this.selectedDepartmentId() == null,
-  );
-  isMunicipalityDisabled = computed(
-    () => !this.isEditMode() && this.selectedSubPrefectureId() == null,
-  );
-  isVotingLocationDisabled = computed(
-    () => !this.isEditMode() && this.selectedMunicipalityId() == null,
-  );
+  isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
+  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
 
   ngOnInit(): void {
     this.setupEmployeeNumberValidation();
@@ -147,7 +138,7 @@ export class UserFormUi implements OnInit {
     this.selectedDepartmentId.set(null);
     this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
-    this.setMunicipality(null);
+    //this.setMunicipality(null);
   }
 
   onDepartmentChange(departmentId: number | null): void {
@@ -155,20 +146,20 @@ export class UserFormUi implements OnInit {
     this.onSelectDistrcit(departmentId!);
     this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
-    this.setMunicipality(null);
+    //this.setMunicipality(null);
   }
 
   onSubPrefectureChange(subPrefectureId: number | null): void {
     this.selectedSubPrefectureId.set(subPrefectureId);
     this.onSelectDistrcit(subPrefectureId!);
     this.selectedMunicipalityId.set(null);
-    this.setMunicipality(null);
+    //this.setMunicipality(null);
   }
 
   onMunicipalityChange(municipalityId: number | null): void {
     this.selectedMunicipalityId.set(municipalityId);
     this.onSelectDistrcit(municipalityId!);
-    this.setMunicipality(municipalityId);
+    //this.setMunicipality(municipalityId);
   }
 
   onVotingLocationChange(votingLocationId: number | null): void {
@@ -179,7 +170,8 @@ export class UserFormUi implements OnInit {
   onSelectDistrcit(id: number): void {
     this.selectedDistrictId.set(id);
     let node = this.store.findNode(id);
-    if(node) this.allDistrict.set([node]);
+    if (node) this.allDistrict.set([node]);
+    this.form().controls.districtId.setValue(id);
   }
 
   protected parseDistrictId(event: Event): number | null {
@@ -237,7 +229,6 @@ export class UserFormUi implements OnInit {
       node = node.parentId ? this.store.findNode(node.parentId) : undefined;
     }
   }
-
 
   togglePassword() {
     this.hidePassword.update((v) => !v);

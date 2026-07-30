@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.Models.Errors
+﻿namespace Application.Models.Errors
 {
     public enum ValidationErrorCode
     {
@@ -22,6 +18,8 @@ namespace Application.Models.Errors
         DistrictMustExist,
         InvalidParent,
         DistrictMustHaveParent,
-        InvalidLevel
+        InvalidLevel,
+        PollingStationMustExist,
+        PollingStationLinked
     }
 }

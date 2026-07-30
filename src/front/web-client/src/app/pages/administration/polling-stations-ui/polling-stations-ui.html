@@ -1,1 +1,134 @@
-<p>polling-stations-ui works!</p>
+<div class="polling-stations">
+  <div class="title">
+    <h1>{{ 'pollingStations.title' | translate }}</h1>
+  </div>
+
+  <ng-template #template let-anchor>
+    <span>{{ anchor.nativeEElement.innerText }}</span>
+  </ng-template>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="data()" matSort class="mat-elevation-z8">
+      <ng-container matColumnDef="stationNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'pollingStations.stationNumber' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.stationNumber }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="votingLocationName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'pollingStations.votingLocationName' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.votingLocationName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="municipalityName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'pollingStations.municipalityName' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.municipalityName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subPrefectureName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'pollingStations.subPrefectureName' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.subPrefectureName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="departmentName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'pollingStations.departmentName' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.departmentName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="regionName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'pollingStations.regionName' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.regionName }}
+        </td>
+      </ng-container>
+
+      <!-- Actions Definition   -->
+      <ng-container matColumnDef="actions" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'pollingStations.action' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action-buttons">
+            <button
+              class="btn-grid btn-edit"
+              [title]="'pollingStations.actions.edit' | translate"
+              [routerLink]="['/admin/polling-stations', element.stationId, 'edit']"
+            >
+              <i class="ph ph-pencil"></i>
+            </button>
+
+            <button
+              *appHasPermission="'deletePollingStation'"
+              class="btn-grid btn-del"
+              [title]="'pollingStations.actions.delete' | translate"
+              (click)="onDelete(element)"
+            >
+              <i class="ph ph-trash"></i>
+            </button>
+
+            <button
+              *appHasPermission="'updatePollingStation'"
+              class="btn-grid"
+              [ngClass]="{
+                'btn-disable': element.DisabledDate,
+                'btn-enable': !element.DisabledDate,
+              }"
+              [id]="'btn-disable-' + element.stationId"
+              [title]="
+                element.DisabledDate
+                  ? ('pollingStations.actions.toggleEnable' | translate)
+                  : ('pollingStations.actions.toggleDisable' | translate)
+              "
+              (click)="onToggleActivePollingStation(element)"
+            >
+              @if (element.DisabledDate) {
+                <i class="ph ph-empty"></i>
+              } @else {
+                <i class="ph ph-check"></i>
+              }
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns(); sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+    </table>
+
+    @if (isLoadingResults()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    }
+  </div>
+
+  <mat-paginator
+    [length]="resultsLength()"
+    [pageSize]="10"
+    [pageIndex]="paginator?.pageIndex ?? 0"
+    [pageSizeOptions]="[10, 20, 30, 50]"
+  >
+    ></mat-paginator
+  >
+</div>
