@@ -8,6 +8,7 @@ namespace Application.Features.Users.Common
     public class UserModel
     {
         public PersonTitle Title { get; set; }
+        public string UserName { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
@@ -34,6 +35,7 @@ namespace Application.Features.Users.Common
         public static void MapDaoToModel(UserDao dao, UserModel model, DateTimeOffset now)
         {
             model.Title = dao.Civility;
+            model.UserName = dao.UserName ?? "";
             model.FirstName = dao.FirstName;
             model.LastName = dao.LastName;
             model.Email = dao.Email;

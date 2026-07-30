@@ -167,6 +167,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         Email = "john.doe@pcea.com",
                         PhoneNumber = "01 02 03 04 05",
                         EmployeeNumber = "221167P",
+                        AuthProvider = AuthProvider.Email,
                         UserDistricts = [new() { DistrictId = 16 }],
                     },
                     new List<string> { AppConstants.SuperAdminRole }
@@ -180,6 +181,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         Email = "sam.gamegie@pcea.com",
                         PhoneNumber = "01 02 03 04 05",
                         EmployeeNumber = "221157T",
+                        AuthProvider = AuthProvider.Email,
                         UserDistricts = [new() { DistrictId = 16 }],
                     },
                     new List<string> { AppConstants.OrganismAgentRole }
@@ -192,6 +194,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         LastName = "Baggins",
                         PhoneNumber = "01 02 03 04 05",
                         Email = "bilbo.baggins@pcea.com",
+                        AuthProvider = AuthProvider.Email,
                         UserDistricts = [new() { DistrictId = 151 }],
                     },
                     new List<string> { AppConstants.ElectorRole }
@@ -204,6 +207,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         LastName = "Shieldmaiden",
                         PhoneNumber = "01 02 03 04 05",
                         Email = "eowyn.shieldmaiden@pcea.com",
+                        AuthProvider = AuthProvider.Email,
                         UserDistricts = [new() { DistrictId = 151 }],
                     },
                     new List<string> { AppConstants.ElectorRole }
@@ -217,7 +221,22 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         PhoneNumber = "01 02 03 04 05",
                         Email = "eomer.riderofrohan@pcea.com",
                         EmployeeNumber = "221168K",
+                        AuthProvider = AuthProvider.Email,
                         UserDistricts = [new() { DistrictId = 16 }],
+                    },
+                    new List<string> { AppConstants.OrganismAgentRole }
+                ),
+                Tuple.Create(
+                    new UserDao()
+                    {
+                        UserName = "user5",
+                        FirstName = "Harvey",
+                        LastName = "Spector",
+                        PhoneNumber = "01 02 03 04 05",
+                        Email = "harvey.spector@pcea.com",
+                        EmployeeNumber = "221169T",
+                        AuthProvider = AuthProvider.Email,
+                        UserDistricts = [new() { DistrictId = 152 }],
                     },
                     new List<string> { AppConstants.OrganismAgentRole }
                 ),

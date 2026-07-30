@@ -9,15 +9,14 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, filter, startWith, take } from 'rxjs';
 import { DistrictNode } from '../../models/district.model';
-import { allLocationLevel } from '../../pages/types/enumerations';
 import { UserApiService } from '../../services/api/user.api.service';
 import { DistrictTreeHelperService } from '../../services/district-tree-helper.service';
-import { ElectoralDistrictLevel, UserModel } from '../../services/nswag/api-nswag-client';
+import { UserModel } from '../../services/nswag/api-nswag-client';
 import { LoaderUi } from '../loader/loader';
 import { PhoneInputUi } from '../phone-input-ui/phone-input-ui';
 import { StickyButtonsContainerComponent } from '../sticky-buttons-container/sticky-buttons-container.component';
@@ -49,11 +48,11 @@ export class UserFormUi implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly nodes$ = toObservable(this.store.nodesData);
 
-  private readonly user$ = toObservable(this.user);
-  readonly levels: ElectoralDistrictLevel[] = allLocationLevel;
-
   hidePassword = signal(true);
   hideConfirmPassword = signal(true);
+  allDistrict = signal<DistrictNode[]>([]);
+  selectedDistrictId = signal<number | null>(null);
+  roles = toSignal(this.userService.getUserRoles(), { initialValue: [] });
 
   allRegions = this.store.nodesData;
 
@@ -62,6 +61,7 @@ export class UserFormUi implements OnInit {
   selectedSubPrefectureId = signal<number | null>(null);
   selectedMunicipalityId = signal<number | null>(null);
   selectedVotingLocationId = signal<number | null>(null);
+  selectedRoleId = signal<string | null>(null);
 
   allDepartments = computed<DistrictNode[]>(() =>
     this.findChildren(this.allRegions(), this.selectedRegionId()),
@@ -81,18 +81,13 @@ export class UserFormUi implements OnInit {
 
   // En création, chaque niveau reste verrouillé tant que son parent n'est pas choisi.
   // En édition, tous les niveaux sont actifs car ils sont déjà déduits du districtId existant.
-  isDepartmentDisabled = computed(() => !this.isEditMode() && this.selectedRegionId() == null);
-  isSubPrefectureDisabled = computed(
-    () => !this.isEditMode() && this.selectedDepartmentId() == null,
-  );
-  isMunicipalityDisabled = computed(
-    () => !this.isEditMode() && this.selectedSubPrefectureId() == null,
-  );
-  isVotingLocationDisabled = computed(
-    () => !this.isEditMode() && this.selectedMunicipalityId() == null,
-  );
+  isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
+  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
 
   ngOnInit(): void {
+    this.setupEmployeeNumberValidation();
     if (!this.isEditMode()) return;
 
     const districtIdControl = this.form().controls.districtId;
@@ -109,34 +104,74 @@ export class UserFormUi implements OnInit {
       .subscribe(([, districtId]) => this.initializeChainFromDistrict(districtId!));
   }
 
+  private setupEmployeeNumberValidation(): void {
+    const rolesControl = this.form().controls.roles;
+    const employeeNuberControl = this.form().controls.employeeNumber;
+
+    rolesControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((roles) => {
+      const requiresEmployeeNumber = this.requiredEmployeeNumber();
+
+      if (requiresEmployeeNumber) {
+        employeeNuberControl.setValidators([Validators.required]);
+      } else {
+        employeeNuberControl.clearValidators();
+      }
+      employeeNuberControl.updateValueAndValidity();
+    });
+  }
+
+  requiredEmployeeNumber(): boolean {
+    const selectedRoleIds = this.form().controls.roles.value;
+    const allRoles = this.roles();
+    if (selectedRoleIds.length === 0) return false;
+
+    const selectedRoles = allRoles.filter((r) => selectedRoleIds.includes(r.id!));
+
+    if (selectedRoles.length === 0) return false;
+
+    return selectedRoles.some((r) => r.name !== 'ElectorRole');
+  }
+
   onRegionChange(regionId: number | null): void {
     this.selectedRegionId.set(regionId);
+    this.onSelectDistrcit(regionId!);
     this.selectedDepartmentId.set(null);
     this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
-    this.setMunicipality(null);
+    //this.setMunicipality(null);
   }
 
   onDepartmentChange(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
+    this.onSelectDistrcit(departmentId!);
     this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
-    this.setMunicipality(null);
+    //this.setMunicipality(null);
   }
 
   onSubPrefectureChange(subPrefectureId: number | null): void {
     this.selectedSubPrefectureId.set(subPrefectureId);
+    this.onSelectDistrcit(subPrefectureId!);
     this.selectedMunicipalityId.set(null);
-    this.setMunicipality(null);
+    //this.setMunicipality(null);
   }
 
   onMunicipalityChange(municipalityId: number | null): void {
     this.selectedMunicipalityId.set(municipalityId);
-    this.setMunicipality(municipalityId);
+    this.onSelectDistrcit(municipalityId!);
+    //this.setMunicipality(municipalityId);
   }
 
   onVotingLocationChange(votingLocationId: number | null): void {
     this.setVotingLocation(votingLocationId);
+    this.onSelectDistrcit(votingLocationId!);
+  }
+
+  onSelectDistrcit(id: number): void {
+    this.selectedDistrictId.set(id);
+    let node = this.store.findNode(id);
+    if (node) this.allDistrict.set([node]);
+    this.form().controls.districtId.setValue(id);
   }
 
   protected parseDistrictId(event: Event): number | null {
@@ -170,6 +205,8 @@ export class UserFormUi implements OnInit {
     this.selectedVotingLocationId.set(null);
 
     let node = this.store.findNode(districtId);
+    this.allDistrict.set([node!]);
+    if (node) this.selectedDistrictId.set(node.id);
 
     while (node) {
       switch (node.level) {
@@ -191,11 +228,6 @@ export class UserFormUi implements OnInit {
       }
       node = node.parentId ? this.store.findNode(node.parentId) : undefined;
     }
-  }
-
-  requiredEmployeeNumber(): boolean {
-    const roles = this.form().controls.roles.value;
-    return roles.some((r) => r === 'admin' || r === 'agent');
   }
 
   togglePassword() {

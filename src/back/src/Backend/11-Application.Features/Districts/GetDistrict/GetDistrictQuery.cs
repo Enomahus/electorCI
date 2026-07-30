@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.Common.Enums;
+using Application.Exceptions;
 using Application.Models;
 using Application.Models.Errors;
 using FluentValidation;
@@ -6,13 +7,12 @@ using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer.Contexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Pcea.Core.Net.Authorization.Application.Attributes;
 using Tools.Logging;
 
 namespace Application.Features.Districts.GetDistrict
 {
+    [WithPermission(nameof(AppPermission.GetDistrict))]
     public class GetDistrictQuery(long id) : IRequest<Result<GetDistrictResponse>>
     {
         public long Id { get; set; } = id;

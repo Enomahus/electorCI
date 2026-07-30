@@ -3,6 +3,7 @@
   <app-user-form-ui
     [isSaving]="isSaving()"
     [form]="form"
+    [user]="user()!"
     [isEditMode]="true"
     (formSubmitted)="onSave($event)"
     (goBack)="goBack()"

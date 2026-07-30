@@ -1,5 +1,3 @@
-import { effect } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormControl,
@@ -8,12 +6,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { patternPassword } from '../../constants';
-import { AuthProvider } from '../../services/nswag/api-nswag-client';
+import { AuthProvider, PersonTitle } from '../../services/nswag/api-nswag-client';
 import { passwordMatchValidator, phoneNumberValidator } from '../helpers/form.helper';
 
 export type UserFormFactory = FormGroup<{
-  //civility: FormControl<PersonTitle>;
+  civility: FormControl<PersonTitle>;
   lastName: FormControl<string | undefined>;
   firstName: FormControl<string | undefined>;
   phone: FormControl<string | undefined>;
@@ -27,9 +24,12 @@ export type UserFormFactory = FormGroup<{
 }>;
 
 export function createUserForm(isEditMode: boolean): UserFormFactory {
+  const passwordValidators = isEditMode ? [] : [Validators.required];
+  const confirmPasswordValidators = isEditMode ? [] : [Validators.required];
+
   const form = new FormGroup(
     {
-      //civility: new FormControl<PersonTitle>('mr', { nonNullable: true }),
+      civility: new FormControl<PersonTitle>('mr', { nonNullable: true }),
       lastName: new FormControl<string | undefined>(undefined, {
         validators: [Validators.required],
       }),
@@ -44,59 +44,26 @@ export function createUserForm(isEditMode: boolean): UserFormFactory {
         validators: [Validators.required, Validators.email],
       }),
       password: new FormControl<string | undefined>(undefined, {
-        validators: [Validators.required, Validators.pattern(patternPassword)],
+        validators: passwordValidators,
       }),
       confirmPassword: new FormControl<string | undefined>(undefined, {
-        validators: [Validators.required],
+        validators: confirmPasswordValidators,
       }),
       roles: new FormControl<string[]>([], { nonNullable: true }),
-      authProvider: new FormControl<AuthProvider | undefined>({ value: undefined, disabled: true }),
-      districtId: new FormControl<number | undefined>({ value: undefined, disabled: true }),
+      authProvider: new FormControl<AuthProvider | undefined>('email', {
+        validators: Validators.required,
+        nonNullable: true,
+      }),
+      districtId: new FormControl<number | undefined>(undefined, {
+        validators: Validators.required,
+      }),
     },
     {
-      validators: [
-        passwordMatchValidator('password', 'confirmPassword'),
-        employeeNumberRequiredValidator,
-      ],
+      validators: [passwordMatchValidator('password', 'confirmPassword')],
     },
   ) as UserFormFactory;
 
-  if (isEditMode) {
-    form.controls.password.clearValidators();
-    form.controls.password.updateValueAndValidity({ emitEvent: false });
-    form.controls.confirmPassword.clearValidators();
-    form.controls.confirmPassword.updateValueAndValidity({ emitEvent: false });
-  }
-
-  const setupReactivity = () => {
-    const rolesSignal = toSignal(form.controls.roles.valueChanges, {
-      initialValue: form.controls.roles.value,
-    });
-
-    // L'effet réagit automatiquement aux changements du signal
-    effect(() => {
-      const roles = rolesSignal();
-      const employeeControl = form.controls.employeeNumber;
-
-      const isOnlyDemandeur =
-        Array.isArray(roles) && roles.length === 1 && roles[0] === 'requester';
-
-      if (!isOnlyDemandeur) {
-        employeeControl.setValidators([Validators.required]);
-      } else {
-        employeeControl.clearValidators();
-      }
-      employeeControl.updateValueAndValidity({ emitEvent: false });
-    });
-  };
-
-  // // Si on est dans une méthode statique hors injection context, on utilise l'Injector fourni
-  // if (injector) {
-  //   runInInjectionContext(injector, setupReactivity);
-  // } else {
-  //   // Supposé être appelé directement dans un constructor() ou lors de l'initialisation des champs d'un composant
-  //   setupReactivity();
-  // }
+  //form.controls.authProvider.disable();
 
   return form;
 }
@@ -107,9 +74,9 @@ export const employeeNumberRequiredValidator: ValidatorFn = (
   const roles = control.get('roles')?.value as string[] | undefined;
   const employeeNumber = control.get('employeeNumber')?.value;
 
-  const isProfessional = roles?.some((r) => r === 'agent' || r === 'admin');
+  const requiresEmployeeNumber = roles?.some((r) => r !== 'ElectorRole');
 
-  if (isProfessional && !employeeNumber) {
+  if (requiresEmployeeNumber && !employeeNumber) {
     return { employeeNumberRequired: true };
   }
 
