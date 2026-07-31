@@ -12,14 +12,30 @@ namespace Infrastructure.Persistence.SQLServer.Providers
             CancellationToken token = default
         )
         {
-            var rolesLst = rolesId.ToList();
-            var permissions = await context
-                .Roles.Where(r => rolesLst.Contains(r.Id))
-                .SelectMany(r => r.Actions)
-                .SelectMany(a => a.Permissions)
-                .ToListAsync(token);
+            //var rolesLst = rolesId.ToList();
+            //var permissions = await context
+            //    .Roles.Where(r => rolesLst.Contains(r.Id))
+            //    .SelectMany(r => r.Actions)
+            //    .SelectMany(a => a.Permissions)
+            //    .ToListAsync(token);
 
-            return permissions;
+            //return permissions;
+
+            try
+            {
+                var rolesLst = rolesId.ToList();
+                return await context
+                    .Roles.Where(r => rolesLst.Contains(r.Id))
+                    .SelectMany(r => r.Actions)
+                    .SelectMany(a => a.Permissions)
+                    .ToListAsync(CancellationToken.None);
+            }
+            catch (OperationCanceledException) when(token.IsCancellationRequested)
+            {
+                return Enumerable.Empty<IPermission>();
+            }
+            
+            
         }
     }
 }

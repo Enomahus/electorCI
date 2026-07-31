@@ -35,7 +35,6 @@ namespace Application.Features.PollingStation.GetPollingStations
                             .ThenInclude(c => c.Parent)
                                 .ThenInclude(c => c.Parent)
                                     .ThenInclude(c => c.Parent)
-                    .AsNoTracking()
                     .ToListAsync(cancellationToken);
 
             var rows = pollingStations
@@ -58,7 +57,7 @@ namespace Application.Features.PollingStation.GetPollingStations
                     ps.District.Wording,
                     ps.Id,
                     ps.StationNumber,
-                    ps.DisabledDate == null || ps.DisabledDate > now,
+                    ps.DisabledDate != null && ps.DisabledDate <= now,
                     ps.DisabledDate
                 ))
                 .AsQueryable();
