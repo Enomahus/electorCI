@@ -191,6 +191,16 @@
     "disablePollinStationError": "Erreur lors de la désactivation du bureai de vote",
     "disablePollinStationSuccess": "Bureau de vote désactivé avec succès"
   },
+  "pollingStation": {
+    "stationNumber": "Numéro du bureau",
+    "wording": "Description",
+    "votingLocation": "Lieu de vote",
+    "municipality": "Commune / Village",
+    "subPrefecture": "Sous-préfecture",
+    "department": "Département",
+    "region": "Région",
+    "isActive": "Activé"
+  },
   "users": {
     "title": "Liste des Utilisateurs",
     "createUser": "Créer un utilisateur",

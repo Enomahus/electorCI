@@ -55,4 +55,9 @@ export class DistrictTreeHelperService {
       children: district.children?.map((d) => this.mapToNode(d)),
     };
   }
+
+  findChildren(nodes: DistrictNode[], parentId: number | null): DistrictNode[] {
+    if (!parentId) return [];
+    return nodes.find((n) => n.id === parentId)?.children ?? [];
+  }
 }

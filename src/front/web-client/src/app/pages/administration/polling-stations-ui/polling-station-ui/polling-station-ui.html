@@ -1,0 +1,164 @@
+<div class="polling-station-container">
+  <form class="polling-station-form" [formGroup]="form()">
+    <section class="grid-item district-layout">
+      <h2>Circonscription</h2>
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="regionId">Region</label>
+          <select id="regionId" (change)="onRegionChange(parseDistrictId($event))">
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (region of allRegions(); track region.id) {
+              <option [value]="region.id" [selected]="region.id === selectedRegionId()">
+                {{ region.code }} {{ region.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="departmentId">Département</label>
+          <select
+            id="departmentId"
+            [disabled]="isDepartmentDisabled()"
+            (change)="onDepartmentChange(parseDistrictId($event))"
+          >
+            <option value="">{{ 'global.select' | translate }}</option>
+            @for (department of allDepartments(); track department.id) {
+              <option [value]="department.id" [selected]="department.id === selectedDepartmentId()">
+                {{ department.code }} {{ department.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="subPrefecture">Sous-Préfecture</label>
+          <select
+            id="subPrefecture"
+            [disabled]="isSubPrefectureDisabled()"
+            (change)="onSubPrefectureChange(parseDistrictId($event))"
+          >
+            <option value="" [selected]="selectedRegionId() === null">
+              {{ 'global.select' | translate }}
+            </option>
+            @for (subPrefecture of allSubPrefectures(); track subPrefecture.id) {
+              <option
+                [value]="subPrefecture.id"
+                [selected]="subPrefecture.id === selectedSubPrefectureId()"
+              >
+                {{ subPrefecture.code }} {{ subPrefecture.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="municipalityId">Municipalité / Village</label>
+          <select
+            id="municipalityId"
+            [disabled]="isMunicipalityDisabled()"
+            (change)="onMunicipalityChange(parseDistrictId($event))"
+          >
+            <option value="" [selected]="selectedMunicipalityId() === null">
+              {{ 'global.select' | translate }}
+            </option>
+            @for (municipality of allMunicipalities(); track municipality.id) {
+              <option
+                [value]="municipality.id"
+                [selected]="municipality.id === selectedMunicipalityId()"
+              >
+                {{ municipality.code }} {{ municipality.wording }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="input-block required">
+          <label for="votingLocationId">Lieu de vote</label>
+          <select
+            id="votingLocationId"
+            [disabled]="isVotingLocationDisabled()"
+            (change)="onVotingLocationChange(parseDistrictId($event))"
+          >
+            <option value="" [selected]="selectedVotingLocationId() == null">
+              {{ 'global.select' | translate }}
+            </option>
+            @for (votingLocation of allVotingLocations(); track votingLocation.id) {
+              <option
+                [value]="votingLocation.id"
+                [selected]="votingLocation.id === selectedVotingLocationId()"
+              >
+                {{ votingLocation.code }} {{ votingLocation.wording }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-item polling-station-layout">
+      <h2>Information d'identification</h2>
+      <div class="inputs-container">
+        <div class="input-block required">
+          <label for="stationNumber">{{ 'pollingStation.stationNumber' | translate }}</label>
+          <input id="stationNumber" type="text" formControlName="stationNumber" />
+          @if (form().controls.stationNumber.touched && form().controls.stationNumber.errors) {
+            <ul class="form-error">
+              @if (form().controls.stationNumber.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        <div class="input-block required">
+          <label for="wording">{{ 'pollingStation.wording' | translate }}</label>
+          <input id="wording" type="text" formControlName="wording" />
+          @if (form().controls.wording.touched && form().controls.wording.errors) {
+            <ul class="form-error">
+              @if (form().controls.wording.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="input-block">
+          <div class="checkbox-container">
+            <label for="enabled" class="checkbox">
+              <input type="checkbox" id="enabled" name="enabled" formControlName="isActive" />
+              {{ 'pollingStation.isActive' | translate }}</label
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>
+
+<pre>{{ form().value | json }}</pre>
+
+<app-sticky-buttons-container>
+  <button
+    type="button"
+    class="btn primary"
+    (click)="onSubmit()"
+    [disabled]="form().invalid || isSaving()"
+  >
+    {{ 'global.save' | translate }}
+    @if (isSaving()) {
+      <app-loader-ui></app-loader-ui>
+    }
+  </button>
+  <button
+    type="button"
+    class="btn outline outline-primary"
+    (click)="goBack.emit()"
+    [disabled]="isSaving()"
+  >
+    {{ 'global.back' | translate }}
+  </button>
+</app-sticky-buttons-container>
