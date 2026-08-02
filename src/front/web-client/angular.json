@@ -51,7 +51,11 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss", "src/styles/index.scss"]
+            "styles": [
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/styles/index.scss"
+            ]
           },
           "configurations": {
             "production": {

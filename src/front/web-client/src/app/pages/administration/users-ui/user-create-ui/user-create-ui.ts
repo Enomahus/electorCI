@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { UserApiService } from '../../../../services/api/user.api.service';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
-import { CreateUserCommand, UserModel } from '../../../../services/nswag/api-nswag-client';
+import { CreateUserCommand, ResultOfError, UserModel } from '../../../../services/nswag/api-nswag-client';
 import { createUserForm } from '../../../../shared/user-form-ui/user-form';
 import { UserFormUi } from '../../../../shared/user-form-ui/user-form-ui';
 
@@ -55,7 +55,15 @@ export class UserCreateUi implements OnInit {
           this.isSaving.set(false);
           this.goBack();
         },
-        error: () => {
+        error: (err: ResultOfError) => {
+          if (err.data?.code === 'validation' && err.data?.additionalData) {
+            for (const field in err.data.additionalData) {
+              const validationCode = err.data.additionalData[field];
+              if (validationCode === 'unique') {
+                this.form.controls.email.setErrors({ unique: true });
+              }
+            }
+          }
           this.isSaving.set(false);
         },
       });

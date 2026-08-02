@@ -242,7 +242,7 @@
       <div class="inputs-container">
         <div class="input-block required">
           <label for="roles-select">{{ 'user.activity' | translate }}</label>
-          <select id="roles-select" formControlName="roles">
+          <select id="roles-select" formControlName="roles" multiple>
             @for (role of roles(); track role.id) {
               <option [value]="role.id">{{ 'roles.' + role.name | translate }}</option>
             }
