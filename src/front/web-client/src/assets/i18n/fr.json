@@ -18,6 +18,13 @@
     "noData": "Aucune données",
     "noTitleTemplate": "ELector-CI",
     "titleTemplate": "{{title}} | ELector-CI",
+    "constituency": "Circonscription",
+    "region":"Région",
+    "department":"Département",
+    "subPrefecture":"Sous-préfecture",
+    "municipality":"Commune / Village",
+    "votingLocation":"Lieu de vote",
+    "identityInfos": "Information d'identification",
     "language": "Langue",
     "lang": {
       "fr": "fr",

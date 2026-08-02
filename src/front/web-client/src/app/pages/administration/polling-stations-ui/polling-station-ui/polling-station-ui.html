@@ -1,10 +1,10 @@
 <div class="polling-station-container">
   <form class="polling-station-form" [formGroup]="form()">
     <section class="grid-item district-layout">
-      <h2>Circonscription</h2>
+      <h2>{{ 'global.constituency' | translate }}</h2>
       <div class="inputs-container">
         <div class="input-block required">
-          <label for="regionId">Region</label>
+          <label for="regionId">{{ 'global.region' | translate }}</label>
           <select id="regionId" (change)="onRegionChange(parseDistrictId($event))">
             <option value="">{{ 'global.select' | translate }}</option>
             @for (region of allRegions(); track region.id) {
@@ -16,7 +16,7 @@
         </div>
 
         <div class="input-block required">
-          <label for="departmentId">Département</label>
+          <label for="departmentId">{{ 'global.department' | translate }}</label>
           <select
             id="departmentId"
             [disabled]="isDepartmentDisabled()"
@@ -32,7 +32,7 @@
         </div>
 
         <div class="input-block required">
-          <label for="subPrefecture">Sous-Préfecture</label>
+          <label for="subPrefecture">{{ 'global.subPrefecture' | translate }}</label>
           <select
             id="subPrefecture"
             [disabled]="isSubPrefectureDisabled()"
@@ -53,7 +53,7 @@
         </div>
 
         <div class="input-block required">
-          <label for="municipalityId">Municipalité / Village</label>
+          <label for="municipalityId">{{ 'global.municipality' | translate }}</label>
           <select
             id="municipalityId"
             [disabled]="isMunicipalityDisabled()"
@@ -74,7 +74,7 @@
         </div>
 
         <div class="input-block required">
-          <label for="votingLocationId">Lieu de vote</label>
+          <label for="votingLocationId">{{ 'global.votingLocation' | translate }}</label>
           <select
             id="votingLocationId"
             [disabled]="isVotingLocationDisabled()"
@@ -97,7 +97,7 @@
     </section>
 
     <section class="grid-item polling-station-layout">
-      <h2>Information d'identification</h2>
+      <h2>{{ 'global.identityInfos' | translate }}</h2>
       <div class="inputs-container">
         <div class="input-block required">
           <label for="stationNumber">{{ 'pollingStation.stationNumber' | translate }}</label>
@@ -138,8 +138,6 @@
     </section>
   </form>
 </div>
-
-<pre>{{ form().value | json }}</pre>
 
 <app-sticky-buttons-container>
   <button

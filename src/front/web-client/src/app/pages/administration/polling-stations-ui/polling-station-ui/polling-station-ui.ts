@@ -1,4 +1,4 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
@@ -33,7 +33,6 @@ import { PollingStationForm } from './polling-station-form';
     ReactiveFormsModule,
     StickyButtonsContainerComponent,
     LoaderUi,
-    JsonPipe,
   ],
   templateUrl: './polling-station-ui.html',
   styleUrl: './polling-station-ui.scss',

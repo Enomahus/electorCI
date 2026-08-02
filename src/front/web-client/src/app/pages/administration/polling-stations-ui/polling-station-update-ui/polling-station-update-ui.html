@@ -1,13 +1,17 @@
-@if (isLoading()) {
-  <app-loader-ui></app-loader-ui>
-} @else {
-  <h1>{{ pollingStation()?.wording }}</h1>
-  <app-polling-station-ui
-    [isSaving]="isSaving()"
-    [isEditMode]="true"
-    [pollingStation]="pollingStation()"
-    [form]="form()"
-    (goBack)="goBack()"
-    (submittedForm)="onUpdatePollingStation($event)"
-  ></app-polling-station-ui>
-}
+<div class="update-station-container">
+  @if (isLoading()) {
+    <app-loader-ui></app-loader-ui>
+  } @else {
+    <div class="tres">
+      <h1>{{ pollingStation()?.wording }}</h1>
+    </div>
+    <app-polling-station-ui
+      [isSaving]="isSaving()"
+      [isEditMode]="true"
+      [pollingStation]="pollingStation()"
+      [form]="form()"
+      (goBack)="goBack()"
+      (submittedForm)="onUpdatePollingStation($event)"
+    ></app-polling-station-ui>
+  }
+</div>

@@ -1,8 +1,7 @@
-.polling-station {
+.polling-stations {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  margin: 10px 4px 2px 8px;
+  padding: 24px;
 
   .title {
     display: flex;
