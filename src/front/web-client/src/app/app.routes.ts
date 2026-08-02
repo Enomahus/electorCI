@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { DistrictCreateUi } from './pages/administration/districts-ui/district-create-ui/district-create-ui';
 import { DistrictUpdateUi } from './pages/administration/districts-ui/district-update-ui/district-update-ui';
 import { DistrictsUi } from './pages/administration/districts-ui/districts-ui';
+import { PollingStationUpdateUi } from './pages/administration/polling-stations-ui/polling-station-update-ui/polling-station-update-ui';
 import { PollingStationsUi } from './pages/administration/polling-stations-ui/polling-stations-ui';
 import { UserCreateUi } from './pages/administration/users-ui/user-create-ui/user-create-ui';
 import { UserUpdateUi } from './pages/administration/users-ui/user-update-ui/user-update-ui';
@@ -93,6 +94,14 @@ export const routes: Routes = [
               permission: perm('accessPollingStationsAdminPage'),
             },
             title: 'pollingStation.title',
+          },
+          {
+            path: 'polling-stations/:id/edit',
+            component: PollingStationUpdateUi,
+            title: 'pollingStation.editTitle',
+            data: {
+              permission: perm('updatePollingStation'),
+            },
           },
           {
             path: 'users',

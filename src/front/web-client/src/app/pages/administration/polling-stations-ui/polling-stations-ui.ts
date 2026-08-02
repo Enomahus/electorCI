@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Router, RouterLink } from '@angular/router';
@@ -29,6 +28,7 @@ import {
 } from '../../../services/nswag/api-nswag-client';
 import { BaseTable } from '../../../shared/base-table/base-table';
 import { ConfirmDialogUi } from '../../../shared/confirm-dialog/confirm-dialog';
+import { LoaderUi } from '../../../shared/loader/loader';
 @Component({
   selector: 'app-polling-stations-ui',
   imports: [
@@ -41,7 +41,7 @@ import { ConfirmDialogUi } from '../../../shared/confirm-dialog/confirm-dialog';
     MatPaginatorModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule,
+    LoaderUi,
   ],
   templateUrl: './polling-stations-ui.html',
   styleUrl: './polling-stations-ui.scss',

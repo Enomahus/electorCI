@@ -105,6 +105,7 @@ namespace Web.Common
                 .AddControllers(options =>
                 {
                     options.Filters.Add<ApiExceptionFilterAttribute>();
+                    //options.Filters.Add<ModelStateValidationFilter>();
                 })
                 .AddApplicationPart(typeof(Application.Features.ConfigureServices).Assembly)
                 .AddJsonOptions(o =>

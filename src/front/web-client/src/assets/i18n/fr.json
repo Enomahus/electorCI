@@ -18,6 +18,13 @@
     "noData": "Aucune données",
     "noTitleTemplate": "ELector-CI",
     "titleTemplate": "{{title}} | ELector-CI",
+    "constituency": "Circonscription",
+    "region":"Région",
+    "department":"Département",
+    "subPrefecture":"Sous-préfecture",
+    "municipality":"Commune / Village",
+    "votingLocation":"Lieu de vote",
+    "identityInfos": "Information d'identification",
     "language": "Langue",
     "lang": {
       "fr": "fr",
@@ -190,6 +197,16 @@
     "deletePollingStationError": "Erreur lors de la suppression du bureau de vote",
     "disablePollinStationError": "Erreur lors de la désactivation du bureai de vote",
     "disablePollinStationSuccess": "Bureau de vote désactivé avec succès"
+  },
+  "pollingStation": {
+    "stationNumber": "Numéro du bureau",
+    "wording": "Description",
+    "votingLocation": "Lieu de vote",
+    "municipality": "Commune / Village",
+    "subPrefecture": "Sous-préfecture",
+    "department": "Département",
+    "region": "Région",
+    "isActive": "Activé"
   },
   "users": {
     "title": "Liste des Utilisateurs",

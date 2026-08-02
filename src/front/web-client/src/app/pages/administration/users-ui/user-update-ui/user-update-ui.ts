@@ -67,8 +67,6 @@ export class UserUpdateUi implements OnInit {
         lastName: user.lastName,
         phone: user.phone,
         email: user.email,
-        // password: user.password,
-        // confirmPassword: user.password,
         employeeNumber: user.employeeNumber,
         roles: user.roles,
         districtId: user.districtId,

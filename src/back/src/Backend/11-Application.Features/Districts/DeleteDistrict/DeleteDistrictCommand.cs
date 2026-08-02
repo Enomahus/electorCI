@@ -33,11 +33,8 @@ namespace Application.Features.Districts.DeleteDistrict
                 {
                     RuleFor(c => c.Id)
                         .MustAsync(
-                            (pollingStationId, token) =>
-                                _context.PollingStations.AnyAsync(
-                                    ps => ps.Id == pollingStationId,
-                                    token
-                                )
+                            (districtId, token) =>
+                                _context.Districts.AnyAsync(d => d.Id == districtId, token)
                         )
                         .WithMessage(ValidationErrorCode.DistrictMustExist.ToString());
                 });

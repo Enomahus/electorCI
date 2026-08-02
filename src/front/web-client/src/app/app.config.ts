@@ -2,7 +2,6 @@ import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, TitleStrategy, withComponentInputBinding } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
 import { routes } from './app.routes';
@@ -25,7 +24,6 @@ export const appConfig: ApplicationConfig = {
       deps: [ConfigService],
     },
     provideTranslations(),
-    provideAnimationsAsync(),
     provideToastr(),
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: TitleStrategy, useClass: CustomTitleStrategy },

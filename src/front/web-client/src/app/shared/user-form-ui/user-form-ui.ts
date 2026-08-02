@@ -64,19 +64,19 @@ export class UserFormUi implements OnInit {
   selectedRoleId = signal<string | null>(null);
 
   allDepartments = computed<DistrictNode[]>(() =>
-    this.findChildren(this.allRegions(), this.selectedRegionId()),
+    this.store.findChildren(this.allRegions(), this.selectedRegionId()),
   );
 
   allSubPrefectures = computed<DistrictNode[]>(() =>
-    this.findChildren(this.allDepartments(), this.selectedDepartmentId()),
+    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
   );
 
   allMunicipalities = computed<DistrictNode[]>(() =>
-    this.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
+    this.store.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
   );
 
   allVotingLocations = computed<DistrictNode[]>(() =>
-    this.findChildren(this.allMunicipalities(), this.selectedMunicipalityId()),
+    this.store.findChildren(this.allMunicipalities(), this.selectedMunicipalityId()),
   );
 
   // En création, chaque niveau reste verrouillé tant que son parent n'est pas choisi.
@@ -179,20 +179,20 @@ export class UserFormUi implements OnInit {
     return value ? Number(value) : null;
   }
 
-  private setMunicipality(municipalityId: number | null): void {
-    this.selectedMunicipalityId.set(municipalityId);
-    this.form().controls.districtId.setValue(municipalityId ?? undefined);
-  }
+  // private setMunicipality(municipalityId: number | null): void {
+  //   this.selectedMunicipalityId.set(municipalityId);
+  //   this.form().controls.districtId.setValue(municipalityId ?? undefined);
+  // }
 
   private setVotingLocation(votingLocationId: number | null): void {
     this.selectedVotingLocationId.set(votingLocationId);
     this.form().controls.districtId.setValue(votingLocationId ?? undefined);
   }
 
-  private findChildren(nodes: DistrictNode[], parentId: number | null): DistrictNode[] {
-    if (!parentId) return [];
-    return nodes.find((n) => n.id === parentId)?.children ?? [];
-  }
+  // private findChildren(nodes: DistrictNode[], parentId: number | null): DistrictNode[] {
+  //   if (!parentId) return [];
+  //   return nodes.find((n) => n.id === parentId)?.children ?? [];
+  // }
 
   // Le districtId d'un utilisateur peut pointer n'importe quel niveau (municipalité si aucun
   // lieu de vote n'a été choisi, lieu de vote sinon) : on remonte l'arbre via parentId en se
@@ -244,6 +244,9 @@ export class UserFormUi implements OnInit {
     if (this.form().invalid) return;
 
     const formValue: UserModel = this.form().getRawValue();
+    //const formValue: UserModel = {
+
+    //}
     this.formSubmitted.emit(formValue);
   }
 }
