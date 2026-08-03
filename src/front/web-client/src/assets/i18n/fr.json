@@ -218,6 +218,8 @@
     "subtitle": "Consultez et gérez la liste des utilisateurs.",
     "disableUserError": "Erreur lors de la désactivation de l'utilisateur",
     "disableUserSuccess": "Utilisateur désactivé avec succès",
+    "successDeleting": "Utilisateur supprimé avec succès",
+    "errorDeleting": "Erreur lors de la suppression de l'utilisateur.",
     "columns": {
       "lastName": "Nom",
       "firstName": "Prénom",
