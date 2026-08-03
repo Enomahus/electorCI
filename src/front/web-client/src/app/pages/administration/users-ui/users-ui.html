@@ -1,23 +1,27 @@
-<section class="users-page">
-  <header class="users-page__header">
+<div class="users-page">
+  <div class="users-page-header">
     <h1>{{ 'users.title' | translate }}</h1>
     <a mat-flat-button class="btn primary" routerLink="/admin/users/new"
       ><i class="ph ph-plus"></i> {{ 'users.createUser' | translate }}</a
     >
-  </header>
+  </div>
 
-  <mat-form-field class="users-page__search" appearance="outline" subscriptSizing="dynamic">
+  <ng-template #template let-anchor>
+    <span>{{ anchor.nativeEElement.innerText }}</span>
+  </ng-template>
+
+  <mat-form-field class="users-page-search" appearance="outline" subscriptSizing="dynamic">
     <mat-label>{{ 'global.search' | translate }}</mat-label>
     <input matInput (input)="onSearchChange($any($event.target).value)" />
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
-  <div class="users-page__table-wrapper">
+  <div class="table-wrapper">
     @if (isLoadingResults() || isDeleting()) {
-      <mat-progress-bar class="users-page__progress" mode="indeterminate" />
+      <mat-progress-bar class="users-page-progress" mode="indeterminate" />
     }
 
-    <table mat-table [dataSource]="data()" matSort matSortDisableClear class="users-page__table">
+    <table mat-table [dataSource]="data()" matSort matSortDisableClear class="mat-elevation-z8">
       <ng-container matColumnDef="lastName">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="lastName">
           {{ 'users.columns.lastName' | translate }}
@@ -59,17 +63,16 @@
         </th>
         <td mat-cell *matCellDef="let user">
           <span
-            class="users-page__status"
-            [class.users-page__status--active]="user.isActive"
-            [class.users-page__status--inactive]="!user.isActive"
+            class="users-page-status"
+            [class.users-page-status-active]="user.isActive"
+            [class.users-page-status-inactive]="!user.isActive"
           >
-
             {{ (user.isActive ? 'users.status.active' : 'users.status.inactive') | translate }}
           </span>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="isAdmin">
+       <ng-container matColumnDef="isAdmin">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ 'users.columns.isAdmin' | translate }}
         </th>
@@ -101,10 +104,10 @@
       </ng-container>
 
       <ng-container matColumnDef="actions" stickyEnd="true">
-        <th mat-header-cell *matHeaderCellDef class="users-page__actions-header">
+        <th mat-header-cell *matHeaderCellDef class="users-page-actions-header">
           {{ 'global.actions' | translate }}
         </th>
-        <td mat-cell *matCellDef="let user" class="users-page__actions">
+        <td mat-cell *matCellDef="let user" class="users-page-actions">
           <button
             *appHasPermission="'updateUser'"
             class="btn-grid btn-edit"
@@ -152,11 +155,11 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-      <tr class="mat-row" *matNoDataRow>
-        <td class="users-page__no-data" [attr.colspan]="displayedColumns.length">
+       <tr class="mat-row" *matNoDataRow>
+        <td class="users-page-no-data" [attr.colspan]="displayedColumns.length">
           {{ 'global.noData' | translate }}
         </td>
       </tr>
@@ -169,4 +172,4 @@
     [pageSizeOptions]="[10, 25, 50]"
     showFirstLastButtons
   />
-</section>
+</div>

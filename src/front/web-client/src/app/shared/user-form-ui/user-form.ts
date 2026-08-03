@@ -15,6 +15,7 @@ export type UserFormFactory = FormGroup<{
   firstName: FormControl<string | undefined>;
   phone: FormControl<string | undefined>;
   email: FormControl<string | undefined>;
+  isActive: FormControl<boolean | undefined>;
   password: FormControl<string | undefined>;
   confirmPassword: FormControl<string | undefined>;
   employeeNumber: FormControl<string | undefined>;
@@ -42,6 +43,10 @@ export function createUserForm(isEditMode: boolean): UserFormFactory {
       }),
       email: new FormControl<string | undefined>(undefined, {
         validators: [Validators.required, Validators.email],
+      }),
+      isActive: new FormControl<boolean | undefined>(undefined, {
+        validators: [Validators.required],
+        nonNullable: true,
       }),
       password: new FormControl<string | undefined>(undefined, {
         validators: passwordValidators,

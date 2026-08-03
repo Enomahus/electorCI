@@ -138,7 +138,6 @@ export class UserFormUi implements OnInit {
     this.selectedDepartmentId.set(null);
     this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
-    //this.setMunicipality(null);
   }
 
   onDepartmentChange(departmentId: number | null): void {
@@ -146,20 +145,17 @@ export class UserFormUi implements OnInit {
     this.onSelectDistrcit(departmentId!);
     this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
-    //this.setMunicipality(null);
   }
 
   onSubPrefectureChange(subPrefectureId: number | null): void {
     this.selectedSubPrefectureId.set(subPrefectureId);
     this.onSelectDistrcit(subPrefectureId!);
     this.selectedMunicipalityId.set(null);
-    //this.setMunicipality(null);
   }
 
   onMunicipalityChange(municipalityId: number | null): void {
     this.selectedMunicipalityId.set(municipalityId);
     this.onSelectDistrcit(municipalityId!);
-    //this.setMunicipality(municipalityId);
   }
 
   onVotingLocationChange(votingLocationId: number | null): void {
@@ -179,20 +175,10 @@ export class UserFormUi implements OnInit {
     return value ? Number(value) : null;
   }
 
-  // private setMunicipality(municipalityId: number | null): void {
-  //   this.selectedMunicipalityId.set(municipalityId);
-  //   this.form().controls.districtId.setValue(municipalityId ?? undefined);
-  // }
-
   private setVotingLocation(votingLocationId: number | null): void {
     this.selectedVotingLocationId.set(votingLocationId);
     this.form().controls.districtId.setValue(votingLocationId ?? undefined);
   }
-
-  // private findChildren(nodes: DistrictNode[], parentId: number | null): DistrictNode[] {
-  //   if (!parentId) return [];
-  //   return nodes.find((n) => n.id === parentId)?.children ?? [];
-  // }
 
   // Le districtId d'un utilisateur peut pointer n'importe quel niveau (municipalité si aucun
   // lieu de vote n'a été choisi, lieu de vote sinon) : on remonte l'arbre via parentId en se
@@ -244,9 +230,7 @@ export class UserFormUi implements OnInit {
     if (this.form().invalid) return;
 
     const formValue: UserModel = this.form().getRawValue();
-    //const formValue: UserModel = {
 
-    //}
     this.formSubmitted.emit(formValue);
   }
 }

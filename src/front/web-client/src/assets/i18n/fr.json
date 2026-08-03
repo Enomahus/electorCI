@@ -259,6 +259,7 @@
     "employeeNumber": "Numéro matricule",
     "district": "Circonscription",
     "activity": "Activité",
+    "isActive": "Actif",
     "authMethods": {
       "label": "Authentification",
       "google": "Google",

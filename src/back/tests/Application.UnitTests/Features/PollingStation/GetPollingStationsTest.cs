@@ -154,12 +154,12 @@ namespace Application.UnitTests.Features.PollingStation
             row.VotingLocationCode.Should().Be(votingLocation.Code);
             row.StationId.Should().Be(pollingStation.Id);
             row.StationNumber.Should().Be(pollingStation.StationNumber);
-            row.IsDisabled.Should().BeFalse();
+            row.IsActive.Should().BeTrue();
             row.DisabledDate.Should().BeNull();
         }
 
         [Fact]
-        public async Task GetPollingStationsTest_ShouldReturnIsDisabledTrue_WhenStationIsDisabled()
+        public async Task GetPollingStationsTest_ShouldReturnIsActiveTrue_WhenStationIsActive()
         {
             // Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
@@ -224,7 +224,7 @@ namespace Application.UnitTests.Features.PollingStation
 
             // Assert
             var row = result.Data!.Data.Should().ContainSingle().Subject;
-            row.IsDisabled.Should().BeTrue();
+            row.IsActive.Should().BeTrue();
             row.DisabledDate.Should().Be(disabledDate);
         }
     }

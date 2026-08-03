@@ -3,7 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { map, switchMap, tap } from 'rxjs';
+import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { PollingStationApiService } from '../../../../services/api/pollin-station.api.service';
+import { BreadcrumbService } from '../../../../services/breadcrumb.service';
 import {
   GetPollingStationResponse,
   PollingStationModel,
@@ -28,6 +30,7 @@ export class PollingStationUpdateUi implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
   private readonly pollingStationService = inject(PollingStationApiService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
 
   isLoading = signal(false);
   isSaving = signal(false);
@@ -36,21 +39,39 @@ export class PollingStationUpdateUi implements OnInit {
   form = signal<PollingStationForm>(createPollingStationForm(true));
 
   ngOnInit(): void {
-    this.route.params.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      map((params) => params['id']),
-      tap((id) => this.pollingStationId.set(id)),
-      switchMap((id) => this.pollingStationService.getPollingStation(id)),
-      tap((station) => {
-        this.pollingStation.set(station.data!);
-        this.form().patchValue({
-          stationNumber: station.data?.stationNumber,
-          wording: station.data?.wording,
-          districtId: station.data?.districtId,
-          isActive: station.data?.isActive,
-        });
-      }),
-    ).subscribe();
+    this.route.params
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        map((params) => params['id']),
+        tap((id) => this.pollingStationId.set(id)),
+        switchMap((id) => this.pollingStationService.getPollingStation(id)),
+        tap((station) => {
+          this.pollingStation.set(station.data!);
+          this.setBreadcrumb(station.data!);
+          this.form().patchValue({
+            stationNumber: station.data?.stationNumber,
+            wording: station.data?.wording,
+            districtId: station.data?.districtId,
+            isActive: station.data?.isActive,
+          });
+        }),
+      )
+      .subscribe();
+  }
+
+  private setBreadcrumb(station: GetPollingStationResponse): void {
+    let breadcrumb: Breadcrumb[] = [];
+
+    breadcrumb = [
+      {
+        label: this.translateService.instant('breadcrumb.pollingStations'),
+        url: `/admin/polling-stations`,
+      },
+      {
+        label: `${station.stationNumber} ${station.wording}`,
+      },
+    ];
+    this.breadcrumbService.setBreadcrumbs(breadcrumb);
   }
 
   onUpdatePollingStation(model: PollingStationModel): void {
