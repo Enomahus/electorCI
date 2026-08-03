@@ -59,6 +59,7 @@ export class DistrictUpdateUi implements OnInit {
       .subscribe({
         next: (result) => {
           this.district.set(result);
+          this.setBreadcrumb(result);
           //this.districtId = result.id;
           //this.isSoren = result.isSoren;
           this.isLoading.set(false);
@@ -69,10 +70,10 @@ export class DistrictUpdateUi implements OnInit {
           this.router.navigate(['/']);
         },
       });
-    this.setBreadcrumb();
+
   }
 
-  private setBreadcrumb(): void {
+  private setBreadcrumb(district: GetDistrictResponse): void {
     let breadcrumbs: Breadcrumb[] = [];
     breadcrumbs = [
       {
@@ -81,7 +82,7 @@ export class DistrictUpdateUi implements OnInit {
       },
       {
         //label: this.translateService.instant('breadcrumb.updateDistrict'),
-        label: this.district()?.wording!,
+        label: district.wording!,
       },
     ];
     this.breadcrumbService.setBreadcrumbs(breadcrumbs);

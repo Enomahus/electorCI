@@ -19,11 +19,11 @@
     "noTitleTemplate": "ELector-CI",
     "titleTemplate": "{{title}} | ELector-CI",
     "constituency": "Circonscription",
-    "region":"Région",
-    "department":"Département",
-    "subPrefecture":"Sous-préfecture",
-    "municipality":"Commune / Village",
-    "votingLocation":"Lieu de vote",
+    "region": "Région",
+    "department": "Département",
+    "subPrefecture": "Sous-préfecture",
+    "municipality": "Commune / Village",
+    "votingLocation": "Lieu de vote",
     "identityInfos": "Information d'identification",
     "language": "Langue",
     "lang": {
@@ -154,6 +154,7 @@
     }
   },
   "district": {
+    "updateDistrict": "Modifier la circonscription",
     "successCreating": "Circonscription créée avec succès",
     "errorCreating": "Erreur lors de la création de la circonscription.",
     "successUpdating": "Circonscription mise à jour avec succès",
@@ -161,7 +162,7 @@
     "successDeleting": "Circonscription supprimée avec succès",
     "errorDeleting": "Erreur lors de la suppression de la circonscription.",
     "createDistrict": "Créer une circonscription",
-    "gleInfos": "Informations générale",
+    "generalInfos": "Informations générales",
     "parent": "Rattachement électoral",
     "wording": "Libellé",
     "level": "Hierarchie",

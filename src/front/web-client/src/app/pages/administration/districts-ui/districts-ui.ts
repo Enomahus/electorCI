@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { DistrictNode } from '../../../models/district.model';
 import { DistrictApiService } from '../../../services/api/district.api.service';
 import { DistrictTreeHelperService } from '../../../services/district-tree-helper.service';
+import { ToggleActiveDistrictCommand } from '../../../services/nswag/api-nswag-client';
 import { DistrictTreeUi } from '../../../shared/district-tree-ui/district-tree-ui';
 
 @Component({
@@ -47,8 +48,8 @@ export class DistrictsUi {
 
     this.districtService
       .deleteDistrict(node.id, {
-        successMessage: this.translateService.instant('district.successdeleting'),
-        errorMessage: this.translateService.instant('district.errordeleting'),
+        successMessage: this.translateService.instant('district.successDeleting'),
+        errorMessage: this.translateService.instant('district.errorDeleting'),
       })
       .subscribe({
         next: () => {
@@ -64,14 +65,16 @@ export class DistrictsUi {
   onToggleStatus(node: DistrictNode): void {
     if (node.id === undefined) return;
 
-    console.log('Toggle status for node:', node);
-    // this.constituencyService
-    //   .toggleConstituencyStatus(node.id, {
-    //     successMessage: this.translateService.instant('constituency.successUpdating'),
-    //     errorMessage: this.translateService.instant('constituency.errorUpdating'),
-    //   })
-    //   .subscribe(() => {
-    //     this.nodes();
-    //   });
+    const cmd: ToggleActiveDistrictCommand = {
+      id: node.id,
+    };
+    this.districtService
+      .toggleActiveDistrict(cmd, {
+        successMessage: this.translateService.instant('district.successUpdating'),
+        errorMessage: this.translateService.instant('district.errorUpdating'),
+      })
+      .subscribe(() => {
+        this.nodes();
+      });
   }
 }
