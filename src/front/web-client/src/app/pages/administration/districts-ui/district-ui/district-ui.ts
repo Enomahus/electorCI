@@ -1,24 +1,32 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, filter, startWith, switchMap, take } from 'rxjs';
 import { DistrictNode } from '../../../../models/district.model';
-import { LoaderUi } from '../../../../shared/loader/loader';
-import { StickyButtonsContainerComponent } from '../../../../shared/sticky-buttons-container/sticky-buttons-container.component';
 import { DistrictTreeHelperService } from '../../../../services/district-tree-helper.service';
 import {
   DistrictModel,
   ElectoralDistrictLevel,
   GetDistrictResponse,
 } from '../../../../services/nswag/api-nswag-client';
+import { LoaderUi } from '../../../../shared/loader/loader';
+import { StickyButtonsContainerComponent } from '../../../../shared/sticky-buttons-container/sticky-buttons-container.component';
 import { allLocationLevel } from '../../../types/enumerations';
 import { DistrictForm } from './district-form';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-district-ui',
-  imports: [TranslatePipe, ReactiveFormsModule, LoaderUi, StickyButtonsContainerComponent, JsonPipe],
+  imports: [TranslatePipe, ReactiveFormsModule, LoaderUi, StickyButtonsContainerComponent],
   templateUrl: './district-ui.html',
   styleUrl: './district-ui.scss',
 })
@@ -42,7 +50,9 @@ export class DistrictUi implements OnInit {
   // réactivement les niveaux parents à afficher (indépendamment de qui modifie le formulaire).
   private readonly selectedLevel = toSignal(
     toObservable(this.form).pipe(
-      switchMap((form) => form.controls.level.valueChanges.pipe(startWith(form.controls.level.value))),
+      switchMap((form) =>
+        form.controls.level.valueChanges.pipe(startWith(form.controls.level.value)),
+      ),
     ),
     { initialValue: this.levels[0] },
   );

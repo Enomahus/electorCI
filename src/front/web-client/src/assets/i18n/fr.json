@@ -19,11 +19,11 @@
     "noTitleTemplate": "ELector-CI",
     "titleTemplate": "{{title}} | ELector-CI",
     "constituency": "Circonscription",
-    "region":"Région",
-    "department":"Département",
-    "subPrefecture":"Sous-préfecture",
-    "municipality":"Commune / Village",
-    "votingLocation":"Lieu de vote",
+    "region": "Région",
+    "department": "Département",
+    "subPrefecture": "Sous-préfecture",
+    "municipality": "Commune / Village",
+    "votingLocation": "Lieu de vote",
     "identityInfos": "Information d'identification",
     "language": "Langue",
     "lang": {
@@ -102,6 +102,8 @@
       "validation": "",
       "validationCodes": {
         "CountryMustExist": "Le pays n'a pas été trouvé.",
+        "DistrictMustExist": "La circonscription n'a pas été trouvée.",
+        "DistrictLinked": "La circonscription ne peut pas être supprimée car des sous-circonscriptions ou des demandes d'inscription lui sont liées. Vous pouvez cependant la désactiver.",
         "InvalidEmail": "Le champ {{field}} n'est pas un email valide.",
         "InvalidPassword": "Le mot de passe est invalide.",
         "InvalidPostcode": "Le code postal est invalide.",
@@ -154,6 +156,7 @@
     }
   },
   "district": {
+    "updateDistrict": "Modifier la circonscription",
     "successCreating": "Circonscription créée avec succès",
     "errorCreating": "Erreur lors de la création de la circonscription.",
     "successUpdating": "Circonscription mise à jour avec succès",
@@ -161,7 +164,7 @@
     "successDeleting": "Circonscription supprimée avec succès",
     "errorDeleting": "Erreur lors de la suppression de la circonscription.",
     "createDistrict": "Créer une circonscription",
-    "gleInfos": "Informations générale",
+    "generalInfos": "Informations générales",
     "parent": "Rattachement électoral",
     "wording": "Libellé",
     "level": "Hierarchie",
@@ -215,6 +218,8 @@
     "subtitle": "Consultez et gérez la liste des utilisateurs.",
     "disableUserError": "Erreur lors de la désactivation de l'utilisateur",
     "disableUserSuccess": "Utilisateur désactivé avec succès",
+    "successDeleting": "Utilisateur supprimé avec succès",
+    "errorDeleting": "Erreur lors de la suppression de l'utilisateur.",
     "columns": {
       "lastName": "Nom",
       "firstName": "Prénom",

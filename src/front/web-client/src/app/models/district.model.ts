@@ -5,6 +5,7 @@ export interface DistrictNode {
   code: string;
   wording: string;
   parentId: number;
+  active: boolean;
   level: ElectoralDistrictLevel;
   children?: DistrictNode[];
 }

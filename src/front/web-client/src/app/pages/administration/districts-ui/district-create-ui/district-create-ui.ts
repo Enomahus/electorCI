@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { DistrictApiService } from '../../../../services/api/district.api.service';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
+import { DistrictTreeHelperService } from '../../../../services/district-tree-helper.service';
 import { DistrictModel } from '../../../../services/nswag/api-nswag-client';
 import { createDistrictForm, DistrictForm } from '../district-ui/district-form';
 import { DistrictUi } from '../district-ui/district-ui';
@@ -19,6 +20,7 @@ export class DistrictCreateUi implements OnInit {
   private readonly translateService = inject(TranslateService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
+  private readonly districtTreeHelper = inject(DistrictTreeHelperService);
 
   form = signal<DistrictForm>(createDistrictForm());
 
@@ -52,7 +54,8 @@ export class DistrictCreateUi implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.isSaving.set(true);
+          this.isSaving.set(false);
+          this.districtTreeHelper.reload();
           this.goBack();
         },
         error: () => this.isSaving.set(false),

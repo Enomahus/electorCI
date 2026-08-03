@@ -36,8 +36,28 @@ namespace Application.Features.Districts.DeleteDistrict
                             (districtId, token) =>
                                 _context.Districts.AnyAsync(d => d.Id == districtId, token)
                         )
-                        .WithMessage(ValidationErrorCode.DistrictMustExist.ToString());
+                        .WithMessage(ValidationErrorCode.DistrictMustExist.ToString())
+                        .DependentRules(() =>
+                        {
+                            RuleFor(c => c.Id)
+                                .MustAsync(CheckDistrictLinksAsync)
+                                .WithMessage(ValidationErrorCode.DistrictLinked.ToString());
+                        });
                 });
+        }
+
+        private Task<bool> CheckDistrictLinksAsync(
+            long districtId,
+            CancellationToken cancellationToken
+        )
+        {
+            return _context.Districts.AnyAsync(
+                d =>
+                    d.Id == districtId
+                    && d.Subconstituency.Count == 0
+                    && d.RegistrationRequests.Count == 0,
+                cancellationToken
+            );
         }
     }
 

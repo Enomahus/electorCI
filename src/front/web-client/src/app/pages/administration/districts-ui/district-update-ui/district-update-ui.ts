@@ -6,6 +6,7 @@ import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { DistrictApiService } from '../../../../services/api/district.api.service';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
+import { DistrictTreeHelperService } from '../../../../services/district-tree-helper.service';
 import {
   DistrictModel,
   GetDistrictResponse,
@@ -27,6 +28,7 @@ export class DistrictUpdateUi implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly districtTreeHelper = inject(DistrictTreeHelperService);
 
   form = signal<DistrictForm>(createDistrictForm());
   district = signal<GetDistrictResponse | null>(null);
@@ -59,6 +61,7 @@ export class DistrictUpdateUi implements OnInit {
       .subscribe({
         next: (result) => {
           this.district.set(result);
+          this.setBreadcrumb(result);
           //this.districtId = result.id;
           //this.isSoren = result.isSoren;
           this.isLoading.set(false);
@@ -69,10 +72,10 @@ export class DistrictUpdateUi implements OnInit {
           this.router.navigate(['/']);
         },
       });
-    this.setBreadcrumb();
+
   }
 
-  private setBreadcrumb(): void {
+  private setBreadcrumb(district: GetDistrictResponse): void {
     let breadcrumbs: Breadcrumb[] = [];
     breadcrumbs = [
       {
@@ -81,7 +84,7 @@ export class DistrictUpdateUi implements OnInit {
       },
       {
         //label: this.translateService.instant('breadcrumb.updateDistrict'),
-        label: this.district()?.wording!,
+        label: district.wording!,
       },
     ];
     this.breadcrumbService.setBreadcrumbs(breadcrumbs);
@@ -102,6 +105,7 @@ export class DistrictUpdateUi implements OnInit {
       .subscribe({
         next: () => {
           this.isSaving.set(false);
+          this.districtTreeHelper.reload();
           this.goBack();
         },
         error: () => this.isSaving.set(false),
