@@ -57,7 +57,7 @@ export class DistrictTreeHelperService {
       code: district.code!,
       wording: district.wording!,
       level: district.level!,
-      active: district.isActive ?? false,
+      active: district.isActive!,
       parentId: district.parentId!,
       children: district.children?.map((d) => this.mapToNode(d)),
     };

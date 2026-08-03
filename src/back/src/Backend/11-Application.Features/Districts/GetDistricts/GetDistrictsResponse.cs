@@ -27,7 +27,7 @@ namespace Application.Features.Districts.GetDistricts
                 Level = dao.Level,
                 Wording = dao.Wording,
                 ParentId = dao.ParentId,
-                IsActive = dao.DisabledDate.HasValue || dao.DisabledDate > now,
+                IsActive = !dao.DisabledDate.HasValue || dao.DisabledDate >= now,
                 Children = dao.Subconstituency?.Select(x => From(x, now)).ToList() ?? [],
                 PollingStations =
                     dao.PollingStations?.Select(ps => PollingStationModel.FromDao(ps, now)).ToList()

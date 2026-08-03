@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DistrictNode } from '../../../models/district.model';
 import { DistrictApiService } from '../../../services/api/district.api.service';
 import { DistrictTreeHelperService } from '../../../services/district-tree-helper.service';
 import { ToggleActiveDistrictCommand } from '../../../services/nswag/api-nswag-client';
+import { ConfirmDialogUi } from '../../../shared/confirm-dialog/confirm-dialog';
 import { DistrictTreeUi } from '../../../shared/district-tree-ui/district-tree-ui';
 
 @Component({
@@ -18,6 +20,7 @@ export class DistrictsUi {
   private readonly router = inject(Router);
   private readonly store = inject(DistrictTreeHelperService);
   private readonly translateService = inject(TranslateService);
+  private readonly dialog = inject(MatDialog);
 
   isDeleting = signal(false);
   readonly nodes = this.store.nodesData;
@@ -34,7 +37,24 @@ export class DistrictsUi {
   onDelete(node: DistrictNode): void {
     if (node.id === undefined) return;
 
+    const dialogRef = this.dialog.open(ConfirmDialogUi, {
+      width: '400',
+      data: { name: `${node.code} ${node.wording}` },
+    });
+
     this.isDeleting.set(true);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.deleteDistrict(node);
+      } else {
+        this.isDeleting.set(false);
+      }
+    });
+  }
+
+  private deleteDistrict(node: DistrictNode): void {
+    if (node.id === undefined) return;
 
     this.districtService
       .deleteDistrict(node.id, {
