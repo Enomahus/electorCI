@@ -13,6 +13,7 @@ namespace Application.Features.Users.GetUsers
         public required string? Phone { get; init; }
         public required string? District { get; init; }
         public required bool IsActive { get; init; }
+        public required bool IsAdmin { get; init; }
 
         public required bool CanBeDeleted { get; set; }
         public required bool CanBeToggled { get; set; }

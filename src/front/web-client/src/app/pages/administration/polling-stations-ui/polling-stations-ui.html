@@ -79,15 +79,6 @@
             </button>
 
             <button
-              *appHasPermission="'deletePollingStation'"
-              class="btn-grid btn-del"
-              [title]="'pollingStations.actions.delete' | translate"
-              (click)="onDelete(element)"
-            >
-              <i class="ph ph-trash"></i>
-            </button>
-
-            <button
               *appHasPermission="'updatePollingStation'"
               class="btn-grid"
               [ngClass]="{
@@ -96,18 +87,29 @@
               }"
               [id]="'btn-disable-' + element.stationId"
               [title]="
-                element.DisabledDate
-                  ? ('pollingStations.actions.toggleEnable' | translate)
-                  : ('pollingStations.actions.toggleDisable' | translate)
+                element.isActive
+                  ? ('pollingStations.actions.toggleDisable' | translate)
+                  : ('pollingStations.actions.toggleEnable' | translate)
               "
               (click)="onToggleActivePollingStation(element)"
             >
-              @if (element.DisabledDate) {
-                <i class="ph ph-empty"></i>
-              } @else {
+              @if (element.isActive) {
                 <i class="ph ph-check"></i>
+              } @else {
+                <i class="ph ph-empty"></i>
               }
             </button>
+
+            <button
+              *appHasPermission="'deletePollingStation'"
+              class="btn-grid btn-del"
+              [title]="'pollingStations.actions.delete' | translate"
+              (click)="onDelete(element)"
+            >
+              <i class="ph ph-trash"></i>
+            </button>
+
+
           </div>
         </td>
       </ng-container>

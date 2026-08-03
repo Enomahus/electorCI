@@ -289,13 +289,19 @@
             }
           </select>
         </div>
+
         <div class="input-block">
           <div class="label-container">
             <span class="label">{{ 'user.authMethods.label' | translate }}</span>
           </div>
-          <div class="options-container">
+          <div class="options-layout">
             <label for="email-method" class="radio">
-              <input type="radio" id="email-method" [value]="'email'" formControlName="authProvider" />
+              <input
+                type="radio"
+                id="email-method"
+                [value]="'email'"
+                formControlName="authProvider"
+              />
               {{ 'user.authMethods.email' | translate }}
             </label>
             <label for="microsoft-method" class="radio">
@@ -316,6 +322,13 @@
               />
               {{ 'user.authMethods.google' | translate }}
             </label>
+          </div>
+        </div>
+
+        <div class="input-block required">
+          <div class="options-layout">
+            <input type="checkbox" id="is-Active" formControlName="isActive" />
+            <label for="is-Active">{{ 'user.isActive' | translate }}</label>
           </div>
         </div>
       </div>

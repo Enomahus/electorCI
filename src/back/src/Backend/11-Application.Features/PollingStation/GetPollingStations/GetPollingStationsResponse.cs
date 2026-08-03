@@ -18,8 +18,7 @@
         string VotingLocationName,
         long StationId,
         string StationNumber,
-        bool IsDisabled,
+        bool IsActive,
         DateTimeOffset? DisabledDate
     );
-    
 }

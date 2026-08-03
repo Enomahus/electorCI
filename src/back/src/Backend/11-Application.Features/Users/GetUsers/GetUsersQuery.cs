@@ -6,6 +6,7 @@ using Infrastructure.Persistence.SQLServer.Contexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Pcea.Core.Net.Authorization.Application.Attributes;
+using Tools.Constants;
 using Tools.Logging;
 
 namespace Application.Features.Users.GetUsers
@@ -52,6 +53,7 @@ namespace Application.Features.Users.GetUsers
                     Phone = u.PhoneNumber,
                     District = u.UserDistricts.FirstOrDefault()?.District?.Wording,
                     IsActive = u.DisabledDate is null || u.DisabledDate > now,
+                    IsAdmin = u.UserRoles.Any(ur => ur.Role.Name == AppConstants.SuperAdminRole),
                     CanBeDeleted = u.Id != currentUserId,
                     CanBeToggled = u.Id != currentUserId,
                     CreatedAt = u.CreatedAt,

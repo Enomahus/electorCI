@@ -10,36 +10,43 @@ using Tools.Logging;
 namespace Application.Features.PollingStation.GetPollingStations
 {
     [WithPermission([nameof(AppPermission.GetPollingStations)])]
-    public class GetPollingStationsQuery : GridDataQuery, IRequest<Result<GridDataResponse<GetPollingStationsResponse>>>
-    {
-    }
+    public class GetPollingStationsQuery
+        : GridDataQuery,
+            IRequest<Result<GridDataResponse<GetPollingStationsResponse>>> { }
 
-    public class GetPollingStationsQueryValidator : GridDataQueryValidator<GetPollingStationsQuery> { }
+    public class GetPollingStationsQueryValidator
+        : GridDataQueryValidator<GetPollingStationsQuery> { }
 
     public class GetPollingStationsQueryHandler(
-        ReadOnlyDbContext context, 
+        ReadOnlyDbContext context,
         TimeProvider timeProvider
-    ) : IRequestHandler<GetPollingStationsQuery, Result<GridDataResponse<GetPollingStationsResponse>>>
+    )
+        : IRequestHandler<
+            GetPollingStationsQuery,
+            Result<GridDataResponse<GetPollingStationsResponse>>
+        >
     {
-        public async Task<Result<GridDataResponse<GetPollingStationsResponse>>> Handle(GetPollingStationsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<GridDataResponse<GetPollingStationsResponse>>> Handle(
+            GetPollingStationsQuery request,
+            CancellationToken cancellationToken
+        )
         {
             using var activity = ActivitySourceLog.CQRS.Start();
 
             var now = timeProvider.GetUtcNow();
 
             var pollingStations = await context
-                    .PollingStations.AsNoTracking()
-                    .AsSplitQuery()
-                    .Include(ps => ps.District)
+                .PollingStations.AsNoTracking()
+                .AsSplitQuery()
+                .Include(ps => ps.District)
+                    .ThenInclude(c => c.Parent)
                         .ThenInclude(c => c.Parent)
                             .ThenInclude(c => c.Parent)
                                 .ThenInclude(c => c.Parent)
-                                    .ThenInclude(c => c.Parent)
-                    .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken);
 
             var rows = pollingStations
-                .Select(ps => new GetPollingStationsResponse
-                (
+                .Select(ps => new GetPollingStationsResponse(
                     (long?)ps.District.Parent.Parent.Parent.Parent.Id,
                     ps.District.Parent.Parent.Parent.Parent.Code,
                     ps.District.Parent.Parent.Parent.Parent.Wording,
@@ -57,7 +64,7 @@ namespace Application.Features.PollingStation.GetPollingStations
                     ps.District.Wording,
                     ps.Id,
                     ps.StationNumber,
-                    ps.DisabledDate != null && ps.DisabledDate <= now,
+                    !ps.DisabledDate.HasValue || ps.DisabledDate >= now,
                     ps.DisabledDate
                 ))
                 .AsQueryable();

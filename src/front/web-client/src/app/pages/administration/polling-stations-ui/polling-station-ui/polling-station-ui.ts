@@ -13,9 +13,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { combineLatest, filter, startWith, take } from 'rxjs';
-import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { DistrictNode } from '../../../../models/district.model';
-import { BreadcrumbService } from '../../../../services/breadcrumb.service';
 import { DistrictTreeHelperService } from '../../../../services/district-tree-helper.service';
 import {
   GetPollingStationResponse,
@@ -39,7 +37,7 @@ import { PollingStationForm } from './polling-station-form';
 })
 export class PollingStationUi implements OnInit {
   private readonly translateService = inject(TranslateService);
-  private readonly breadcrumbService = inject(BreadcrumbService);
+
   private readonly store = inject(DistrictTreeHelperService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly nodes$ = toObservable(this.store.nodesData);
@@ -81,9 +79,6 @@ export class PollingStationUi implements OnInit {
   isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
 
   ngOnInit(): void {
-    if (this.pollingStation()) {
-      this.setBreadcrumb(this.pollingStation()!);
-    }
     if (!this.isEditMode()) return;
 
     const districtIdControl = this.form().controls.districtId;
@@ -160,23 +155,6 @@ export class PollingStationUi implements OnInit {
   protected parseDistrictId(event: Event): number | null {
     const value = (event.target as HTMLSelectElement).value;
     return value ? Number(value) : null;
-  }
-
-  private setBreadcrumb(station: GetPollingStationResponse): void {
-    let breadcrumb: Breadcrumb[] = [];
-
-    breadcrumb = [
-      {
-        label: this.translateService.instant('breadcrumb.pollingStations'),
-        url: `/admin/polling-stations`,
-      },
-      {
-        label: this.isEditMode()
-          ? `${station.stationNumber} ${station.wording}`
-          : this.translateService.instant('breadcrumb.pollingStationCreate'),
-      },
-    ];
-    this.breadcrumbService.setBreadcrumbs(breadcrumb);
   }
 
   onSubmit(): void {

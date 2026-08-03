@@ -2043,6 +2043,7 @@ export interface GetUsersResponse {
     phone: string | undefined;
     district: string | undefined;
     isActive: boolean;
+    isAdmin: boolean;
     canBeDeleted: boolean;
     canBeToggled: boolean;
     createdAt?: string;
@@ -2198,7 +2199,7 @@ export interface GetPollingStationsResponse {
     votingLocationName?: string;
     stationId?: number;
     stationNumber?: string;
-    isDisabled?: boolean;
+    isActive?: boolean;
     disabledDate?: string | undefined;
 }
 

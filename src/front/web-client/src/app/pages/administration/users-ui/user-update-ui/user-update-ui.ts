@@ -39,14 +39,15 @@ export class UserUpdateUi implements OnInit {
         switchMap((id) => this.userService.getUser(id)),
         tap((user) => {
           this.user.set(user);
+           this.setBreadcrumb(user);
           this.updateFormContent(user);
         }),
       )
       .subscribe();
-    this.setBreadcrumb();
+
   }
 
-  private setBreadcrumb(): void {
+  private setBreadcrumb(user: UserModel): void {
     let breadcrumbs: Breadcrumb[] = [];
     breadcrumbs = [
       {
@@ -54,7 +55,7 @@ export class UserUpdateUi implements OnInit {
         url: `/admin/users`,
       },
       {
-        label: this.translateService.instant('breadcrumb.userEdit'),
+        label: `${user.firstName} ${user.lastName}`,
       },
     ];
     this.breadcrumbService.setBreadcrumbs(breadcrumbs);
