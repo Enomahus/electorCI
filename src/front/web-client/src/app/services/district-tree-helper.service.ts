@@ -1,6 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { computed, inject, Injectable, resource, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { DistrictNode } from '../models/district.model';
 import { DistrictApiService } from './api/district.api.service';
 import { GetDistrictsResponse } from './nswag/api-nswag-client';
@@ -14,12 +13,19 @@ export class DistrictTreeHelperService {
   private readonly _selectedNode = signal<DistrictNode | null>(null);
   readonly selectedNode = this._selectedNode.asReadonly();
 
-  readonly nodesData = toSignal(
-    this.districtService
-      .getDistricts({})
-      .pipe(map((res) => res?.map((c) => this.mapToNode(c)) ?? [])),
-    { initialValue: [] as DistrictNode[] },
-  );
+  private readonly districtsResource = resource({
+    loader: async () => {
+      const res = await firstValueFrom(this.districtService.getDistricts({}));
+      return res?.map((c) => this.mapToNode(c)) ?? [];
+    },
+  });
+
+  readonly nodesData = computed(() => this.districtsResource.value() ?? []);
+  readonly isLoading = this.districtsResource.isLoading;
+
+  reload(): void {
+    this.districtsResource.reload();
+  }
 
   findNode(id: number): DistrictNode | undefined {
     return this.findNodeInTree(this.nodesData(), id);
@@ -51,6 +57,7 @@ export class DistrictTreeHelperService {
       code: district.code!,
       wording: district.wording!,
       level: district.level!,
+      active: district.isActive ?? false,
       parentId: district.parentId!,
       children: district.children?.map((d) => this.mapToNode(d)),
     };

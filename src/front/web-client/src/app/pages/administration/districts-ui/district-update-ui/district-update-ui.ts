@@ -6,6 +6,7 @@ import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { Breadcrumb } from '../../../../models/breadcrumb.model';
 import { DistrictApiService } from '../../../../services/api/district.api.service';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
+import { DistrictTreeHelperService } from '../../../../services/district-tree-helper.service';
 import {
   DistrictModel,
   GetDistrictResponse,
@@ -27,6 +28,7 @@ export class DistrictUpdateUi implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly districtTreeHelper = inject(DistrictTreeHelperService);
 
   form = signal<DistrictForm>(createDistrictForm());
   district = signal<GetDistrictResponse | null>(null);
@@ -103,6 +105,7 @@ export class DistrictUpdateUi implements OnInit {
       .subscribe({
         next: () => {
           this.isSaving.set(false);
+          this.districtTreeHelper.reload();
           this.goBack();
         },
         error: () => this.isSaving.set(false),

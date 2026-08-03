@@ -2233,6 +2233,7 @@ export interface GetDistrictsResponse {
     wording?: string;
     level?: ElectoralDistrictLevel;
     parentId?: number | undefined;
+    isActive?: boolean;
     children?: GetDistrictsResponse[];
     pollingStations?: PollingStationModel[];
 }

@@ -1,7 +1,6 @@
-import { Component, DestroyRef, inject, resource, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
 import { DistrictNode } from '../../../models/district.model';
 import { DistrictApiService } from '../../../services/api/district.api.service';
 import { DistrictTreeHelperService } from '../../../services/district-tree-helper.service';
@@ -16,25 +15,16 @@ import { DistrictTreeUi } from '../../../shared/district-tree-ui/district-tree-u
 })
 export class DistrictsUi {
   private readonly districtService = inject(DistrictApiService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly store = inject(DistrictTreeHelperService);
   private readonly translateService = inject(TranslateService);
 
   isDeleting = signal(false);
   readonly nodes = this.store.nodesData;
-
-  readonly districtsResource = resource({
-    loader: async () => {
-      const res = await firstValueFrom(this.districtService.getDistricts({}));
-      return res ?? [];
-    },
-  });
-
-  readonly isLoading = this.districtsResource.isLoading;
+  readonly isLoading = this.store.isLoading;
 
   refresh(): void {
-    this.districtsResource.reload();
+    this.store.reload();
   }
 
   onEdit(node: DistrictNode): void {
@@ -54,7 +44,7 @@ export class DistrictsUi {
       .subscribe({
         next: () => {
           this.isDeleting.set(false);
-          this.nodes();
+          this.store.reload();
         },
         error: () => {
           this.isDeleting.set(false);
@@ -74,7 +64,7 @@ export class DistrictsUi {
         errorMessage: this.translateService.instant('district.errorUpdating'),
       })
       .subscribe(() => {
-        this.nodes();
+        this.store.reload();
       });
   }
 }

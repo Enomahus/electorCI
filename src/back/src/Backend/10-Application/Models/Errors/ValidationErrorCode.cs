@@ -20,6 +20,7 @@
         DistrictMustHaveParent,
         InvalidLevel,
         PollingStationMustExist,
-        PollingStationLinked
+        PollingStationLinked,
+        DistrictLinked
     }
 }

@@ -93,5 +93,72 @@ namespace Application.UnitTests.Features.Districts
             result.Should().NotBeNull();
             context.Districts.FirstOrDefault(d => d.Id == district.Id).Should().BeNull();
         }
+
+        [Fact]
+        public async Task DeleteDistrictTest_ShouldReturnValidationException_WhenDistrictHasChildren()
+        {
+            //Arrange
+            var serviceProvider = CreateServiceCollection().BuildServiceProvider();
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.DeleteDistrict]);
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+
+            var parent = await CreateDistrictAsync(
+                context,
+                code: "PARENT",
+                level: ElectoralDistrictLevel.Region
+            );
+            await CreateDistrictAsync(
+                context,
+                code: "CHILD",
+                level: ElectoralDistrictLevel.Department,
+                parentId: parent.Id
+            );
+
+            var command = new DeleteDistrictCommand(parent.Id);
+
+            // Act
+            var result = await FluentActions
+                .Invoking(() => serviceProvider.SendAsync(command))
+                .Should()
+                .ThrowAsync<ValidationException>();
+
+            // Assert
+            AssertValidationException(
+                result.Subject,
+                nameof(DeleteDistrictCommand.Id),
+                ValidationErrorCode.DistrictLinked
+            );
+        }
+
+        [Fact]
+        public async Task DeleteDistrictTest_ShouldReturnValidationException_WhenDistrictHasRegistrationRequests()
+        {
+            //Arrange
+            var serviceProvider = CreateServiceCollection().BuildServiceProvider();
+            var user = await SetupCurrentUserAsync(
+                serviceProvider,
+                permissions: [AppPermission.DeleteDistrict]
+            );
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+            var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
+
+            var district = await CreateDistrictAsync(context, code: "LINKED");
+            await CreateRegistrationRequestAsync(context, timeProvider, user.Id, districtId: district.Id);
+
+            var command = new DeleteDistrictCommand(district.Id);
+
+            // Act
+            var result = await FluentActions
+                .Invoking(() => serviceProvider.SendAsync(command))
+                .Should()
+                .ThrowAsync<ValidationException>();
+
+            // Assert
+            AssertValidationException(
+                result.Subject,
+                nameof(DeleteDistrictCommand.Id),
+                ValidationErrorCode.DistrictLinked
+            );
+        }
     }
 }

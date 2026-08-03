@@ -102,6 +102,8 @@
       "validation": "",
       "validationCodes": {
         "CountryMustExist": "Le pays n'a pas été trouvé.",
+        "DistrictMustExist": "La circonscription n'a pas été trouvée.",
+        "DistrictLinked": "La circonscription ne peut pas être supprimée car des sous-circonscriptions ou des demandes d'inscription lui sont liées. Vous pouvez cependant la désactiver.",
         "InvalidEmail": "Le champ {{field}} n'est pas un email valide.",
         "InvalidPassword": "Le mot de passe est invalide.",
         "InvalidPostcode": "Le code postal est invalide.",
