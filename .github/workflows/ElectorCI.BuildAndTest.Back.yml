@@ -1,0 +1,126 @@
+name: ElectorCI - Build, Test & SonarQube (Backend)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [develop, qa, master]
+    paths:
+      - "src/back/**"
+      - ".github/workflows/ElectorCI.BuildAndTest.Back.yml"
+  push:
+    branches: [develop, qa, master]
+    paths:
+      - "src/back/**"
+      - ".github/workflows/ElectorCI.BuildAndTest.Back.yml"
+
+defaults:
+  run:
+    working-directory: src/back
+
+jobs:
+  build-test-sonar:
+    name: Build, Test & SonarQube Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history required by SonarQube for blame/new-code analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('src/back/**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Cache SonarQube analysis cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-cache
+          restore-keys: |
+            ${{ runner.os }}-sonar-cache
+
+      - name: Cache SonarQube scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: src/back/.sonar/scanner
+          key: ${{ runner.os }}-sonar-scanner
+
+      - name: Install SonarQube scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .sonar/scanner
+          dotnet tool update dotnet-sonarscanner --tool-path .sonar/scanner
+
+      - name: Restore dependencies
+        run: dotnet restore ElectorCI.slnx
+
+      - name: Start SonarQube analysis (pull request)
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          .sonar/scanner/dotnet-sonarscanner begin \
+            /k:"ElectorCI_Backend" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.pullrequest.key="${{ github.event.pull_request.number }}" \
+            /d:sonar.pullrequest.branch="${{ github.head_ref }}" \
+            /d:sonar.pullrequest.base="${{ github.base_ref }}" \
+            /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml" \
+            /d:sonar.coverage.exclusions="**/Migrations/**,**/Program.cs,**/*Tests*/**" \
+            /d:sonar.exclusions="**/bin/**,**/obj/**"
+
+      - name: Start SonarQube analysis (branch)
+        if: github.event_name != 'pull_request'
+        run: |
+          .sonar/scanner/dotnet-sonarscanner begin \
+            /k:"ElectorCI_Backend" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.branch.name="${{ github.ref_name }}" \
+            /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml" \
+            /d:sonar.coverage.exclusions="**/Migrations/**,**/Program.cs,**/*Tests*/**" \
+            /d:sonar.exclusions="**/bin/**,**/obj/**"
+
+      - name: Build
+        run: dotnet build ElectorCI.slnx --no-restore --configuration Release
+
+      - name: Run tests with coverage
+        run: |
+          dotnet test ElectorCI.slnx \
+            --no-build \
+            --configuration Release \
+            --collect:"XPlat Code Coverage;Format=opencover" \
+            --results-directory coverage \
+            --logger trx
+
+      - name: End SonarQube analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          .sonar/scanner/dotnet-sonarscanner end \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Publish test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: src/back/**/TestResults/**/*.trx
+          retention-days: 7
