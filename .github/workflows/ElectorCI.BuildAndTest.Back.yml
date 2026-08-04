@@ -1,0 +1,57 @@
+name: ElectorCI - Build & Test (Backend)
+
+on:
+  pull_request:
+    types: [opened, closed]
+    branches: [develop, qa, master]
+    paths:
+      - "src/back/**"
+      - ".github/workflows/ElectorCI.BuildAndTest.Back.yml"
+
+defaults:
+  run:
+    working-directory: src/back
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened' || github.event.pull_request.merged == true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('src/back/**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore ElectorCI.slnx
+
+      - name: Build
+        run: dotnet build ElectorCI.slnx --no-restore --configuration Release
+
+      - name: Run tests
+        run: |
+          dotnet test ElectorCI.slnx \
+            --no-build \
+            --configuration Release \
+            --logger trx \
+            --results-directory TestResults
+
+      - name: Publish test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: src/back/**/TestResults/**/*.trx
+          retention-days: 7
