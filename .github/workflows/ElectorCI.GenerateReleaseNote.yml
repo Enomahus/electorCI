@@ -1,0 +1,212 @@
+name: ElectorCI - Generate Release Note
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [develop, qa, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Serialise les executions par branche cible : deux PR fusionnees en meme temps
+# ne doivent pas se marcher dessus sur le push du CHANGELOG.
+concurrency:
+  group: release-note-${{ github.event.pull_request.base.ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release-note:
+    name: Generate Release Note
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.base.ref || github.ref_name }}
+
+      - name: Compute version
+        id: version
+        env:
+          TARGET_BRANCH: ${{ github.event.pull_request.base.ref || github.ref_name }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="$PREV_TAG..HEAD"
+          else
+            RANGE=""
+          fi
+
+          # Latest stable tag (vX.Y.Z) as the semver baseline
+          LAST_STABLE=$(git tag -l 'v[0-9]*' --sort=-v:refname \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1 || true)
+          LAST_STABLE=${LAST_STABLE:-v0.0.0}
+          BASE=${LAST_STABLE#v}
+          MAJOR=$(echo "$BASE" | cut -d. -f1)
+          MINOR=$(echo "$BASE" | cut -d. -f2)
+          PATCH=$(echo "$BASE" | cut -d. -f3)
+
+          # Bump level from Conventional Commits
+          LOG=$(git log --no-merges --format='%s%n%b' $RANGE)
+          if echo "$LOG" | grep -qE '^(BREAKING CHANGE|BREAKING-CHANGE)' \
+            || echo "$LOG" | grep -qE '^[a-z]+(\([^)]*\))?!:'; then
+            BUMP=major
+          elif echo "$LOG" | grep -qE '^feat(\([^)]*\))?:'; then
+            BUMP=minor
+          else
+            BUMP=patch
+          fi
+
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+
+          CORE="$MAJOR.$MINOR.$PATCH"
+          case "$TARGET_BRANCH" in
+            master)  VERSION="v$CORE";                     PRERELEASE=false ;;
+            qa)      VERSION="v$CORE-rc.$RUN_NUMBER";      PRERELEASE=true ;;
+            *)       VERSION="v$CORE-dev.$RUN_NUMBER";     PRERELEASE=true ;;
+          esac
+
+          {
+            echo "prev_tag=$PREV_TAG"
+            echo "range=$RANGE"
+            echo "bump=$BUMP"
+            echo "version=$VERSION"
+            echo "prerelease=$PRERELEASE"
+            echo "date=$(date -u +%Y-%m-%d)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build release note
+        id: notes
+        env:
+          RANGE: ${{ steps.version.outputs.range }}
+          PREV_TAG: ${{ steps.version.outputs.prev_tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_DATE: ${{ steps.version.outputs.date }}
+          TARGET_BRANCH: ${{ github.event.pull_request.base.ref || github.ref_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          COMMITS=$(git log --no-merges --format='%H%x09%s' $RANGE)
+          TAB=$(printf '\t')
+          KNOWN_TYPES='(feat|fix|perf|refactor|docs|test|chore|build|ci|style)'
+
+          render() {
+            while IFS="$TAB" read -r sha subject; do
+              [ -n "$sha" ] || continue
+              clean=$(printf '%s' "$subject" | sed -E 's/^[a-zA-Z]+(\([^)]*\))?!?:[[:space:]]*//')
+              printf -- '- %s ([`%s`](%s/commit/%s))\n' "$clean" "${sha:0:7}" "$REPO_URL" "$sha"
+            done
+          }
+
+          # section <title> <grep-flags...> <pattern>
+          section() {
+            local title="$1" body
+            shift
+            body=$(printf '%s\n' "$COMMITS" | grep "$@" | render || true)
+            if [ -n "$body" ]; then
+              printf '### %s\n\n%s\n\n' "$title" "$body" >> notes.md
+            fi
+          }
+
+          {
+            printf '## %s - %s\n\n' "$VERSION" "$RELEASE_DATE"
+            if [ -n "$PR_NUMBER" ]; then
+              printf '_Fusionnee via [#%s](%s/pull/%s) - %s (@%s) vers `%s`_\n\n' \
+                "$PR_NUMBER" "$REPO_URL" "$PR_NUMBER" "$PR_TITLE" "$PR_AUTHOR" "$TARGET_BRANCH"
+            fi
+          } > notes.md
+
+          section 'Nouvelles fonctionnalites' -Ei "${TAB}feat(\([^)]*\))?!?:"
+          section 'Corrections'               -Ei "${TAB}fix(\([^)]*\))?!?:"
+          section 'Performances'              -Ei "${TAB}perf(\([^)]*\))?!?:"
+          section 'Refactoring'               -Ei "${TAB}refactor(\([^)]*\))?!?:"
+          section 'Documentation'             -Ei "${TAB}docs(\([^)]*\))?!?:"
+          section 'Tests'                     -Ei "${TAB}test(\([^)]*\))?!?:"
+          section 'Maintenance'               -Ei "${TAB}(chore|build|ci|style)(\([^)]*\))?!?:"
+          section 'Divers'                    -viE "${TAB}${KNOWN_TYPES}(\([^)]*\))?!?:"
+
+          # Breaking changes: "type!:" in the subject or "BREAKING CHANGE" anywhere in the message
+          BREAKING=$(git log --no-merges --format="%H${TAB}%s" \
+            -i -E --grep='BREAKING[ -]CHANGE' --grep="^${KNOWN_TYPES}(\([^)]*\))?!:" \
+            $RANGE | render || true)
+          if [ -n "$BREAKING" ]; then
+            printf '### Changements incompatibles\n\n%s\n\n' "$BREAKING" >> notes.md
+          fi
+
+          if [ -n "$PREV_TAG" ]; then
+            printf '**Comparaison :** [%s...%s](%s/compare/%s...%s)\n' \
+              "$PREV_TAG" "$VERSION" "$REPO_URL" "$PREV_TAG" "$VERSION" >> notes.md
+          fi
+
+          cat notes.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update CHANGELOG.md
+        env:
+          TARGET_BRANCH: ${{ github.event.pull_request.base.ref || github.ref_name }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          if [ ! -f CHANGELOG.md ]; then
+            printf '# Changelog\n\n' > CHANGELOG.md
+          fi
+
+          # Insert the new entry right after the "# Changelog" title
+          { head -n 1 CHANGELOG.md; printf '\n'; cat notes.md; tail -n +2 CHANGELOG.md; } > CHANGELOG.new
+          mv CHANGELOG.new CHANGELOG.md
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "chore(release): $VERSION [skip ci]"
+          git pull --rebase origin "$TARGET_BRANCH"
+          git push origin "HEAD:$TARGET_BRANCH"
+
+      - name: Create tag & GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+        run: |
+          set -euo pipefail
+
+          FLAGS=""
+          if [ "$PRERELEASE" = "true" ]; then
+            FLAGS="--prerelease"
+          else
+            FLAGS="--latest"
+          fi
+
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --notes-file notes.md \
+            --target "$(git rev-parse HEAD)" \
+            $FLAGS
+
+      - name: Comment release note on the PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          {
+            printf 'Release note generee : **%s**\n\n' "$VERSION"
+            cat notes.md
+          } > comment.md
+          gh pr comment "$PR_NUMBER" --body-file comment.md

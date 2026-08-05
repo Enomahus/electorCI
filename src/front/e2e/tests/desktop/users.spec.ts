@@ -1,6 +1,7 @@
 import { selectDistrictChain } from '@helpers/district-select-helper';
 import { setTestLanguage } from '@helpers/language-helper';
 import { loginAsAdmin } from '@helpers/login-helper';
+import { autoResetDatabase } from '@helpers/reset-database-helper';
 import { selectOptionContainingText } from '@helpers/select-helper';
 import { checkToast } from '@helpers/toast-helper';
 import test, { expect, Page } from '@playwright/test';
@@ -58,6 +59,8 @@ test.describe('Gestion des utilisateurs', () => {
     await page.goto('/admin/users');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Liste des Utilisateurs');
   });
+
+  autoResetDatabase(test);
 
   test("La liste des utilisateurs s'affiche avec au moins un utilisateur", async ({ page }) => {
     await expect(page.getByRole('link', { name: 'Créer un utilisateur' })).toBeVisible();

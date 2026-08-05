@@ -1,0 +1,66 @@
+name: ElectorCI - Build Services
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [develop, qa, master]
+    paths:
+      - "src/back/**"
+      - ".github/workflows/ElectorCI.BuildServices.yml"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/backend
+
+jobs:
+  build-image:
+    name: Build & Push Docker image
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=pr
+            type=raw,value=${{ github.event.pull_request.base.ref }}
+            type=sha,format=long
+            type=raw,value=latest,enable=${{ github.event.pull_request.base.ref == 'master' }}
+
+      - name: Build & push image
+        uses: docker/build-push-action@v6
+        with:
+          context: src/back
+          file: src/back/src/Backend/00-Web/Dockerfile
+          build-args: |
+            BUILD_CONFIGURATION=Release
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Image summary
+        run: |
+          echo "### Image published" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

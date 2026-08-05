@@ -1,6 +1,7 @@
 import { getDistrictTreeItem, openDistrictActions } from '@helpers/district-tree-helper';
 import { setTestLanguage } from '@helpers/language-helper';
 import { loginAsAdmin } from '@helpers/login-helper';
+import { autoResetDatabase } from '@helpers/reset-database-helper';
 import { checkToast } from '@helpers/toast-helper';
 import test, { expect, Page } from '@playwright/test';
 
@@ -19,10 +20,9 @@ test.describe('Gestion des circonscriptions', () => {
   test.beforeEach(async ({ page }) => {
     await loginAsAdmin(page);
     await page.goto('/admin/districts');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Les Circonscriptions électorales',
-    );
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Les Circonscriptions électorales');
   });
+  autoResetDatabase(test);
 
   test("La liste des circonscriptions s'affiche avec au moins une région", async ({ page }) => {
     await expect(page.getByRole('link', { name: 'Créer une circonscription' })).toBeVisible();
@@ -47,9 +47,7 @@ test.describe('Gestion des circonscriptions', () => {
     await page.getByRole('menuitem', { name: 'Modifier' }).click();
 
     await expect(page).toHaveURL(/\/admin\/districts\/\d+\/edit/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Modifier la circonscription',
-    );
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Modifier la circonscription');
 
     await page.getByLabel('Libellé').fill(updatedWording);
     await page.getByRole('button', { name: 'Enregistrer' }).click();

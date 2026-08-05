@@ -1,5 +1,6 @@
 import { setTestLanguage } from '@helpers/language-helper';
 import { loginAsAdmin } from '@helpers/login-helper';
+import { autoResetDatabase } from '@helpers/reset-database-helper';
 import { checkToast } from '@helpers/toast-helper';
 import test, { expect, Locator, Page } from '@playwright/test';
 
@@ -28,6 +29,8 @@ test.describe('Gestion des bureaux de vote', () => {
     await page.goto('/admin/polling-stations');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Les Bureaux de vote');
   });
+
+  autoResetDatabase(test);
 
   test("La liste des bureaux de vote s'affiche avec au moins un bureau", async ({ page }) => {
     await expect(firstDataRow(page)).toBeVisible();

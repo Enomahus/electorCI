@@ -1,0 +1,35 @@
+name: ElectorCI - Lint (Frontend)
+
+on:
+  pull_request:
+    types: [opened, closed]
+    branches: [develop, qa, master]
+    paths:
+      - "src/front/web-client/**"
+      - ".github/workflows/ElectorCI.Lint.yml"
+
+defaults:
+  run:
+    working-directory: src/front/web-client
+
+jobs:
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened' || github.event.pull_request.merged == true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+          cache-dependency-path: src/front/web-client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npx ng lint --max-warnings 0
