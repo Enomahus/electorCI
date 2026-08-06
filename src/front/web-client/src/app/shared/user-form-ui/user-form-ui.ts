@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  HostListener,
   inject,
   input,
   OnInit,
@@ -40,6 +41,7 @@ export class UserFormUi implements OnInit {
   user = input<UserModel>();
   isSaving = input<boolean>(false);
   isEditMode = input<boolean>(false);
+  isRegistration = input<boolean>(false);
   formSubmitted = output<UserModel>();
   goBack = output<void>();
 
@@ -62,6 +64,51 @@ export class UserFormUi implements OnInit {
   selectedMunicipalityId = signal<number | null>(null);
   selectedVotingLocationId = signal<number | null>(null);
   selectedRoleId = signal<string | null>(null);
+
+  isRolesDropdownOpen = signal(false);
+
+  get selectedRolesIds(): string[] {
+    return this.form().controls.roles.value || [];
+  }
+
+  getRoleNameById(id: string): string {
+    const role = this.roles().find((r) => r.id === id);
+    return role ? role.name! : id;
+  }
+
+  toggleRoleDropdown(event: Event): void {
+    event.stopPropagation(); // Évite que le click document ne ferme tout de suite le dropdown
+    this.isRolesDropdownOpen.update((v) => !v);
+  }
+
+  addRole(id: string, event: Event): void {
+    event.stopPropagation();
+    const currentRoles = this.selectedRolesIds;
+    if (!currentRoles.includes(id)) {
+      this.form().controls.roles.setValue([...currentRoles, id]);
+      this.form().controls.roles.markAsTouched();
+    }
+    this.isRolesDropdownOpen.set(false);
+  }
+
+  removeRole(id: string, event: Event): void {
+    event.stopPropagation();
+    const currentRoles = this.selectedRolesIds;
+    this.form().controls.roles.setValue(currentRoles.filter((r) => r !== id));
+    this.form().controls.roles.markAsTouched();
+  }
+
+  clearAllRoles(event: Event): void {
+    event.stopPropagation();
+    this.form().controls.roles.setValue([]);
+    this.form().controls.roles.markAsTouched();
+  }
+
+  // Ferme le dropdown si on clique en dehors
+  @HostListener('document:click')
+  closeDropdowns(): void {
+    this.isRolesDropdownOpen.set(false);
+  }
 
   allDepartments = computed<DistrictNode[]>(() =>
     this.store.findChildren(this.allRegions(), this.selectedRegionId()),

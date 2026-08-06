@@ -240,7 +240,7 @@
 
       <!-- activité user et matricule -->
       <div class="inputs-container">
-        <div class="input-block required">
+        <!-- <div class="input-block required">
           <label for="roles-select">{{ 'user.activity' | translate }}</label>
           <select id="roles-select" formControlName="roles" multiple>
             @for (role of roles(); track role.id) {
@@ -256,7 +256,62 @@
               }
             </ul>
           }
+        </div> -->
+        <div class="input-block required custom-multi-select" (click)="toggleRoleDropdown($event)">
+          <label for="roles-select">{{ 'user.activity' | translate }}</label>
+          <div class="multi-select-input" tabindex="0">
+            <div class="tag-list">
+              @for (roleId of selectedRolesIds; track roleId) {
+                <div class="tag-badge">
+                  <span class="tag-label">{{
+                    'roles.' + getRoleNameById(roleId) | translate
+                  }}</span>
+                  <span class="tag-remove-icon" (click)="removeRole(roleId, $event)">
+                    <i class="ph ph-x-circle"></i>
+                  </span>
+                </div>
+              }
+              <!-- Curseur clignotant simulé -->
+              <span
+                class="cursor-placeholder"
+                [style.display]="isRolesDropdownOpen() ? 'inline' : 'none'"
+                >|</span
+              >
+            </div>
+
+            <span class="global-clear-icon" (click)="clearAllRoles($event)">
+              <i class="ph ph-x"></i>
+            </span>
+          </div>
+
+          <!-- Dropdown des rôles disponibles -->
+          @if (isRolesDropdownOpen()) {
+            <div class="options-dropdown">
+              @for (role of roles(); track role.id) {
+                @if (!selectedRolesIds.includes(role.id!)) {
+                  <div class="option-item" (click)="addRole(role.id!, $event)">
+                    {{ 'roles.' + role.name | translate }}
+                  </div>
+                }
+              }
+              @if (roles().length === selectedRolesIds.length) {
+                <div class="option-item empty">{{ 'global.noMoreOptions' | translate }}</div>
+              }
+            </div>
+          }
+
+          <!-- Gestion des erreurs -->
+          @if (form().controls.roles.touched && form().controls.roles.errors) {
+            <ul class="form-error">
+              @if (form().controls.roles.errors?.['required']) {
+                <li>
+                  {{ 'formError.required' | translate }}
+                </li>
+              }
+            </ul>
+          }
         </div>
+
         @if (requiredEmployeeNumber()) {
           <div class="input-block required">
             <label for="employeNumber">{{ 'user.employeeNumber' | translate }}</label>

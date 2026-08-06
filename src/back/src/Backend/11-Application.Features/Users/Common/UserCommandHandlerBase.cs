@@ -1,4 +1,5 @@
-﻿using Application.Features.Districts.Common;
+﻿using Application.Exceptions;
+using Application.Features.Districts.Common;
 using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer.Contexts;
 using Microsoft.AspNetCore.Identity;
@@ -79,6 +80,16 @@ namespace Application.Features.Users.Common
                 dao.UserDistricts.Clear();
                 dao.UserDistricts.Add(
                     new UserDistrictDao() { DistrictId = model.DistrictId!.Value }
+                );
+            }
+        }
+
+        protected static void EnsureIdentitySucceeded(IdentityResult result)
+        {
+            if (!result.Succeeded)
+            {
+                throw new ValidationException(
+                    result.Errors.ToDictionary(e => e.Code, e => e.Description)
                 );
             }
         }

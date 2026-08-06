@@ -42,6 +42,10 @@ export class CreateAccountUi implements OnInit {
       .subscribe({
         next: () => {
           this.isSaving.set(false);
+          //Navigate to the new registration request page after successful registration
+          this.router.navigate(['/registration-request/new'], {
+            queryParams: { email: user.email },
+          });
         },
         error: (err: ResultOfError) => {
           if (err.data?.code === 'validation' && err.data?.additionalData) {

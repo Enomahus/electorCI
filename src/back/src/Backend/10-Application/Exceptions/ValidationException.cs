@@ -30,4 +30,10 @@ public class ValidationException : AppException
                 failureGroup => string.Join(" ", failureGroup)
             );
     }
+
+    public ValidationException(Dictionary<string, string> additionalData)
+        : this()
+    {
+        AdditionalData = additionalData;
+    }
 }
