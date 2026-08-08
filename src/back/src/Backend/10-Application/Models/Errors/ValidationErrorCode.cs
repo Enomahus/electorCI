@@ -21,6 +21,11 @@
         InvalidLevel,
         PollingStationMustExist,
         PollingStationLinked,
-        DistrictLinked
+        DistrictLinked,
+        MustBeAdult,
+        MarriedNameRequired,
+        RegistrationRequestMustExist,
+        RegistrationRequestMustBeOwnedByUser,
+        RegistrationRequestMustBeDraftOrToBeProcessed,
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Application.Features.Districts.Common;
+using Application.Features.RegistrationRequests.Common;
 using Application.Features.Security.Common;
+using Application.Interfaces.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,9 +21,7 @@ namespace Application.Features
             return services;
         }
 
-        public static IServiceCollection AddApplicationFeaturesServices(
-            this IServiceCollection services
-        )
+        public static IServiceCollection AddApplicationFeaturesServices(this IServiceCollection services)
         {
             //services.AddScoped<IAddressService, AddressService>();
             //services.AddScoped<IScaleVersionQueryService, ScaleVersionQueryService>();
@@ -29,7 +29,8 @@ namespace Application.Features
             //services.AddScoped<TranslationService>();
             //services.AddScoped<CertificateRequestService>();
             services.AddScoped<DistrictService>();
-            //services.AddScoped<IConformityStatusService, ConformityStatusService>();
+            services.AddScoped<RegistrationRequestService>();
+            services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<ITokenHelper, TokenHelper>();
             //services.AddScoped<PanelReferenceCompleteFormValidatorsService>();
             //services.AddScoped<PanelReferenceCompleteSideEffectsService>();
