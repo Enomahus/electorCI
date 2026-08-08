@@ -30,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="RegistrationRequests\GetRegistrationRequestsForAdmin\" />
-    <Folder Include="RegistrationRequests\GetRegistrationRequestsForAgent\" />
     <Folder Include="RegistrationRequests\UpdateRegistrationRequest\" />
   </ItemGroup>
 </Project>

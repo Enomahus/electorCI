@@ -2,7 +2,7 @@
 
 namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForAdmin
 {
-    public record GetRegistrationRequestsFormAdminResponse : GetRegistrationRequestsResponseModel
+    public record GetRegistrationRequestsForAdminResponse : GetRegistrationRequestsResponseModel
     {
         public required string AuthorName { get; set; }
     }

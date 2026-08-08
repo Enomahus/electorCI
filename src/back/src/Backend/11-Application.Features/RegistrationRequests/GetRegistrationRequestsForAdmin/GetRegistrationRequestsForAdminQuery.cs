@@ -1,8 +1,8 @@
 using Application.Common.Enums;
-using Application.Common.Interfaces.Services;
 using Application.Features.Common.Citizen;
 using Application.Features.Common.GridData;
 using Application.Features.RegistrationRequests.Common;
+using Application.Features.RegistrationRequests.GetRegistrationRequests;
 using Application.Models;
 using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer.Contexts;
@@ -10,25 +10,26 @@ using Microsoft.EntityFrameworkCore;
 using Pcea.Core.Net.Authorization.Application.Attributes;
 using Tools.Logging;
 
-namespace Application.Features.RegistrationRequests.GetRegistrationRequests
+namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForAdmin
 {
-    [WithPermission([nameof(AppPermission.GetRegistrationRequests)])]
-    public class GetRegistrationRequestsQuery
-        : GetRegistrationRequestsBase<GetRegistrationRequestsResponse> { }
+    [WithPermission([nameof(AppPermission.GetRegistrationRequestForAdmin)])]
+    public class GetRegistrationRequestsForAdminQuery
+        : GetRegistrationRequestsBase<GetRegistrationRequestsForAdminResponse> { }
 
-    public class GetRegistrationRequestsQueryValidator
+    public class GetRegistrationRequestsForAdminQueryValidator
         : GetRegistrationRequestsQueryValidatorBase<
-            GetRegistrationRequestsQuery,
-            GetRegistrationRequestsResponse
+            GetRegistrationRequestsForAdminQuery,
+            GetRegistrationRequestsForAdminResponse
         > { }
 
-    public class GetRegistrationRequestsQueryHandler(
-        ReadOnlyDbContext context,
-        ICurrentUserService currentUserService
-    ) : GetRegistrationRequestsHandlerBase<GetRegistrationRequestsQuery, GetRegistrationRequestsResponse>()
+    public class GetRegistrationRequestsForAdminQueryHandler(ReadOnlyDbContext context)
+        : GetRegistrationRequestsHandlerBase<
+            GetRegistrationRequestsForAdminQuery,
+            GetRegistrationRequestsForAdminResponse
+        >()
     {
-        public override async Task<Result<GridDataResponse<GetRegistrationRequestsResponse>>> Handle(
-            GetRegistrationRequestsQuery query,
+        public override async Task<Result<GridDataResponse<GetRegistrationRequestsForAdminResponse>>> Handle(
+            GetRegistrationRequestsForAdminQuery request,
             CancellationToken cancellationToken
         )
         {
@@ -37,7 +38,6 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequests
             var registrationRequests = await context
                 .RegistrationRequests.AsNoTracking()
                 .AsSplitQuery()
-                .Where(r => r.AuthorId == currentUserService.UserId)
                 .Include(r => r.District)
                 .Include(r => r.Author)
                 .Include(r => r.Citizen)
@@ -48,12 +48,12 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequests
 
             var rows = registrationRequests.Select(MapToResponse).AsQueryable();
 
-            var result = rows.ApplyGrid(query);
+            var result = rows.ApplyGrid(request);
 
-            return Result<GridDataResponse<GetRegistrationRequestsResponse>>.From(result);
+            return Result<GridDataResponse<GetRegistrationRequestsForAdminResponse>>.From(result);
         }
 
-        protected override GetRegistrationRequestsResponse MapToResponse(
+        protected override GetRegistrationRequestsForAdminResponse MapToResponse(
             RegistrationRequestDao registrationRequest
         ) =>
             new()
@@ -67,8 +67,9 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequests
                 DistrictName = registrationRequest.District.Wording,
                 Comment = registrationRequest.ReasonForRejection ?? string.Empty,
                 Citizen = CitizenModel.FromDao(registrationRequest.Citizen),
-                CanBeDeleted = ComputeCanBeDeleted(registrationRequest),
+                CanBeDeleted = true,
                 CreatedAt = registrationRequest.SubmissionDate,
+                AuthorName = $"{registrationRequest.Author.FirstName} {registrationRequest.Author.LastName}",
             };
     }
 }

@@ -1,8 +1,8 @@
-﻿using Application.Features.RegistrationRequests.Common;
+using Application.Features.RegistrationRequests.Common;
 
 namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForManagement
 {
-    public record GetRegistrationRequestsFormManagementResponse : GetRegistrationRequestsResponseModel
+    public record GetRegistrationRequestsForManagementResponse : GetRegistrationRequestsResponseModel
     {
         public required string AuthorName { get; set; }
     }
