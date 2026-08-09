@@ -2,10 +2,7 @@ using Application.Common.Enums;
 using Application.Features.Common.GridData;
 using Application.Models;
 using Infrastructure.Persistence.Entities;
-using Infrastructure.Persistence.SQLServer.Contexts;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Tools.Logging;
 
 namespace Application.Features.RegistrationRequests.Common
 {

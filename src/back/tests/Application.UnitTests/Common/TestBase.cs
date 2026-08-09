@@ -58,16 +58,17 @@ namespace Application.UnitTests.Common
             BlobServiceClient blobServiceSub = ConfigureBlobServiceSubstitute(setupBlobClient);
             timeProviderSub.GetUtcNow().Returns(new DateTimeOffset(2026, 1, 1, 10, 0, 0, TimeSpan.Zero));
             var externalAuthSub = Substitute.For<IExternalAuthService>();
-            var fileServiceSub = setupFileService != null ? Substitute.For<IFileService>() : null;
+            var fileServiceSub = Substitute.For<IFileService>();
 
             setupDateService?.Invoke(timeProviderSub);
-            setupFileService?.Invoke(fileServiceSub!);
+            setupFileService?.Invoke(fileServiceSub);
 
             var configuration = new ConfigurationBuilder().Build();
 
             var services = new ServiceCollection();
             services
                 .AddApplicationServices()
+                .AddApplicationFeaturesServices()
                 .AddMediator()
                 .AddDatabase(timeProviderSub)
                 .AddInfrastructureIdentityServices(configuration)
@@ -79,6 +80,7 @@ namespace Application.UnitTests.Common
                 .AddSingleton(currentUserEntityPermissionsProviderSub)
                 .AddSingleton(timeProviderSub)
                 .AddSingleton(blobServiceSub)
+                .AddSingleton(fileServiceSub)
                 .AddScoped<ITokenService, TokenService>()
                 .AddScoped<ITokenHelper, TokenHelper>()
                 .AddScoped<IAuthorizationHandler, AuthorizationHandler>()
@@ -278,7 +280,10 @@ namespace Application.UnitTests.Common
             TimeProvider timeProvider,
             Guid authorId,
             string reference = "DE-2026-0000001",
-            long? districtId = null
+            long? districtId = null,
+            RegistrationStatus status = RegistrationStatus.ToBeProcessed,
+            RegistrationRequestType requestType = RegistrationRequestType.RegistrationRequest,
+            string? reasonForRejection = ""
         )
         {
             districtId ??= (
@@ -290,12 +295,12 @@ namespace Application.UnitTests.Common
             var registrationRequest = new RegistrationRequestDao()
             {
                 AuthorId = authorId,
-                RequestType = RegistrationRequestType.RegistrationRequest,
-                Status = RegistrationStatus.ToBeProcessed,
+                RequestType = requestType,
+                Status = status,
                 SubmissionDate = now,
                 DistrictId = districtId.Value,
                 LastUpdaterId = authorId,
-                ReasonForRejection = "",
+                ReasonForRejection = reasonForRejection,
                 Reference = reference,
                 Citizen = new CitizenDao()
                 {

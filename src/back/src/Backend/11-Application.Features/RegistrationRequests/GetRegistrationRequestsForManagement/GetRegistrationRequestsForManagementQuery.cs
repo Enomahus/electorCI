@@ -60,7 +60,8 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForMa
             var rows = registrationRequests.Select(MapToResponse).AsQueryable();
 
             var result = rows.ApplyGrid(request);
-            throw new NotImplementedException();
+
+            return Result<GridDataResponse<GetRegistrationRequestsForManagementResponse>>.From(result);
         }
 
         protected override GetRegistrationRequestsForManagementResponse MapToResponse(
@@ -89,7 +90,7 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForMa
             CancellationToken token
         )
         {
-            //Remonter l'arbre pour trouver les IDs de la (ou des) région(s) de l'utilisateur.
+            //Remonter l'arbre pour trouver les IDs de la (ou des) rï¿½gion(s) de l'utilisateur.
             var userRegionIds = await context
                 .UserDistricts.Where(ud => ud.UserId == currentUserId)
                 .Select(ud =>
@@ -101,23 +102,23 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForMa
                         ? ud.District.Parent!.Parent!.ParentId
                     : ud.District.Parent!.Parent!.Parent!.ParentId // Maximum depth (VotingLocation)
                 )
-                .Where(id => id.HasValue) // Sécurité contre les orphelins
+                .Where(id => id.HasValue) // Sï¿½curitï¿½ contre les orphelins
                 .Select(id => id!.Value)
                 .Distinct()
                 .ToListAsync(token);
 
-            // Fail-fast : Si l'utilisateur n'est rattaché à aucune région, on stoppe là.
+            // Fail-fast : Si l'utilisateur n'est rattachï¿½ ï¿½ aucune rï¿½gion, on stoppe lï¿½.
             if (userRegionIds.Count == 0)
             {
                 return [];
             }
 
-            // ÉTAPE 2 : Descendre l'arbre pour récupérer TOUS les sous-districts liés à cette région.
-            // On récupère uniquement les IDs (Select) pour éviter l'instanciation des entités EF en mémoire (Tracked Entities).
+            // ï¿½TAPE 2 : Descendre l'arbre pour rï¿½cupï¿½rer TOUS les sous-districts liï¿½s ï¿½ cette rï¿½gion.
+            // On rï¿½cupï¿½re uniquement les IDs (Select) pour ï¿½viter l'instanciation des entitï¿½s EF en mï¿½moire (Tracked Entities).
             var districtIdsInRegion = await context
                 .Districts.Where(d =>
                     userRegionIds.Contains(d.Id)
-                    || // Est la région
+                    || // Est la rï¿½gion
                     userRegionIds.Contains(d.ParentId ?? 0)
                     || // Niveau 1 (Departement)
                     userRegionIds.Contains(d.Parent!.ParentId ?? 0)

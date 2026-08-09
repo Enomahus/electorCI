@@ -58,8 +58,6 @@ namespace Application.Features.RegistrationRequests.TriggerActionOnRegistrationR
             var registrationRequest =
                 await context
                     .RegistrationRequests.AsNoTracking()
-                    .Include(r => r.Citizen)
-                    .Include(r => r.District)
                     .FirstOrDefaultAsync(r => r.Id == command.RequestId, cancellationToken)
                 ?? throw new NotFoundException(nameof(RegistrationRequestDao), command.RequestId);
 

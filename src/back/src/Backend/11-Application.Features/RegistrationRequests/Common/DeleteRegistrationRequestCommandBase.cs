@@ -53,6 +53,8 @@ public abstract class DeleteRegistrationRequestCommandHandlerBase<T_Command>(Wri
             .Include(r => r.RegistrationRequestDocuments)
             .FirstAsync(rr => rr.Id == command.Id, cancellationToken);
 
+        context.RegistrationRequests.Remove(registrationRequest);
+
         if (registrationRequest.Citizen != null)
         {
             context.Citizens.Remove(registrationRequest.Citizen);
@@ -65,7 +67,6 @@ public abstract class DeleteRegistrationRequestCommandHandlerBase<T_Command>(Wri
             );
         }
 
-        context.RegistrationRequests.Remove(registrationRequest);
         await context.SaveChangesAsync(cancellationToken);
         return Result.Default();
     }
