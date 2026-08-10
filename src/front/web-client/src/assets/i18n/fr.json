@@ -285,6 +285,30 @@
   "registrationRequests": {
     "title": "Mes demandes",
     "titleForAdmin": "Liste des demandes",
-    "titleForManagement": "Liste des demandes"
+    "titleForManagement": "Liste des demandes",
+    "deleteSuccess": "La demande d'inscription a été supprimée avec succès",
+    "deleteError": "Une erreur est survenue lors de la suppression de la demande d'inscription",
+    "actions": {
+      "create": "Nouvelle demande"
+    },
+    "columns": {
+      "reference": "Référence",
+      "citizen": "Électeur",
+      "requestType": "Type de demande",
+      "district": "Circonscription",
+      "requestDate": "Date de la demande",
+      "author": "Auteur",
+      "status": "Statut"
+    },
+    "type": {
+      "registrationRequest": "Inscription",
+      "registrationDataUpdate": "Modification de données"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "toBeProcessed": "À traiter",
+      "approved": "Approuvée",
+      "rejected": "Rejetée"
+    }
   }
 }

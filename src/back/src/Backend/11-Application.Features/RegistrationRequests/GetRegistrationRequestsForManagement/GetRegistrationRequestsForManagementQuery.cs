@@ -66,8 +66,13 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForMa
 
         protected override GetRegistrationRequestsForManagementResponse MapToResponse(
             RegistrationRequestDao registrationRequest
-        ) =>
-            new()
+        )
+        {
+            var authorName =
+                registrationRequest.Author != null
+                    ? $"{registrationRequest.Author.FirstName} {registrationRequest.Author.LastName}"
+                    : "";
+            return new()
             {
                 Id = registrationRequest.Id,
                 RequestReference = registrationRequest.Reference,
@@ -82,8 +87,9 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForMa
                     registrationRequest.RequestType == RegistrationRequestType.RegistrationRequest
                     && registrationRequest.Status != RegistrationStatus.Approved,
                 CreatedAt = registrationRequest.SubmissionDate,
-                AuthorName = $"{registrationRequest.Author.FirstName} {registrationRequest.Author.LastName}",
+                AuthorName = authorName,
             };
+        }
 
         private async Task<List<long>> GetDistrictIdsInUserRegionAsync(
             Guid currentUserId,

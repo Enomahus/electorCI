@@ -54,8 +54,14 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForAd
 
         protected override GetRegistrationRequestsForAdminResponse MapToResponse(
             RegistrationRequestDao registrationRequest
-        ) =>
-            new()
+        )
+        {
+            var authorName =
+                registrationRequest.Author != null
+                    ? $"{registrationRequest.Author.FirstName} {registrationRequest.Author.LastName}"
+                    : "";
+
+            return new()
             {
                 Id = registrationRequest.Id,
                 RequestReference = registrationRequest.Reference,
@@ -68,7 +74,8 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForAd
                 Citizen = CitizenModel.FromDao(registrationRequest.Citizen),
                 CanBeDeleted = true,
                 CreatedAt = registrationRequest.SubmissionDate,
-                AuthorName = $"{registrationRequest.Author.FirstName} {registrationRequest.Author.LastName}",
+                AuthorName = authorName,
             };
+        }
     }
 }
