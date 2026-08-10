@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.SQLServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260809003022_FixPollingStationDistrictNavigation")]
-    partial class FixPollingStationDistrictNavigation
+    [Migration("20260810102148_Fix_MajContextPollingStation")]
+    partial class Fix_MajContextPollingStation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2204,7 +2204,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AuthorId")
+                    b.Property<Guid?>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CitizenId")
@@ -2636,8 +2636,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                     b.HasOne("Infrastructure.Persistence.Entities.UserDao", "Author")
                         .WithMany("OwnRegistrationRequests")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Infrastructure.Persistence.Entities.CitizenDao", "Citizen")
                         .WithMany("RegistrationRequests")

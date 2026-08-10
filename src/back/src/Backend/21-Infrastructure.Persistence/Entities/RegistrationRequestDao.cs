@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.Entities
         public RegistrationRequestType RequestType { get; set; }
         public RegistrationStatus Status { get; set; }
         public string ReasonForRejection { get; set; }
-        public Guid AuthorId { get; set; }
+        public Guid? AuthorId { get; set; }
 
         [ForeignKey(nameof(AuthorId))]
         public UserDao Author { get; set; }

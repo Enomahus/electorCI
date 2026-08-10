@@ -15,7 +15,7 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequest
         public DateTimeOffset SubmittedAt { get; set; }
         public RegistrationStatus Status { get; set; }
         public string DistrictName { get; set; }
-        public Guid AuthorId { get; set; }
+        public Guid? AuthorId { get; set; }
         public List<RegistrationRequestDocumentModel> RequestDocuments { get; set; } = [];
 
         public static GetRegistrationRequestResponse From(

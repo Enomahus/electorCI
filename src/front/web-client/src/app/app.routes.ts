@@ -12,6 +12,9 @@ import { HomeUi } from './pages/home-ui/home-ui';
 import { CreateAccountUi } from './pages/login-ui/create-account-ui/create-account-ui';
 import { LoginUi } from './pages/login-ui/login-ui';
 import { MyAccountUi } from './pages/my-account-ui/my-account-ui';
+import { RegistrationRequestsForAdminUi } from './pages/registration-requests-home-ui/registration-requests-for-admin-ui/registration-requests-for-admin-ui';
+import { RegistrationRequestsForManagementUi } from './pages/registration-requests-home-ui/registration-requests-for-management-ui/registration-requests-for-management-ui';
+import { RegistrationRequestsUi } from './pages/registration-requests-home-ui/registration-requests-ui/registration-requests-ui';
 import { PermissionsGuard } from './services/auth/permission.guard';
 import { AppPermission } from './services/nswag/api-nswag-client';
 import { PageTemplateUi } from './shared/page-template-ui/page-template-ui';
@@ -55,6 +58,24 @@ export const routes: Routes = [
         path: 'faq',
         component: FaqUi,
         title: 'faq.title',
+      },
+      {
+        path: 'registration-requests',
+        component: RegistrationRequestsUi,
+        title: 'registrationRequests.title',
+        canActivate: [PermissionsGuard],
+      },
+      {
+        path: 'registration-requests-for-management',
+        component: RegistrationRequestsForManagementUi,
+        title: 'registrationRequests.titleForManagement',
+        canActivate: [PermissionsGuard],
+      },
+      {
+        path: 'registration-requests-for-admin',
+        component: RegistrationRequestsForAdminUi,
+        title: 'registrationRequests.titleForAdmin',
+        canActivate: [PermissionsGuard],
       },
       {
         path: 'admin',

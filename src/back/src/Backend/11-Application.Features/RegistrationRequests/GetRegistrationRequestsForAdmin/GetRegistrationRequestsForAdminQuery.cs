@@ -2,7 +2,6 @@ using Application.Common.Enums;
 using Application.Features.Common.Citizen;
 using Application.Features.Common.GridData;
 using Application.Features.RegistrationRequests.Common;
-using Application.Features.RegistrationRequests.GetRegistrationRequests;
 using Application.Models;
 using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.SQLServer.Contexts;

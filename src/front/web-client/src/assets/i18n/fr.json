@@ -281,5 +281,10 @@
     "register": "S'inscrire",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "login": "Connectez-vous"
+  },
+  "registrationRequests": {
+    "title": "Mes demandes",
+    "titleForAdmin": "Liste des demandes",
+    "titleForManagement": "Liste des demandes"
   }
 }
