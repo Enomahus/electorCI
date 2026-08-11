@@ -18,6 +18,7 @@ import { RegistrationRequestsUi } from './pages/registration-requests-home-ui/re
 import { PermissionsGuard } from './services/auth/permission.guard';
 import { AppPermission } from './services/nswag/api-nswag-client';
 import { PageTemplateUi } from './shared/page-template-ui/page-template-ui';
+import { CreateRegistrationRequestUi } from './pages/registration-requests-home-ui/create-registration-request-ui/create-registration-request-ui';
 
 export function perm(p: AppPermission): AppPermission {
   return p;
@@ -64,6 +65,15 @@ export const routes: Routes = [
         component: RegistrationRequestsUi,
         title: 'registrationRequests.title',
         canActivate: [PermissionsGuard],
+      },
+      {
+        path: 'registration-requests/new',
+        component: CreateRegistrationRequestUi,
+        title: 'registrationRequest.title',
+        canActivate: [PermissionsGuard],
+        data: {
+          permissions: perm('createRegistrationRequest')
+        }
       },
       {
         path: 'registration-requests-for-management',

@@ -1,1 +1,45 @@
-<p>upload-multiple-ui works!</p>
+
+<div class="upload-multiple-ui">
+  <!-- Bouton d'upload -->
+  <div class="k-upload-button-wrap">
+    <label class="upload-button" [class.disabled]="isDisabled()">
+      {{ 'global.selectFile' | translate }}
+      <input
+        type="file"
+        multiple
+        [accept]="accept() || allowedExtensions().join(',')"
+        [disabled]="isDisabled()"
+        (change)="onNativeFileChange($event)"
+      />
+    </label>
+  </div>
+
+  <!-- Conteneur de la liste pour gérer la largeur restante -->
+  <div class="upload-list-container">
+    @if (filesInfo().length) {
+      <ul class="upload-file-list" (click)="onClick($event)">
+        @for (file of filesInfo(); track file.uid ?? file.name) {
+          <li class="k-file" [attr.data-uid]="file.uid">
+            <div class="k-file-info">
+              <span class="k-file-name" [title]="file.name">{{ file.name }}</span>
+              @if (file.size) {
+                <span class="k-file-size">{{ (file.size / 1024).toFixed(0) }} Ko</span>
+              }
+            </div>
+            <button
+              type="button"
+              class="btn-delete"
+              [disabled]="isDisabled()"
+              (click)="onRemoveFile(file, $event)"
+              aria-label="Supprimer le fichier"
+            >
+              &times;
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="upload-empty">{{ 'global.noData' | translate }}</p>
+    }
+  </div>
+</div>

@@ -1,0 +1,203 @@
+// @use '../../../styles/themes/variable.scss' as *;
+
+// .upload-multiple-ui {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 8px;
+
+//   .k-upload-button-wrap {
+//     .upload-button {
+//       display: inline-flex;
+//       align-items: center;
+//       justify-content: center;
+//       width: fit-content;
+//       padding: 8px 16px;
+//       border-radius: 8px;
+//       background-color: $blue;
+//       color: #ffffff;
+//       font-size: 14px;
+//       cursor: pointer;
+//       transition: background-color 0.2s ease;
+
+//       &:hover {
+//         background-color: $dark-blue;
+//       }
+
+//       &.disabled {
+//         background-color: $lightgrey;
+//         color: $darker-grey;
+//         cursor: not-allowed;
+//       }
+
+//       input[type='file'] {
+//         display: none;
+//       }
+//     }
+//   }
+
+//   .upload-file-list {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 4px;
+//     margin: 0;
+//     padding: 0;
+//     list-style: none;
+
+//     .k-file {
+//       display: flex;
+//       align-items: center;
+//       justify-content: space-between;
+//       padding: 8px 12px;
+//       border: 1px solid $lightgrey;
+//       border-radius: 8px;
+//       cursor: pointer;
+//       transition: background-color 0.2s ease;
+
+//       &:hover {
+//         background-color: $grey;
+//       }
+
+//       .k-file-name {
+//         font-size: 14px;
+//         color: #333333;
+//         overflow: hidden;
+//         text-overflow: ellipsis;
+//         white-space: nowrap;
+//       }
+
+//       .k-file-size {
+//         flex-shrink: 0;
+//         margin-left: 8px;
+//         font-size: 12px;
+//         color: $darker-grey;
+//       }
+//     }
+//   }
+
+//   .upload-empty {
+//     margin: 0;
+//     font-size: 14px;
+//     color: $darker-grey;
+//   }
+// }
+
+@use '../../../styles/themes/variable.scss' as *;
+
+.upload-multiple-ui {
+  display: flex;
+  flex-direction: row; /* Aligne le bouton et la liste sur la même ligne */
+  align-items: flex-start;
+  gap: 16px; /* Espace entre le bouton et la liste */
+
+  .k-upload-button-wrap {
+    flex-shrink: 0; /* Empêche le bouton de rétrécir */
+
+    .upload-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background-color: $blue;
+      color: #ffffff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+
+      &:hover:not(.disabled) {
+        background-color: $dark-blue;
+      }
+
+      &.disabled {
+        background-color: $lightgrey;
+        color: $darker-grey;
+        cursor: not-allowed;
+      }
+
+      input[type='file'] {
+        display: none;
+      }
+    }
+  }
+
+  .upload-list-container {
+    flex-grow: 1; /* Prend l'espace restant */
+    min-width: 0; /* Empêche le débordement des textes trop longs */
+  }
+
+  .upload-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    .k-file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      border: 1px solid $lightgrey;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: $grey;
+      }
+
+      .k-file-info {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .k-file-name {
+        font-size: 14px;
+        color: #333333;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .k-file-size {
+        flex-shrink: 0;
+        margin-left: 8px;
+        font-size: 12px;
+        color: $darker-grey;
+      }
+
+      .btn-delete {
+        flex-shrink: 0;
+        background: transparent;
+        border: none;
+        color: $darker-grey; // Assure-toi d'avoir cette variable ou utilise un code hexa
+        font-size: 20px;
+        line-height: 1;
+        margin-left: 12px;
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover:not(:disabled) {
+          color: #dc3545; // Rouge standard pour la suppression
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  .upload-empty {
+    margin: 0;
+    padding-top: 8px;
+    font-size: 14px;
+    color: $darker-grey;
+  }
+}

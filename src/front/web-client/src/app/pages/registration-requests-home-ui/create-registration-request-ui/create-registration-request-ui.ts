@@ -1,13 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RegistrationRequestsApiService } from '../../../services/api/registration-requests.api.service';
 import { FileParameter, RegistrationRequestModel } from '../../../services/nswag/api-nswag-client';
 import { getFileParametersAsync } from '../../../shared/upload-multiple-ui/file-upload-helper';
+import { RegistrationRequestUi } from '../registration-request-ui/registration-request-ui';
 
 @Component({
   selector: 'app-create-registration-request-ui',
-  imports: [],
+  imports: [RegistrationRequestUi, TranslatePipe],
   templateUrl: './create-registration-request-ui.html',
   styleUrl: './create-registration-request-ui.scss',
 })
@@ -47,6 +48,10 @@ export class CreateRegistrationRequestUi {
           this.isSaving.set(false);
         },
       });
+  }
+
+  goBack(): void {
+    this.router.navigate(['registration-requests']);
   }
 
   private async mapAttachments(event: {

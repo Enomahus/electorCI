@@ -1,0 +1,21 @@
+.datepicker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .datepicker-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .datepicker-input {
+    padding: 8px;
+    font-size: 16px;
+    display: block;
+  }
+  .datepicker-input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+  }
+}

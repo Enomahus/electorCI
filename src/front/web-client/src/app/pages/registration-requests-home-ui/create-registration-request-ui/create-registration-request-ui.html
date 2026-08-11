@@ -1,1 +1,6 @@
-<p>create-registration-request-ui works!</p>
+<h1>{{ 'registrationRequest.newRegistrationRequestTitle' | translate }}</h1>
+<app-registration-request-ui
+  [isSaving]="isSaving()"
+  (save)="saveCreatedRequest($event)"
+  (goBack)="goBack()"
+></app-registration-request-ui>

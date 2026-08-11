@@ -11,7 +11,7 @@
     "refresh": "Actualiser",
     "login": "Se connecter",
     "actions": "Actions",
-    "selectFile": "Sélectionner un fichier",
+    "selectFile": "Choisir un fichier",
     "select": "...Veuillez choisir une option...",
     "no": "Non",
     "yes": "Oui",
@@ -291,6 +291,10 @@
     "actions": {
       "create": "Nouvelle demande"
     },
+    "gender": {
+      "feminine": "Féminin",
+      "masculine": "Masculin"
+    },
     "columns": {
       "reference": "Référence",
       "citizen": "Électeur",
@@ -299,6 +303,12 @@
       "requestDate": "Date de la demande",
       "author": "Auteur",
       "status": "Statut"
+    },
+    "maritalStatus": {
+      "single": "Célibataire",
+      "married": "Marié(e)",
+      "divorced": "Divorcé(e)",
+      "widowed": "Veuf(ve)"
     },
     "type": {
       "registrationRequest": "Inscription",
@@ -309,6 +319,61 @@
       "toBeProcessed": "À traiter",
       "approved": "Approuvée",
       "rejected": "Rejetée"
+    }
+  },
+  "registrationRequest": {
+    "title": "Créer une demande",
+    "approve": "Approuver",
+    "cancelRequest": "Annuler la demande",
+    "submitRequest": "Soumettre la demande",
+    "newRegistrationRequestTitle": "Nouvelle demande d'inscription",
+    "requestDetails": "Détails de la demande d'inscription",
+    "supportingDocuments": "Documents justificatifs",
+    "citizenInformation": "Informations du citoyen",
+    "requestInformation": "Informations de la demande",
+    "residenceSection": "Résidence",
+    "docType": "Type de pièce",
+    "documentType": {
+      "passportPhoto": "Photo d'identité",
+      "identityDocumentOrNationalCertificate": "CNI / Certificat de nationalité",
+      "residenceCertificate": "Attestation de résidence"
+    },
+    "request": {
+      "district": "Circonscription électorale",
+      "registrationType": "Type de demande",
+      "comment": "Commentaire",
+      "requestType": {
+        "registrationRequest": "Demande d'inscription",
+        "registrationDataUpdate": "Modification de données"
+      }
+    },
+    "residence": {
+      "region": "Région",
+      "department": "Département",
+      "subPrefecture": "Sous-préfecture",
+      "municipality": "Commune / Village",
+      "vottingLocation": "Lieu de vote"
+    },
+    "citizen": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "gender": "Genre",
+      "birthDate": "Date de naissance",
+      "birthPlace": "Lieu de naissance",
+      "nationality": "Nationnalité",
+      "occupation": "Profession",
+      "physicalAddress": "Adresse physique",
+      "postalAddress": "Adresse postale",
+      "maritalStatus": "Statut matrimonial",
+      "marriedName": "Nom d'épouse",
+      "email": "E-mail",
+      "father": "Père",
+      "mother": "Mère"
+    },
+    "supportingAttachments": {
+      "identityDocsAttachments": "CNI / Certificat de nationalité",
+      "residCertificateAttachments": "Attestation de résidence",
+      "photoAttachments": "Photo"
     }
   }
 }
