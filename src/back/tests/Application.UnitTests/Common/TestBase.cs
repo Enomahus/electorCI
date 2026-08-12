@@ -4,6 +4,7 @@ using Application.Common.Enums;
 using Application.Common.Interfaces.Services;
 using Application.Features;
 using Application.Features.Districts.Common;
+using Application.Features.RegistrationRequests.Common;
 using Application.Features.Security.Common;
 using Application.Interfaces.Services;
 using Application.Models.Errors;
@@ -86,7 +87,7 @@ namespace Application.UnitTests.Common
                 .AddScoped<IAuthorizationHandler, AuthorizationHandler>()
                 //.AddScoped<CriteriaService>()
                 //.AddScoped<PanelReferenceService>()
-                //.AddScoped<StakeholderService>()
+                .AddScoped<CitizenService>()
                 .AddScoped<DistrictService>()
                 .AddKeyedSingleton(ExternalAuthServiceKeys.GoogleAuthService, externalAuthSub)
                 .AddKeyedSingleton(ExternalAuthServiceKeys.MicrosoftAuthService, externalAuthSub)
@@ -273,6 +274,43 @@ namespace Application.UnitTests.Common
             await context.SaveChangesAsync();
 
             return district;
+        }
+
+        protected static async Task<CitizenDao> CreateCitizenAsync(
+            WritableDbContext context,
+            TimeProvider timeProvider,
+            string firstName = "Harvey",
+            string lastName = "Specter",
+            Gender gender = Gender.Masculine,
+            MaritalStatus maritalStatus = MaritalStatus.Single,
+            Guid? fatherId = null,
+            Guid? motherId = null
+        )
+        {
+            var now = timeProvider.GetUtcNow();
+
+            var citizen = new CitizenDao()
+            {
+                Gender = gender,
+                FirstName = firstName,
+                LastName = lastName,
+                BirthDate = now.AddYears(-30),
+                BirthPlace = "Yamoussoukro",
+                Nationality = "Ivoirienne",
+                MaritalStatus = maritalStatus,
+                Email = $"{firstName}.{lastName}@yopmail.com".ToLowerInvariant(),
+                PhysicalAddress = "123 Main St",
+                PostalAddress = "BP 123 Abidjan",
+                FatherId = fatherId,
+                MotherId = motherId,
+                CreatedAt = now,
+                ModifiedAt = now,
+            };
+
+            await context.Citizens.AddAsync(citizen);
+            await context.SaveChangesAsync();
+
+            return citizen;
         }
 
         protected static async Task<RegistrationRequestDao> CreateRegistrationRequestAsync(

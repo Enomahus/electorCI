@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Common.Enums;
+﻿using Application.Common.Enums;
 using Application.Models.Errors;
 using FluentValidation;
 using Infrastructure.Persistence.SQLServer.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Common.Citizen;
 
@@ -48,25 +46,88 @@ public class CitizenValidatorBase<T> : AbstractValidator<T>
 
         ApplyBaseRules();
 
-        RuleFor(c => c.MarriedName)
-            .NotEmpty()
-            .When(c => c.MaritalStatus == MaritalStatus.Married)
-            .WithMessage(ValidationErrorCode.MarriedNameRequired.ToString());
+        RuleFor(c => c.MaritalStatus).IsInEnum();
+
+        When(
+            c => c.MaritalStatus == MaritalStatus.Married,
+            () =>
+            {
+                RuleFor(c => c.MarriedName)
+                    .NotEmpty()
+                    .WithMessage(ValidationErrorCode.MarriedNameRequired.ToString());
+            }
+        );
 
         RuleFor(c => c.PhysicalAddress).NotEmpty().WithMessage(ValidationErrorCode.Required.ToString());
 
-        var parentValidator = new CitizenModelValidator(_timeProvider);
+        RuleFor(c => c.PostalAddress).NotEmpty().WithMessage(ValidationErrorCode.Required.ToString());
 
-        RuleFor(c => c.Father)
-            .SetValidator(parentValidator!)
-            .When(c => c.Father != null && !c.FatherId.HasValue);
+        When(
+            c => c.NewFather is null,
+            () =>
+            {
+                RuleFor(c => c.FatherId)
+                    .NotEmpty()
+                    .WithMessage(ValidationErrorCode.Required.ToString())
+                    .DependentRules(() =>
+                    {
+                        RuleFor(c => c.FatherId)
+                            .MustAsync(CitizenMustExistsAsync)
+                            .WithMessage(ValidationErrorCode.CitizenMustExist.ToString());
+                    });
+            }
+        );
 
-        RuleFor(c => c.Father)
-            .SetValidator(parentValidator!)
-            .When(c => c.Father != null && !c.FatherId.HasValue);
-        RuleFor(c => c.Mother)
-            .SetValidator(parentValidator!)
-            .When(c => c.Mother != null && !c.MotherId.HasValue);
+        When(
+            c => c.FatherId is null,
+            () =>
+            {
+                RuleFor(c => c.NewFather)
+                    .NotNull()
+                    .WithMessage(ValidationErrorCode.Required.ToString())
+                    .DependentRules(() =>
+                    {
+                        RuleFor(c => c.NewFather!)
+                            .SetValidator(new BasicCitizenModelValidator(_timeProvider));
+                    });
+            }
+        );
+
+        When(
+            c => c.NewMother is null,
+            () =>
+            {
+                RuleFor(c => c.MotherId)
+                    .NotEmpty()
+                    .WithMessage(ValidationErrorCode.Required.ToString())
+                    .DependentRules(() =>
+                    {
+                        RuleFor(c => c.MotherId)
+                            .MustAsync(CitizenMustExistsAsync)
+                            .WithMessage(ValidationErrorCode.CitizenMustExist.ToString());
+                    });
+            }
+        );
+
+        When(
+            c => c.MotherId is null,
+            () =>
+            {
+                RuleFor(c => c.NewMother)
+                    .NotNull()
+                    .WithMessage(ValidationErrorCode.Required.ToString())
+                    .DependentRules(() =>
+                    {
+                        RuleFor(c => c.NewMother!)
+                            .SetValidator(new BasicCitizenModelValidator(_timeProvider));
+                    });
+            }
+        );
+    }
+
+    private Task<bool> CitizenMustExistsAsync(Guid? citizenId, CancellationToken token)
+    {
+        return _context.Citizens.AnyAsync(c => c.Id == citizenId, token);
     }
 
     protected void ApplyBaseRules()
@@ -80,19 +141,33 @@ public class CitizenValidatorBase<T> : AbstractValidator<T>
     }
 }
 
-public class CitizenModelValidator : AbstractValidator<CitizenModel>
+public class BasicCitizenModelValidator : AbstractValidator<BasicCitizenModel>
 {
-    public CitizenModelValidator(TimeProvider timeProvider)
+    public BasicCitizenModelValidator(TimeProvider timeProvider)
     {
+        var now = timeProvider.GetUtcNow();
         RuleFor(v => v.Gender).NotNull().WithMessage(ValidationErrorCode.Required.ToString());
 
         RuleFor(v => v.FirstName!).IsRequiredName(100);
 
         RuleFor(v => v.LastName!).IsRequiredName();
 
-        RuleFor(x => x.BirthDate).MustBeAdult(timeProvider);
+        RuleFor(x => x.BirthDate)
+            .NotNull()
+            .WithMessage(ValidationErrorCode.Required.ToString())
+            .Must(date => IsAdult(date, now))
+            .WithMessage(ValidationErrorCode.MustBeAdult.ToString());
 
         RuleFor(v => v.BirthPlace).NotEmpty().WithMessage(ValidationErrorCode.Required.ToString());
         RuleFor(v => v.Nationality!).IsRequiredName();
+    }
+
+    private static bool IsAdult(DateTimeOffset birthDate, DateTimeOffset now)
+    {
+        var age = now.Year - birthDate.Year;
+        if (birthDate.Date > now.AddYears(-age))
+            age--;
+
+        return age >= 18;
     }
 }

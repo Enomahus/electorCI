@@ -23,7 +23,7 @@ namespace Application.Features.Common.Citizen
         public Guid? MotherId { get; set; }
         public CitizenModel? Mother { get; set; }
         public BasicCitizenModel? NewFather { get; set; }
-        public BasicCitizenModel? NewMather { get; set; }
+        public BasicCitizenModel? NewMother { get; set; }
         public ElectorModel? Elector { get; set; }
 
         public static CitizenModel FromDao(CitizenDao dao)

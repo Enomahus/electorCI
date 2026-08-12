@@ -16,6 +16,7 @@
         UserCannotBeCurrentUser,
         RoleMustExist,
         DistrictMustExist,
+        CitizenMustExist,
         InvalidParent,
         DistrictMustHaveParent,
         InvalidLevel,

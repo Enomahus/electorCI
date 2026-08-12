@@ -30,11 +30,9 @@ namespace Application.Features
             //services.AddScoped<CertificateRequestService>();
             services.AddScoped<DistrictService>();
             services.AddScoped<RegistrationRequestService>();
+            services.AddScoped<CitizenService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<ITokenHelper, TokenHelper>();
-            //services.AddScoped<PanelReferenceCompleteFormValidatorsService>();
-            //services.AddScoped<PanelReferenceCompleteSideEffectsService>();
-            //services.AddScoped<PanelReferenceService>();
 
             return services;
         }

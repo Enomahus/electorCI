@@ -276,6 +276,116 @@ namespace Application.UnitTests.Features.RegistrationRequests
             registrationRequest.LastUpdaterId.Should().Be(currentUser.Id);
             registrationRequest.Reference.Should().MatchRegex("^DE-\\d{4}-\\d{7}$");
             registrationRequest.Citizen.FirstName.Should().Be(command.RegistrationRequest.Citizen!.FirstName);
+
+            registrationRequest.Citizen.FatherId.Should().NotBeNull();
+            var father = await context.Citizens.FindAsync(registrationRequest.Citizen.FatherId);
+            father.Should().NotBeNull();
+            father!.FirstName.Should().Be(command.RegistrationRequest.Citizen!.NewFather!.FirstName);
+
+            registrationRequest.Citizen.MotherId.Should().NotBeNull();
+            var mother = await context.Citizens.FindAsync(registrationRequest.Citizen.MotherId);
+            mother.Should().NotBeNull();
+            mother!.FirstName.Should().Be(command.RegistrationRequest.Citizen!.NewMother!.FirstName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationRequestTest_ShouldSucceed_WhenFatherIdAndMotherIdAreProvided()
+        {
+            // Arrange
+            var serviceProvider = CreateServiceCollection().BuildServiceProvider();
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.CreateRegistrationRequest]);
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+            var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
+
+            var district = await CreateDistrictAsync(context, level: ElectoralDistrictLevel.VotingLocation);
+            var father = await CreateCitizenAsync(context, timeProvider, firstName: "Robert");
+            var mother = await CreateCitizenAsync(context, timeProvider, firstName: "Lily");
+
+            var registrationRequest = BuildValidRegistrationRequestModel(district.Id, timeProvider);
+            registrationRequest.Citizen.NewFather = null;
+            registrationRequest.Citizen.NewMother = null;
+            registrationRequest.Citizen.FatherId = father.Id;
+            registrationRequest.Citizen.MotherId = mother.Id;
+
+            var command = new CreateRegistrationRequestCommand { RegistrationRequest = registrationRequest };
+
+            // Act
+            var result = await serviceProvider.SendAsync(command);
+
+            // Assert
+            var citizenCountByFirstName = await context.Citizens.CountAsync(c => c.FirstName == "Robert");
+            citizenCountByFirstName.Should().Be(1);
+
+            var registrationRequestDao = await context
+                .RegistrationRequests.Include(r => r.Citizen)
+                .FirstOrDefaultAsync(r => r.Id == result.Data);
+            registrationRequestDao!.Citizen.FatherId.Should().Be(father.Id);
+            registrationRequestDao.Citizen.MotherId.Should().Be(mother.Id);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationRequestTest_ShouldReturnValidationException_WhenFatherIdDoesNotExist()
+        {
+            // Arrange
+            var serviceProvider = CreateServiceCollection().BuildServiceProvider();
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.CreateRegistrationRequest]);
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+            var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
+
+            var district = await CreateDistrictAsync(context, level: ElectoralDistrictLevel.VotingLocation);
+            var registrationRequest = BuildValidRegistrationRequestModel(district.Id, timeProvider);
+            registrationRequest.Citizen.NewFather = null;
+            registrationRequest.Citizen.FatherId = Guid.NewGuid();
+
+            var command = new CreateRegistrationRequestCommand { RegistrationRequest = registrationRequest };
+
+            // Act
+            var result = await FluentActions
+                .Invoking(() => serviceProvider.SendAsync(command))
+                .Should()
+                .ThrowAsync<ValidationException>();
+
+            // Assert
+            AssertValidationException(
+                result.Subject,
+                nameof(CitizenModel.FatherId),
+                ValidationErrorCode.CitizenMustExist
+            );
+        }
+
+        [Fact]
+        public async Task CreateRegistrationRequestTest_ShouldReturnValidationException_WhenFatherIdAndNewFatherAreBothMissing()
+        {
+            // Arrange
+            var serviceProvider = CreateServiceCollection().BuildServiceProvider();
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.CreateRegistrationRequest]);
+            var context = serviceProvider.GetRequiredService<WritableDbContext>();
+            var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
+
+            var district = await CreateDistrictAsync(context, level: ElectoralDistrictLevel.VotingLocation);
+            var registrationRequest = BuildValidRegistrationRequestModel(district.Id, timeProvider);
+            registrationRequest.Citizen.NewFather = null;
+
+            var command = new CreateRegistrationRequestCommand { RegistrationRequest = registrationRequest };
+
+            // Act
+            var result = await FluentActions
+                .Invoking(() => serviceProvider.SendAsync(command))
+                .Should()
+                .ThrowAsync<ValidationException>();
+
+            // Assert
+            AssertValidationException(
+                result.Subject,
+                new KeyValuePair<string, ValidationErrorCode>(
+                    nameof(CitizenModel.FatherId),
+                    ValidationErrorCode.Required
+                ),
+                new KeyValuePair<string, ValidationErrorCode>(
+                    nameof(CitizenModel.NewFather),
+                    ValidationErrorCode.Required
+                )
+            );
         }
 
         private static RegistrationRequestModel BuildValidRegistrationRequestModel(
@@ -297,7 +407,27 @@ namespace Application.UnitTests.Features.RegistrationRequests
                     MaritalStatus = MaritalStatus.Single,
                     Nationality = "Ivoirienne",
                     PhysicalAddress = "123 Main St",
+                    PostalAddress = "BP 123 Abidjan",
+                    NewFather = BuildValidBasicCitizenModel(timeProvider, "Robert", "Specter"),
+                    NewMother = BuildValidBasicCitizenModel(timeProvider, "Lily", "Specter"),
                 },
+            };
+        }
+
+        private static BasicCitizenModel BuildValidBasicCitizenModel(
+            TimeProvider timeProvider,
+            string firstName,
+            string lastName
+        )
+        {
+            return new BasicCitizenModel
+            {
+                Gender = Gender.Masculine,
+                FirstName = firstName,
+                LastName = lastName,
+                BirthDate = timeProvider.GetUtcNow().AddYears(-50),
+                BirthPlace = "Yamoussoukro",
+                Nationality = "Ivoirienne",
             };
         }
     }

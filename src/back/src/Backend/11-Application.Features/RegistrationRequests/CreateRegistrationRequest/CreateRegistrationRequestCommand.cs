@@ -29,10 +29,11 @@ public class CreateRegistrationRequestCommandValidator
 }
 
 public class CreateRegistrationRequestCommandHandler(
-    ICurrentUserService currentUserService,
     WritableDbContext context,
     TimeProvider timeProvider,
+    ICurrentUserService currentUserService,
     IRegistrationService registrationService,
+    CitizenService citizenService,
     RegistrationRequestService requestService
 ) : IRequestHandler<CreateRegistrationRequestCommand, Result<Guid>>
 {
@@ -64,6 +65,25 @@ public class CreateRegistrationRequestCommandHandler(
                 registrationRequest.Status = RegistrationStatus.ToBeProcessed;
                 registrationRequest.AuthorId = currentUserId!.Value;
                 registrationRequest.LastUpdaterId = currentUserId;
+
+                if (command.RegistrationRequest.Citizen.NewFather != null)
+                {
+                    var basicCitizenFather = command.RegistrationRequest.Citizen.NewFather;
+                    command.RegistrationRequest.Citizen.FatherId = await citizenService.CreateNewCitizenAsync(
+                        basicCitizenFather,
+                        cancellationToken
+                    );
+                }
+                if (command.RegistrationRequest.Citizen.NewMother != null)
+                {
+                    var basicCitizenMother = command.RegistrationRequest.Citizen.NewMother;
+                    command.RegistrationRequest.Citizen.MotherId = await citizenService.CreateNewCitizenAsync(
+                        basicCitizenMother,
+                        cancellationToken
+                    );
+                }
+                registrationRequest.Citizen.FatherId = command.RegistrationRequest.Citizen.FatherId;
+                registrationRequest.Citizen.MotherId = command.RegistrationRequest.Citizen.MotherId;
 
                 await context.RegistrationRequests.AddAsync(registrationRequest, cancellationToken);
                 await context.SaveChangesAsync(cancellationToken);
