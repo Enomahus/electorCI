@@ -421,14 +421,7 @@
         <div class="inputs-container">
           <div class="input-block required">
             <label for="father">{{ 'registrationRequest.citizen.father' | translate }}</label>
-            <select id="father" formControlName="fatherId">
-              <option value="" selected>{{ 'global.select' | translate }}</option>
-              @for (gender of allGenders; track gender) {
-                <option [value]="gender">
-                  {{ 'registrationRequests.gender.' + gender | translate }}
-                </option>
-              }
-            </select>
+            <app-search-citizen-ui id="father" formControlName="fatherId"></app-search-citizen-ui>
             @if (
               citizenForm().controls.fatherId.touched && citizenForm().controls.fatherId.errors
             ) {
@@ -441,14 +434,7 @@
           </div>
           <div class="input-block required">
             <label for="father">{{ 'registrationRequest.citizen.mother' | translate }}</label>
-            <select id="father" formControlName="motherId">
-              <option value="" selected>{{ 'global.select' | translate }}</option>
-              @for (gender of allGenders; track gender) {
-                <option [value]="gender">
-                  {{ 'registrationRequests.gender.' + gender | translate }}
-                </option>
-              }
-            </select>
+            <app-search-citizen-ui id="mother" formControlName="motherId"></app-search-citizen-ui>
             @if (
               citizenForm().controls.motherId.touched && citizenForm().controls.motherId.errors
             ) {
@@ -475,7 +461,7 @@
               }}</label>
               <app-upload-multiple-ui
                 id="residence-certificate-files"
-                formControlName="residenceCertificateAttachments"
+                formControlName="identityDocAttachments"
                 [accept]="'pdf'"
                 [allowedExtensions]="['pdf']"
               ></app-upload-multiple-ui>
@@ -510,6 +496,8 @@
     </section>
   </main>
 </div>
+
+<pre>{{ form().value | json }}</pre>
 
 <app-sticky-buttons-container>
   @if (!isEditMode()) {

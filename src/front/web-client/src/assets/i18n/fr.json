@@ -375,5 +375,9 @@
       "residCertificateAttachments": "Attestation de résidence",
       "photoAttachments": "Photo"
     }
+  },
+  "searchCitizenUi": {
+    "placeholder": "Rechercher un électeur (nom, prénom...)",
+    "minLength": "Veuillez saisir au moins 3 caractères"
   }
 }

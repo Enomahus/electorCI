@@ -1,5 +1,16 @@
-import { Component, computed, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DistrictNode } from '../../../models/district.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -13,6 +24,7 @@ import {
 } from '../../../services/nswag/api-nswag-client';
 import { InputDatepickerUi } from '../../../shared/input-datepicker-ui/input-datepicker-ui';
 import { LoaderUi } from '../../../shared/loader/loader';
+import { SearchCitizenUi } from '../../../shared/search-citizen-ui/search-citizen-ui';
 import { StickyButtonsContainerComponent } from '../../../shared/sticky-buttons-container/sticky-buttons-container.component';
 import { UploadMultipleUi } from '../../../shared/upload-multiple-ui/upload-multiple-ui';
 import {
@@ -30,7 +42,6 @@ import {
   RequestForm,
   ResidenceForm,
 } from './registration-request-form';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-registration-request-ui',
@@ -43,11 +54,13 @@ import { ActivatedRoute } from '@angular/router';
     LoaderUi,
     PermissionDirective,
     InputDatepickerUi,
+    SearchCitizenUi,
+    JsonPipe,
   ],
   templateUrl: './registration-request-ui.html',
   styleUrl: './registration-request-ui.scss',
 })
-export class RegistrationRequestUi  implements OnInit {
+export class RegistrationRequestUi implements OnInit {
   private readonly translateService = inject(TranslateService);
   private readonly store = inject(DistrictTreeHelperService);
   private readonly authService = inject(AuthService);
@@ -123,7 +136,7 @@ export class RegistrationRequestUi  implements OnInit {
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.params['id'];
-    if(idParam) {
+    if (idParam) {
       this.registrationRequestId.set(idParam as string);
     }
     this.setBreadcrums();
