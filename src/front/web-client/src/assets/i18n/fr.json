@@ -379,5 +379,12 @@
   "searchCitizenUi": {
     "placeholder": "Rechercher un électeur (nom, prénom...)",
     "minLength": "Veuillez saisir au moins 3 caractères"
+  },
+  "citizen": {
+    "searchOrCreate": {
+      "citizen":"Citoyen",
+      "createCitizen": "Créer un nouveau citoyen",
+      "cancelCitizenCreation": "Annuler la création de citoyen"
+    }
   }
 }

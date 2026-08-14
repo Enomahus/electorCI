@@ -421,7 +421,11 @@
         <div class="inputs-container">
           <div class="input-block required">
             <label for="father">{{ 'registrationRequest.citizen.father' | translate }}</label>
-            <app-search-citizen-ui id="father" formControlName="fatherId"></app-search-citizen-ui>
+            <app-search-or-create-citizen-ui
+              [form]="searchCreateCitizenForm"
+              [gender]="masculineGender!"
+              [canChangeCitizen]="canChangeCitizen()"
+            ></app-search-or-create-citizen-ui>
             @if (
               citizenForm().controls.fatherId.touched && citizenForm().controls.fatherId.errors
             ) {
@@ -434,7 +438,11 @@
           </div>
           <div class="input-block required">
             <label for="father">{{ 'registrationRequest.citizen.mother' | translate }}</label>
-            <app-search-citizen-ui id="mother" formControlName="motherId"></app-search-citizen-ui>
+            <app-search-or-create-citizen-ui
+              [form]="searchCreateCitizenForm"
+              [gender]="feminineGender!"
+              [canChangeCitizen]="canChangeCitizen()"
+            ></app-search-or-create-citizen-ui>
             @if (
               citizenForm().controls.motherId.touched && citizenForm().controls.motherId.errors
             ) {

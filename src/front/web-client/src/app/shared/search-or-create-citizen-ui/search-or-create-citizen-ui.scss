@@ -1,0 +1,13 @@
+.search-create-citizen-container {
+  .search-citizen {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 8px;
+    margin-bottom: 4px;
+
+    .input-block {
+      width: auto;
+    }
+  }
+}

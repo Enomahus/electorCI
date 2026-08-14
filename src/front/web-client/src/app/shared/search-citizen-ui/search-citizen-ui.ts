@@ -22,7 +22,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { BehaviorSubject, debounceTime, filter, switchMap, tap } from 'rxjs';
 import { CitizensApiService } from '../../services/api/citizens.api.service';
-import { SearchCitizenResponse } from '../../services/nswag/api-nswag-client';
+import { Gender, SearchCitizenResponse } from '../../services/nswag/api-nswag-client';
 
 @Component({
   selector: 'app-search-citizen-ui',
@@ -54,6 +54,7 @@ export class SearchCitizenUi implements OnInit, ControlValueAccessor {
   inputEl?: ElementRef<HTMLInputElement>;
 
   public id = input('searchCitizen');
+  public gender = input.required<Gender>();
 
   onChange: (id: string) => void = () => {};
   onTouched: () => void = () => {};
@@ -70,7 +71,7 @@ export class SearchCitizenUi implements OnInit, ControlValueAccessor {
         filter((c) => !!c),
         debounceTime(300),
         tap(() => this.isLoading.set(true)),
-        switchMap((c) => this.citizenService.searchCitizen(c!)),
+        switchMap((c) => this.citizenService.searchCitizen(c!,this.gender())),
         tap((citizens) => {
           this.citizens$.next(citizens);
           this.isLoading.set(false);
@@ -88,7 +89,7 @@ export class SearchCitizenUi implements OnInit, ControlValueAccessor {
     }
     this.isLoading.set(true);
     this.citizenService
-      .searchCitizenById(id)
+      .searchCitizenById(id,this.gender())
       .pipe(
         tap((citizens) => {
           this.citizens$.next(citizens);

@@ -1,0 +1,47 @@
+<form [formGroup]="form()">
+  <div class="search-create-citizen-container">
+    @if (!form().controls.isNewCitizen.value) {
+      <div class="search-citizen">
+        <div class="input-block required">
+          <!-- <div class="label">{{ 'citizen.searchOrCreate.citizen' | translate }}</div> -->
+          <app-search-citizen-ui
+            [gender]="gender()"
+            formControlName="citizenId"
+          ></app-search-citizen-ui>
+        </div>
+        @if (canChangeCitizen()) {
+          <button class="btn outline outline-primary" (click)="beginCitizenCreation()">
+            <i class="ph ph-plus"></i> {{ 'citizen.searchOrCreate.createCitizen' | translate }}
+          </button>
+        }
+      </div>
+      @if (form().controls.citizenId.touched && form().controls.citizenId.errors) {
+        <ul class="form-error">
+          @if (form().controls.citizenId.errors?.['required']) {
+            <li>{{ 'formError.required' | translate }}</li>
+          }
+        </ul>
+      }
+      @if (readOnlyCitizen()) {
+        <!--Composant detail de citizen pour création-->
+        <app-create-new-citizen-ui
+          [form]="form().controls.newCitizen"
+          [isEmbedded]="false"
+        ></app-create-new-citizen-ui>
+      }
+    } @else {
+      <div class="new-citizen">
+        <h2>{{ 'citizen.searchOrCreate.citizen' | translate }}</h2>
+        <!--Composant detail de citizen pour création-->
+        <app-create-new-citizen-ui
+          [form]="form().controls.newCitizen"
+          [isEmbedded]="true"
+        ></app-create-new-citizen-ui>
+        <button class="btn outline outline-tertiary" (click)="endCitizenCreation()">
+          <i class="ph ph-trash"></i>
+          {{ 'citizen.searchOrCreate.cancelCitizenCreation' | translate }}
+        </button>
+      </div>
+    }
+  </div>
+</form>

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Application.Api;
+using Application.Common.Enums;
 using Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +34,16 @@ namespace Application.Features.Citizens.SearchCitizen
         public Task<Result<List<SearchCitizenResponse>>> SearchCitizenAsync(
             [FromQuery] string? searchTerm,
             [FromQuery] Guid? id,
+            [FromQuery] Gender gender,
             CancellationToken cancellationToken
         )
         {
-            var query = new SearchCitizenQuery() { SearchTerm = searchTerm, Id = id };
+            var query = new SearchCitizenQuery()
+            {
+                SearchTerm = searchTerm,
+                Id = id,
+                Gender = gender,
+            };
             return Mediator.Send(query, cancellationToken);
         }
     }

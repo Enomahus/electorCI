@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
+  Gender,
   GetCitizensQuery,
   ResultOfListOfGetCitizensResponse,
   SearchCitizenResponse,
@@ -21,15 +22,17 @@ export class CitizensApiService extends ApiBaseService {
 
   searchCitizenById(
     id: string,
+    gender: Gender,
     options: ApiToastOptions = {},
   ): Observable<SearchCitizenResponse[]> {
-    return this.apiClient.searchCitizen(null, id).pipe(this.handleDataResult(options));
+    return this.apiClient.searchCitizen(null, id, gender).pipe(this.handleDataResult(options));
   }
 
   searchCitizen(
     search: string,
+    gender: Gender,
     options: ApiToastOptions = {},
   ): Observable<SearchCitizenResponse[]> {
-    return this.apiClient.searchCitizen(search, null).pipe(this.handleDataResult(options));
+    return this.apiClient.searchCitizen(search, null, gender).pipe(this.handleDataResult(options));
   }
 }

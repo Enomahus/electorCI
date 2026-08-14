@@ -5,9 +5,11 @@ import {
   DestroyRef,
   inject,
   input,
+  OnChanges,
   OnInit,
   output,
   signal,
+  SimpleChanges,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -24,7 +26,7 @@ import {
 } from '../../../services/nswag/api-nswag-client';
 import { InputDatepickerUi } from '../../../shared/input-datepicker-ui/input-datepicker-ui';
 import { LoaderUi } from '../../../shared/loader/loader';
-import { SearchCitizenUi } from '../../../shared/search-citizen-ui/search-citizen-ui';
+import { SearchOrCreateCitizenUi } from '../../../shared/search-or-create-citizen-ui/search-or-create-citizen-ui';
 import { StickyButtonsContainerComponent } from '../../../shared/sticky-buttons-container/sticky-buttons-container.component';
 import { UploadMultipleUi } from '../../../shared/upload-multiple-ui/upload-multiple-ui';
 import {
@@ -37,6 +39,7 @@ import {
 import {
   CitizenForm,
   createRegistrationRequestForm,
+  createSearchCreateCitizenForm,
   RegistrationRequestForm,
   RequestDocumentsForm,
   RequestForm,
@@ -54,13 +57,13 @@ import {
     LoaderUi,
     PermissionDirective,
     InputDatepickerUi,
-    SearchCitizenUi,
+    SearchOrCreateCitizenUi,
     JsonPipe,
   ],
   templateUrl: './registration-request-ui.html',
   styleUrl: './registration-request-ui.scss',
 })
-export class RegistrationRequestUi implements OnInit {
+export class RegistrationRequestUi implements OnInit, OnChanges {
   private readonly translateService = inject(TranslateService);
   private readonly store = inject(DistrictTreeHelperService);
   private readonly authService = inject(AuthService);
@@ -82,9 +85,13 @@ export class RegistrationRequestUi implements OnInit {
 
   isLoading = signal<boolean>(false);
   form = signal<RegistrationRequestForm>(createRegistrationRequestForm());
+  searchCreateCitizenForm = createSearchCreateCitizenForm();
+  canChangeCitizen = signal<boolean>(true);
   registrationRequestId = signal<string | undefined>(undefined);
   districtSelected = signal<DistrictNode[]>([]);
   selectedDistrictId = signal<number | null>(null);
+  masculineGender = allGenders.find((g) => g === 'masculine');
+  feminineGender = allGenders.find((g) => g === 'feminine');
 
   allRegistrationRequestType = allRegistrationRequestType;
   allMaritalStatus = allMaritalStatus;
@@ -133,6 +140,14 @@ export class RegistrationRequestUi implements OnInit {
   isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
   isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
   isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['citizenId'] && changes['citizenId'].currentValue !== undefined) {
+      this.canChangeCitizen.set(false);
+      this.searchCreateCitizenForm.controls.citizenId.setValue(changes['citizenId'].currentValue);
+      this.searchCreateCitizenForm.controls.citizenId.disable();
+    }
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.params['id'];

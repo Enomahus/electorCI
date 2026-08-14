@@ -53,6 +53,21 @@ export type RequestDocumentsForm = FormGroup<{
   photoAttachments: FormControl<UploadMultipleFormValue | undefined>;
 }>;
 
+export type BasicCitizenForm = FormGroup<{
+  gender: FormControl<Gender | undefined>;
+  firstName: FormControl<string | undefined>;
+  lastName: FormControl<string | undefined>;
+  birthDate: FormControl<Date | undefined>;
+  birthPlace: FormControl<string | undefined>;
+  nationality: FormControl<string | undefined>;
+}>;
+
+export type SearchCreateCitizenForm = FormGroup<{
+  citizenId: FormControl<string | undefined>;
+  isNewCitizen: FormControl<boolean | undefined>;
+  newCitizen: BasicCitizenForm;
+}>;
+
 export function createRequestForm(): RequestForm {
   return new FormGroup({
     districtId: new FormControl<number | undefined>(undefined, {
@@ -175,6 +190,35 @@ export function createCitizenForm(): CitizenForm {
   }) as CitizenForm;
 }
 
+export function createBasicCitizenForm(): BasicCitizenForm {
+  return new FormGroup({
+    gender: new FormControl<Gender | undefined>(undefined, {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    firstName: new FormControl<string | undefined>(undefined, {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    lastName: new FormControl<string | undefined>(undefined, {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    birthDate: new FormControl<Date | undefined>(undefined, {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    birthPlace: new FormControl<string | undefined>(undefined, {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    nationality: new FormControl<string | undefined>(undefined, {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+  }) as BasicCitizenForm;
+}
+
 export function createRegistrationRequestForm(): RegistrationRequestForm {
   return new FormGroup({
     id: new FormControl<string | undefined>(undefined, { nonNullable: true }),
@@ -183,4 +227,18 @@ export function createRegistrationRequestForm(): RegistrationRequestForm {
     requestDocuments: createRequestDocumentsForm(),
     residence: createResidenceForm(),
   }) as RegistrationRequestForm;
+}
+
+export function createSearchCreateCitizenForm(): SearchCreateCitizenForm {
+  return new FormGroup({
+    citizenId: new FormControl<string | undefined>(undefined, {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    isNewCitizen: new FormControl<boolean | undefined>(false, {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    newCitizen: createBasicCitizenForm(),
+  }) as SearchCreateCitizenForm;
 }

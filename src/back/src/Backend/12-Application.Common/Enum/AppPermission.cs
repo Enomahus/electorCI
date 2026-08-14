@@ -31,6 +31,7 @@ public enum AppPermission
 
     CreateBasicCitizen,
     GetCitizens,
+    CreateCitizen,
 
     CreateRegistrationRequest,
     UpdateRegistrationRequest,

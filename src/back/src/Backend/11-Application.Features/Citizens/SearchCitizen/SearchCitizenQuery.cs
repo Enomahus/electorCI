@@ -1,4 +1,5 @@
-﻿using Application.Models;
+﻿using Application.Common.Enums;
+using Application.Models;
 using Application.Models.Errors;
 using FluentValidation;
 using Infrastructure.Persistence.SQLServer.Contexts;
@@ -12,12 +13,15 @@ namespace Application.Features.Citizens.SearchCitizen
     {
         public string? SearchTerm { get; set; }
         public Guid? Id { get; set; }
+        public Gender Gender { get; set; }
     }
 
     public class SearchCitizenQueryValidator : AbstractValidator<SearchCitizenQuery>
     {
         public SearchCitizenQueryValidator()
         {
+            RuleFor(v => v.Gender).IsInEnum();
+
             When(
                 s => s.Id is null,
                 () =>
@@ -52,6 +56,7 @@ namespace Application.Features.Citizens.SearchCitizen
             var citizens = await context
                 .Citizens.Where(c =>
                     request.SearchTerm != null
+                        && c.Gender == request.Gender
                         && (
                             c.FirstName.Contains(request.SearchTerm)
                             || c.LastName.Contains(request.SearchTerm)
