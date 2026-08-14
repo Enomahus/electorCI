@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -11,7 +10,8 @@ import {
   signal,
   SimpleChanges,
 } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DistrictNode } from '../../../models/district.model';
@@ -20,6 +20,7 @@ import { PermissionDirective } from '../../../services/auth/permission.directive
 import { BreadcrumbService } from '../../../services/breadcrumb.service';
 import { DistrictTreeHelperService } from '../../../services/district-tree-helper.service';
 import {
+  BasicCitizenModel,
   GetRegistrationRequestResponse,
   RegistrationRequestModel,
   RegistrationStatus,
@@ -37,6 +38,7 @@ import {
   allRegistrationRequestType,
 } from '../../types/enumerations';
 import {
+  BasicCitizenForm,
   CitizenForm,
   createRegistrationRequestForm,
   createSearchCreateCitizenForm,
@@ -44,6 +46,7 @@ import {
   RequestDocumentsForm,
   RequestForm,
   ResidenceForm,
+  SearchCreateCitizenForm,
 } from './registration-request-form';
 
 @Component({
@@ -58,7 +61,6 @@ import {
     PermissionDirective,
     InputDatepickerUi,
     SearchOrCreateCitizenUi,
-    JsonPipe,
   ],
   templateUrl: './registration-request-ui.html',
   styleUrl: './registration-request-ui.scss',
@@ -85,7 +87,8 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
 
   isLoading = signal<boolean>(false);
   form = signal<RegistrationRequestForm>(createRegistrationRequestForm());
-  searchCreateCitizenForm = createSearchCreateCitizenForm();
+  fatherSearchCreateForm = createSearchCreateCitizenForm();
+  motherSearchCreateForm = createSearchCreateCitizenForm();
   canChangeCitizen = signal<boolean>(true);
   registrationRequestId = signal<string | undefined>(undefined);
   districtSelected = signal<DistrictNode[]>([]);
@@ -144,8 +147,10 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['citizenId'] && changes['citizenId'].currentValue !== undefined) {
       this.canChangeCitizen.set(false);
-      this.searchCreateCitizenForm.controls.citizenId.setValue(changes['citizenId'].currentValue);
-      this.searchCreateCitizenForm.controls.citizenId.disable();
+      this.fatherSearchCreateForm.controls.citizenId.setValue(changes['citizenId'].currentValue);
+      this.fatherSearchCreateForm.controls.citizenId.disable();
+      this.motherSearchCreateForm.controls.citizenId.setValue(changes['citizenId'].currentValue);
+      this.motherSearchCreateForm.controls.citizenId.disable();
     }
   }
 
@@ -155,6 +160,37 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
       this.registrationRequestId.set(idParam as string);
     }
     this.setBreadcrums();
+
+    this.syncParentSearchCreateForm(this.fatherSearchCreateForm, this.citizenForm().controls.fatherId);
+    this.syncParentSearchCreateForm(this.motherSearchCreateForm, this.citizenForm().controls.motherId);
+  }
+
+  /**
+   * Keeps citizenForm().fatherId/motherId in sync with the father/mother search-or-create form:
+   * - a successful search sets the parent id
+   * - switching to creation mode clears the id and relaxes its required validator,
+   *   since the parent will be sent as newFather/newMother instead.
+   */
+  private syncParentSearchCreateForm(
+    searchCreateForm: SearchCreateCitizenForm,
+    parentIdControl: CitizenForm['controls']['fatherId'],
+  ): void {
+    searchCreateForm.controls.citizenId.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((citizenId) => parentIdControl.setValue(citizenId));
+
+    searchCreateForm.controls.isNewCitizen.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isNewCitizen) => {
+        if (isNewCitizen) {
+          parentIdControl.clearValidators();
+          parentIdControl.setValue(undefined);
+        } else {
+          parentIdControl.setValidators(Validators.required);
+          parentIdControl.setValue(searchCreateForm.controls.citizenId.value);
+        }
+        parentIdControl.updateValueAndValidity();
+      });
   }
 
   onRegionChange(regionId: number | null): void {
@@ -199,9 +235,30 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
     return value ? Number(value) : null;
   }
 
+  debugFormValue(): string {
+    return JSON.stringify(
+      this.form().value,
+      (_key, value) =>
+        value instanceof File ? { name: value.name, size: value.size, type: value.type } : value,
+      2,
+    );
+  }
+
+  private toBasicCitizenModel(form: BasicCitizenForm): BasicCitizenModel {
+    const value = form.getRawValue();
+    return {
+      ...value,
+      birthDate: value.birthDate ? value.birthDate.toISOString() : undefined,
+    };
+  }
+
   private getRegistrationRequestModel(): RegistrationRequestModel {
     const formValue = this.form().getRawValue();
     const { id, request, citizen, requestDocuments } = formValue;
+
+    const fatherIsNew = this.fatherSearchCreateForm.controls.isNewCitizen.value;
+    const motherIsNew = this.motherSearchCreateForm.controls.isNewCitizen.value;
+
     return {
       id,
       districtId: request?.districtId,
@@ -211,6 +268,14 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
         ? {
             ...citizen,
             birthDate: citizen.birthDate ? citizen.birthDate.toISOString() : undefined,
+            fatherId: fatherIsNew ? undefined : citizen.fatherId,
+            newFather: fatherIsNew
+              ? this.toBasicCitizenModel(this.fatherSearchCreateForm.controls.newCitizen)
+              : undefined,
+            motherId: motherIsNew ? undefined : citizen.motherId,
+            newMother: motherIsNew
+              ? this.toBasicCitizenModel(this.motherSearchCreateForm.controls.newCitizen)
+              : undefined,
           }
         : undefined,
       identityDocumentIds: requestDocuments.identityDocAttachments?.distantFileIds,
@@ -220,8 +285,12 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
   }
 
   onSave(): void {
-    if (this.form().invalid) {
+    const isInvalid =
+      this.form().invalid || this.fatherSearchCreateForm.invalid || this.motherSearchCreateForm.invalid;
+    if (isInvalid) {
       this.form().markAllAsTouched();
+      this.fatherSearchCreateForm.markAllAsTouched();
+      this.motherSearchCreateForm.markAllAsTouched();
       return;
     }
 

@@ -42,22 +42,6 @@ export class UploadMultipleUi implements ControlValueAccessor {
   }
 
   onFileChange(event: File[]): void {
-    // const localFiles = event?.filter((e) => e instanceof File);
-
-    // this.value.set({
-    //   distantFileIds: this.value()?.distantFileIds,
-    //   localFiles,
-    //   fakeFiles: this.value()?.fakeFiles,
-    // });
-
-    // this.filesInfo.set([
-    //   ...this.filesInfo().filter((f) => f.kind !== 'local'),
-    //   ...(localFiles ?? []).map((localFile): UploadFileInfo => ({
-    //     name: localFile.name,
-    //     size: localFile.size,
-    //     kind: 'local',
-    //   })),
-    // ]);
 
     const validLocalFiles = event
       .filter((e) => e instanceof File)

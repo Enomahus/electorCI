@@ -45,6 +45,8 @@ export type CitizenForm = FormGroup<{
   postalAddress: FormControl<string | undefined>;
   fatherId: FormControl<string | undefined>;
   motherId: FormControl<string | undefined>;
+  newFather: BasicCitizenForm;
+  newMother: BasicCitizenForm;
 }>;
 
 export type RequestDocumentsForm = FormGroup<{
@@ -187,6 +189,8 @@ export function createCitizenForm(): CitizenForm {
       validators: Validators.required,
       nonNullable: true,
     }),
+    newFather: createBasicCitizenForm(),
+    newMother: createBasicCitizenForm(),
   }) as CitizenForm;
 }
 

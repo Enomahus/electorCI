@@ -422,7 +422,7 @@
           <div class="input-block required">
             <label for="father">{{ 'registrationRequest.citizen.father' | translate }}</label>
             <app-search-or-create-citizen-ui
-              [form]="searchCreateCitizenForm"
+              [form]="fatherSearchCreateForm"
               [gender]="masculineGender!"
               [canChangeCitizen]="canChangeCitizen()"
             ></app-search-or-create-citizen-ui>
@@ -439,7 +439,7 @@
           <div class="input-block required">
             <label for="father">{{ 'registrationRequest.citizen.mother' | translate }}</label>
             <app-search-or-create-citizen-ui
-              [form]="searchCreateCitizenForm"
+              [form]="motherSearchCreateForm"
               [gender]="feminineGender!"
               [canChangeCitizen]="canChangeCitizen()"
             ></app-search-or-create-citizen-ui>
@@ -505,7 +505,7 @@
   </main>
 </div>
 
-<pre>{{ form().value | json }}</pre>
+<pre>{{ debugFormValue() }}</pre>
 
 <app-sticky-buttons-container>
   @if (!isEditMode()) {
