@@ -1,0 +1,350 @@
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnChanges,
+  OnInit,
+  output,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { DistrictNode } from '../../../models/district.model';
+import { AuthService } from '../../../services/auth/auth.service';
+import { PermissionDirective } from '../../../services/auth/permission.directive';
+import { BreadcrumbService } from '../../../services/breadcrumb.service';
+import { DistrictTreeHelperService } from '../../../services/district-tree-helper.service';
+import {
+  BasicCitizenModel,
+  GetRegistrationRequestResponse,
+  RegistrationRequestModel,
+  RegistrationStatus,
+} from '../../../services/nswag/api-nswag-client';
+import { InputDatepickerUi } from '../../../shared/input-datepicker-ui/input-datepicker-ui';
+import { LoaderUi } from '../../../shared/loader/loader';
+import { SearchOrCreateCitizenUi } from '../../../shared/search-or-create-citizen-ui/search-or-create-citizen-ui';
+import { StickyButtonsContainerComponent } from '../../../shared/sticky-buttons-container/sticky-buttons-container.component';
+import { UploadMultipleUi } from '../../../shared/upload-multiple-ui/upload-multiple-ui';
+import {
+  allGenders,
+  allMaritalStatus,
+  allPersonTitle,
+  allRegistrationDocumentType,
+  allRegistrationRequestType,
+} from '../../types/enumerations';
+import {
+  BasicCitizenForm,
+  CitizenForm,
+  createRegistrationRequestForm,
+  createSearchCreateCitizenForm,
+  RegistrationRequestForm,
+  RequestDocumentsForm,
+  RequestForm,
+  ResidenceForm,
+  SearchCreateCitizenForm,
+} from './registration-request-form';
+
+@Component({
+  selector: 'app-registration-request-ui',
+  imports: [
+    TranslatePipe,
+    FormsModule,
+    ReactiveFormsModule,
+    StickyButtonsContainerComponent,
+    UploadMultipleUi,
+    LoaderUi,
+    PermissionDirective,
+    InputDatepickerUi,
+    SearchOrCreateCitizenUi,
+  ],
+  templateUrl: './registration-request-ui.html',
+  styleUrl: './registration-request-ui.scss',
+})
+export class RegistrationRequestUi implements OnInit, OnChanges {
+  private readonly translateService = inject(TranslateService);
+  private readonly store = inject(DistrictTreeHelperService);
+  private readonly authService = inject(AuthService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+
+  isSaving = input<boolean>(false);
+  isEditMode = input<boolean>(false);
+  selectedStatus = input<RegistrationStatus | null>(null);
+  registrationRequest = input<GetRegistrationRequestResponse | undefined>(undefined);
+  save = output<{
+    registrationRequest: RegistrationRequestModel;
+    identityDocs: File[];
+    residenceCertificates: File[];
+    photos: File[];
+  }>();
+  goBack = output<void>();
+
+  isLoading = signal<boolean>(false);
+  form = signal<RegistrationRequestForm>(createRegistrationRequestForm());
+  fatherSearchCreateForm = createSearchCreateCitizenForm();
+  motherSearchCreateForm = createSearchCreateCitizenForm();
+  canChangeCitizen = signal<boolean>(true);
+  registrationRequestId = signal<string | undefined>(undefined);
+  districtSelected = signal<DistrictNode[]>([]);
+  selectedDistrictId = signal<number | null>(null);
+  masculineGender = allGenders.find((g) => g === 'masculine');
+  feminineGender = allGenders.find((g) => g === 'feminine');
+
+  allRegistrationRequestType = allRegistrationRequestType;
+  allMaritalStatus = allMaritalStatus;
+  allGenders = allGenders;
+  allPersonTitle = allPersonTitle;
+  allRegistrationDocumentType = allRegistrationDocumentType;
+
+  allRegions = this.store.nodesData;
+
+  selectedRegionId = signal<number | null>(null);
+  selectedDepartmentId = signal<number | null>(null);
+  selectedSubPrefectureId = signal<number | null>(null);
+  selectedMunicipalityId = signal<number | null>(null);
+  selectedVotingLocationId = signal<number | null>(null);
+
+  requestForm(): RequestForm {
+    return this.form().controls.request;
+  }
+  citizenForm(): CitizenForm {
+    return this.form().controls.citizen;
+  }
+  requestDocumentsForm(): RequestDocumentsForm {
+    return this.form().controls.requestDocuments;
+  }
+  residenceForm(): ResidenceForm {
+    return this.form().controls.residence;
+  }
+
+  allDepartments = computed<DistrictNode[]>(() =>
+    this.store.findChildren(this.allRegions(), this.selectedRegionId()),
+  );
+
+  allSubPrefectures = computed<DistrictNode[]>(() =>
+    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
+  );
+
+  allMunicipalities = computed<DistrictNode[]>(() =>
+    this.store.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
+  );
+
+  allVotingLocations = computed<DistrictNode[]>(() =>
+    this.store.findChildren(this.allMunicipalities(), this.selectedMunicipalityId()),
+  );
+
+  isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
+  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['citizenId'] && changes['citizenId'].currentValue !== undefined) {
+      this.canChangeCitizen.set(false);
+      this.fatherSearchCreateForm.controls.citizenId.setValue(changes['citizenId'].currentValue);
+      this.fatherSearchCreateForm.controls.citizenId.disable();
+      this.motherSearchCreateForm.controls.citizenId.setValue(changes['citizenId'].currentValue);
+      this.motherSearchCreateForm.controls.citizenId.disable();
+    }
+  }
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.params['id'];
+    if (idParam) {
+      this.registrationRequestId.set(idParam as string);
+    }
+    this.setBreadcrums();
+
+    this.syncParentSearchCreateForm(this.fatherSearchCreateForm, this.citizenForm().controls.fatherId);
+    this.syncParentSearchCreateForm(this.motherSearchCreateForm, this.citizenForm().controls.motherId);
+  }
+
+  /**
+   * Keeps citizenForm().fatherId/motherId in sync with the father/mother search-or-create form:
+   * - a successful search sets the parent id
+   * - switching to creation mode clears the id and relaxes its required validator,
+   *   since the parent will be sent as newFather/newMother instead.
+   */
+  private syncParentSearchCreateForm(
+    searchCreateForm: SearchCreateCitizenForm,
+    parentIdControl: CitizenForm['controls']['fatherId'],
+  ): void {
+    searchCreateForm.controls.citizenId.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((citizenId) => parentIdControl.setValue(citizenId));
+
+    searchCreateForm.controls.isNewCitizen.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isNewCitizen) => {
+        if (isNewCitizen) {
+          parentIdControl.clearValidators();
+          parentIdControl.setValue(undefined);
+        } else {
+          parentIdControl.setValidators(Validators.required);
+          parentIdControl.setValue(searchCreateForm.controls.citizenId.value);
+        }
+        parentIdControl.updateValueAndValidity();
+      });
+  }
+
+  onRegionChange(regionId: number | null): void {
+    this.selectedRegionId.set(regionId);
+    this.onSelectDistrcit(regionId!);
+    this.selectedDepartmentId.set(null);
+    this.selectedSubPrefectureId.set(null);
+    this.selectedMunicipalityId.set(null);
+  }
+  onDepartmentChange(departmentId: number | null): void {
+    this.selectedDepartmentId.set(departmentId);
+    this.onSelectDistrcit(departmentId!);
+    this.selectedSubPrefectureId.set(null);
+    this.selectedMunicipalityId.set(null);
+  }
+
+  onSubPrefectureChange(subPrefectureId: number | null): void {
+    this.selectedSubPrefectureId.set(subPrefectureId);
+    this.onSelectDistrcit(subPrefectureId!);
+    this.selectedMunicipalityId.set(null);
+  }
+
+  onMunicipalityChange(municipalityId: number | null): void {
+    this.selectedMunicipalityId.set(municipalityId);
+    this.onSelectDistrcit(municipalityId!);
+  }
+
+  onVotingLocationChange(votingLocationId: number | null): void {
+    this.selectedVotingLocationId.set(votingLocationId);
+    this.onSelectDistrcit(votingLocationId!);
+  }
+
+  onSelectDistrcit(id: number): void {
+    this.selectedDistrictId.set(id);
+    let node = this.store.findNode(id);
+    if (node) this.districtSelected.set([node]);
+    this.form().controls.request.controls.districtId.setValue(id);
+  }
+
+  protected parseDistrictId(event: Event): number | null {
+    const value = (event.target as HTMLSelectElement).value;
+    return value ? Number(value) : null;
+  }
+
+  debugFormValue(): string {
+    return JSON.stringify(
+      this.form().value,
+      (_key, value) =>
+        value instanceof File ? { name: value.name, size: value.size, type: value.type } : value,
+      2,
+    );
+  }
+
+  private toBasicCitizenModel(form: BasicCitizenForm): BasicCitizenModel {
+    const value = form.getRawValue();
+    return {
+      ...value,
+      birthDate: value.birthDate ? value.birthDate.toISOString() : undefined,
+    };
+  }
+
+  private getRegistrationRequestModel(): RegistrationRequestModel {
+    const formValue = this.form().getRawValue();
+    const { id, request, citizen, requestDocuments } = formValue;
+
+    const fatherIsNew = this.fatherSearchCreateForm.controls.isNewCitizen.value;
+    const motherIsNew = this.motherSearchCreateForm.controls.isNewCitizen.value;
+
+    return {
+      id,
+      districtId: request?.districtId,
+      requestType: request?.requestType,
+      comment: request?.comment,
+      citizen: citizen
+        ? {
+            ...citizen,
+            birthDate: citizen.birthDate ? citizen.birthDate.toISOString() : undefined,
+            fatherId: fatherIsNew ? undefined : citizen.fatherId,
+            newFather: fatherIsNew
+              ? this.toBasicCitizenModel(this.fatherSearchCreateForm.controls.newCitizen)
+              : undefined,
+            motherId: motherIsNew ? undefined : citizen.motherId,
+            newMother: motherIsNew
+              ? this.toBasicCitizenModel(this.motherSearchCreateForm.controls.newCitizen)
+              : undefined,
+          }
+        : undefined,
+      identityDocumentIds: requestDocuments.identityDocAttachments?.distantFileIds,
+      residenceCertificateIds: requestDocuments.residenceCertificateAttachments?.distantFileIds,
+      photoIds: requestDocuments.photoAttachments?.distantFileIds,
+    };
+  }
+
+  onSave(): void {
+    const isInvalid =
+      this.form().invalid || this.fatherSearchCreateForm.invalid || this.motherSearchCreateForm.invalid;
+    if (isInvalid) {
+      this.form().markAllAsTouched();
+      this.fatherSearchCreateForm.markAllAsTouched();
+      this.motherSearchCreateForm.markAllAsTouched();
+      return;
+    }
+
+    const registrationRequest = this.getRegistrationRequestModel();
+    const identityDocAttachments =
+      this.form().value.requestDocuments?.identityDocAttachments?.localFiles ?? [];
+    const residenceCertificateAttachments =
+      this.form().value.requestDocuments?.residenceCertificateAttachments?.localFiles ?? [];
+    const photoAttachments = this.form().value.requestDocuments?.photoAttachments?.localFiles ?? [];
+
+    this.save.emit({
+      registrationRequest,
+      identityDocs: identityDocAttachments,
+      residenceCertificates: residenceCertificateAttachments,
+      photos: photoAttachments,
+    });
+  }
+
+  cancel(): void {
+    this.goBack.emit();
+  }
+
+  setBreadcrums(): void {
+    this.authService.getPermissions().subscribe((permissions) => {
+      let label = '';
+      let targetRoute = '/home';
+
+      if (permissions.includes('accessRegistrationRequestsForAdminPage')) {
+        targetRoute = '/registration-requests-for-admin';
+      } else if (permissions.includes('accessRegistrationRequestsForManagementPage')) {
+        targetRoute = '/registration-requests-for-management';
+      } else if (permissions.includes('accessRegistrationRequestsPage')) {
+        targetRoute = '/registration-requests';
+      }
+
+      if (permissions.some((p) => p === 'getRegistrationRequestForAdmin')) {
+        label = this.translateService.instant('breadcrumb.registrationRequestsForAdmin');
+      } else if (permissions.some((p) => p === 'getRegistrationRequestForManagement')) {
+        label = this.translateService.instant('breadcrumb.registrationRequestsForManagement');
+      } else if (permissions.some((p) => p === 'createRegistrationRequest')) {
+        label = this.translateService.instant('breadcrumb.registrationRequests');
+      }
+
+      this.breadcrumbService.setBreadcrumbs([
+        {
+          label: label,
+          url: targetRoute,
+        },
+        {
+          label: this.isEditMode()
+            ? (this.registrationRequest()?.reference ?? '')
+            : this.translateService.instant('breadcrumb.registrationRequestAdd'),
+        },
+      ]);
+    });
+  }
+}

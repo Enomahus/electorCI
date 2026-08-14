@@ -31,7 +31,13 @@ namespace Application.Features.Users.CreateUser
                 .NotEmpty()
                 .WithMessage(ValidationErrorCode.Required.ToString())
                 .MinimumLength(8)
-                .WithMessage(ValidationErrorCode.MinLength.ToString());
+                .WithMessage(ValidationErrorCode.MinLength.ToString())
+                .Matches(@"[A-Z]+")
+                .WithMessage(ValidationErrorCode.InvalidPassword.ToString())
+                .Matches(@"[a-z]+")
+                .WithMessage(ValidationErrorCode.InvalidPassword.ToString())
+                .Matches(@"[0-9]+")
+                .WithMessage(ValidationErrorCode.InvalidPassword.ToString());
         }
     }
 
@@ -54,8 +60,9 @@ namespace Application.Features.Users.CreateUser
                 async () =>
                 {
                     await MapToDaoAsync(command, userDao, cancellationToken: cancellationToken);
-                    
-                    await _userManager.CreateAsync(userDao, command.Password!);
+
+                    var result = await _userManager.CreateAsync(userDao, command.Password!);
+                    EnsureIdentitySucceeded(result);
                 },
                 () => Task.FromResult(true)
             );

@@ -31,6 +31,7 @@ public enum AppPermission
 
     CreateBasicCitizen,
     GetCitizens,
+    CreateCitizen,
 
     CreateRegistrationRequest,
     UpdateRegistrationRequest,
@@ -44,13 +45,14 @@ public enum AppPermission
 
     GetRegistrationRequestsForAdmin,
     GetRegistrationRequestForAdmin,
+    DeleteRegistrationRequestForAdmin,
 
     GetRegistrationRequestForCurrentUser,
     AccessUpdateRegistrationRequest,
     AccessRegistrationRequestsForAdminPage,
     AccessRegistrationRequestsForManagementPage,
     UpdateRegistrationRequestsForManagement,
-    DeleteRegistrationRequestsForManagement,
+    DeleteRegistrationRequestForManagement,
     TriggerActionOnRegistrationRequest,
     CheckRegistrationReferenceBeUnique,
     AccessRegistrationRequestsPage,

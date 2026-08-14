@@ -189,7 +189,7 @@ namespace Infrastructure.Persistence.SQLServer.Contexts
                 entity.HasIndex(e => new { e.StationNumber, e.DistrictId }).IsUnique();
                 entity
                     .HasOne(e => e.District)
-                    .WithMany() // une circonscription à plusieur bureau
+                    .WithMany(d => d.PollingStations) // une circonscription à plusieur bureau
                     .HasForeignKey(e => e.DistrictId)
                     .OnDelete(DeleteBehavior.Cascade);
             });

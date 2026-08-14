@@ -26,5 +26,10 @@
     <ProjectReference Include="..\13-Application.Ressources\13-Application.Ressources.csproj" />
     <ProjectReference Include="..\24-Infrastructure.ExternalAuth\24-Infrastructure.ExternalAuth.csproj" />
     <ProjectReference Include="..\99-Tools\99-Tools.csproj" />
+    <ProjectReference Include="..\Pcea.Core\Pcea.Core.Net.AuditTrail\Pcea.Core.Net.AuditTrail.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="RegistrationRequests\UpdateRegistrationRequest\" />
   </ItemGroup>
 </Project>

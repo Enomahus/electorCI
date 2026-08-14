@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Pcea.Core.Net.AuditTrail.Interfaces
+﻿namespace Pcea.Core.Net.AuditTrail.Interfaces
 {
     public interface IAuditableResult
     {

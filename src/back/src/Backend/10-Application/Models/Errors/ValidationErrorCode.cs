@@ -16,11 +16,17 @@
         UserCannotBeCurrentUser,
         RoleMustExist,
         DistrictMustExist,
+        CitizenMustExist,
         InvalidParent,
         DistrictMustHaveParent,
         InvalidLevel,
         PollingStationMustExist,
         PollingStationLinked,
-        DistrictLinked
+        DistrictLinked,
+        MustBeAdult,
+        MarriedNameRequired,
+        RegistrationRequestMustExist,
+        RegistrationRequestMustBeOwnedByUser,
+        RegistrationRequestMustBeDraftOrToBeProcessed,
     }
 }

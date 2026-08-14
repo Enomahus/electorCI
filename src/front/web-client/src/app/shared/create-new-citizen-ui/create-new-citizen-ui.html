@@ -1,0 +1,90 @@
+<form [formGroup]="form()">
+  <div class="basic-citizen-form">
+    <div class="inputs-container">
+      <div class="input-block required">
+        <label for="firstName">{{ 'registrationRequest.citizen.firstName' | translate }}</label>
+        <input id="firstName" formControlName="firstName" />
+        @if (form().controls.firstName.touched && form().controls.firstName.errors) {
+          <ul class="form-error">
+            @if (form().controls.firstName.errors?.['required']) {
+              <li>{{ 'formError.required' | translate }}</li>
+            }
+          </ul>
+        }
+      </div>
+      <div class="input-block required">
+        <label for="lastName">{{ 'registrationRequest.citizen.lastName' | translate }}</label>
+        <input id="lastName" formControlName="lastName" />
+        @if (form().controls.lastName.touched && form().controls.lastName.errors) {
+          <ul class="form-error">
+            @if (form().controls.lastName.errors?.['required']) {
+              <li>{{ 'formError.required' | translate }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div class="input-block required">
+        <label for="gender">{{ 'registrationRequest.citizen.gender' | translate }}</label>
+        <select id="gender" formControlName="gender">
+          <option value="" selected>{{ 'global.select' | translate }}</option>
+          @for (gender of allGenders; track gender) {
+            <option [value]="gender">
+              {{ 'registrationRequests.gender.' + gender | translate }}
+            </option>
+          }
+        </select>
+        @if (form().controls.gender.touched && form().controls.gender.errors) {
+          <ul class="form-error">
+            @if (form().controls.gender.errors?.['required']) {
+              <li>{{ 'formError.required' | translate }}</li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+    <div class="inputs-container">
+
+      <div class="input-block required">
+        <label for="birthDate">{{ 'registrationRequest.citizen.birthDate' | translate }}</label>
+        <app-input-datepicker-ui
+          id="birthDate"
+          formControlName="birthDate"
+        ></app-input-datepicker-ui>
+        @if (form().controls.birthDate.touched && form().controls.birthDate.errors) {
+          <ul class="form-error">
+            @if (form().controls.birthDate.errors?.['required']) {
+              <li>{{ 'formError.required' | translate }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div class="input-block required">
+        <label for="birthPlace">{{ 'registrationRequest.citizen.birthPlace' | translate }}</label>
+        <input id="birthPlace" formControlName="birthPlace" />
+        @if (form().controls.birthPlace.touched && form().controls.birthPlace.errors) {
+          <ul class="form-error">
+            @if (form().controls.birthPlace.errors?.['required']) {
+              <li>{{ 'formError.required' | translate }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div class="input-block required">
+        <label for="nationality">{{ 'registrationRequest.citizen.nationality' | translate }}</label>
+        <input id="nationality" formControlName="nationality" />
+        @if (form().controls.nationality.touched && form().controls.nationality.errors) {
+          <ul class="form-error">
+            @if (form().controls.nationality.errors?.['required']) {
+              <li>{{ 'formError.required' | translate }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+    </div>
+    
+  </div>
+</form>

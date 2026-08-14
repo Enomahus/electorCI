@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -67,7 +67,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppActions", (string)null);
+                    b.ToTable("AppActions");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.AppPermissionDao", b =>
@@ -85,7 +85,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPermissions", (string)null);
+                    b.ToTable("AppPermissions");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.AuditLogDao", b =>
@@ -130,7 +130,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs", (string)null);
+                    b.ToTable("AuditLogs");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.CitizenDao", b =>
@@ -204,7 +204,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("MotherId");
 
-                    b.ToTable("Citizens", (string)null);
+                    b.ToTable("Citizens");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.DistrictDao", b =>
@@ -247,7 +247,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                     b.HasIndex("Code", "Level")
                         .IsUnique();
 
-                    b.ToTable("Districts", (string)null);
+                    b.ToTable("Districts");
 
                     b.HasData(
                         new
@@ -2099,7 +2099,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.ElectorDao", b =>
@@ -2135,7 +2135,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                         .IsUnique()
                         .HasFilter("[VoterRegistrationNumber] IS NOT NULL");
 
-                    b.ToTable("Electors", (string)null);
+                    b.ToTable("Electors");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.PollingStationDao", b =>
@@ -2151,9 +2151,6 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.Property<DateTimeOffset?>("DisabledDate")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<long?>("DistrictDaoId")
-                        .HasColumnType("bigint");
 
                     b.Property<long>("DistrictId")
                         .HasColumnType("bigint");
@@ -2171,14 +2168,12 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DistrictDaoId");
-
                     b.HasIndex("DistrictId");
 
                     b.HasIndex("StationNumber", "DistrictId")
                         .IsUnique();
 
-                    b.ToTable("PollingStations", (string)null);
+                    b.ToTable("PollingStations");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RefreshTokenDao", b =>
@@ -2197,7 +2192,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RegistrationRequestDao", b =>
@@ -2247,7 +2242,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("LastUpdaterId");
 
-                    b.ToTable("RegistrationRequests", (string)null);
+                    b.ToTable("RegistrationRequests");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RegistrationRequestDocumentDao", b =>
@@ -2272,7 +2267,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("RegistrationRequestId");
 
-                    b.ToTable("RegistrationRequestDocuments", (string)null);
+                    b.ToTable("RegistrationRequestDocuments");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RoleDao", b =>
@@ -2415,7 +2410,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDistricts", (string)null);
+                    b.ToTable("UserDistricts");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.UserRoleDao", b =>
@@ -2614,12 +2609,8 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.PollingStationDao", b =>
                 {
-                    b.HasOne("Infrastructure.Persistence.Entities.DistrictDao", null)
-                        .WithMany("PollingStations")
-                        .HasForeignKey("DistrictDaoId");
-
                     b.HasOne("Infrastructure.Persistence.Entities.DistrictDao", "District")
-                        .WithMany()
+                        .WithMany("PollingStations")
                         .HasForeignKey("DistrictId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2640,7 +2631,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
             modelBuilder.Entity("Infrastructure.Persistence.Entities.RegistrationRequestDao", b =>
                 {
                     b.HasOne("Infrastructure.Persistence.Entities.UserDao", "Author")
-                        .WithMany("CreatedRegistrationRequests")
+                        .WithMany("OwnRegistrationRequests")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -2808,7 +2799,7 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
 
             modelBuilder.Entity("Infrastructure.Persistence.Entities.UserDao", b =>
                 {
-                    b.Navigation("CreatedRegistrationRequests");
+                    b.Navigation("OwnRegistrationRequests");
 
                     b.Navigation("RefreshTokens");
 

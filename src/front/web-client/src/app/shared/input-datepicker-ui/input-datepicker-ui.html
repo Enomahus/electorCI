@@ -1,0 +1,12 @@
+<div class="datepicker-container">
+  <input
+    type="date"
+    [id]="id()"
+    [value]="value()"
+    [disabled]="disabled()"
+    (input)="onInputChange($event)"
+    (blur)="onTouched()"
+    class="datepicker-input"
+  />
+</div>
+

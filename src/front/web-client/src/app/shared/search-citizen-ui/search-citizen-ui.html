@@ -1,0 +1,65 @@
+<div class="citizen-combobox" [class.combobox-disabled]="disabled()" (keydown)="onKeydown($event)">
+  <div class="combobox-input-wrapper">
+    <input
+      #inputEl
+      type="text"
+      class="combobox-input"
+      role="combobox"
+      [id]="id()"
+      [attr.aria-expanded]="isOpen()"
+      aria-autocomplete="list"
+      aria-haspopup="listbox"
+      [attr.aria-controls]="id() + '-listbox'"
+      [attr.aria-activedescendant]="activeIndex() >= 0 ? id() + '-option-' + activeIndex() : null"
+      [value]="inputText()"
+      [disabled]="disabled()"
+      [placeholder]="'searchCitizenUi.placeholder' | translate"
+      autocomplete="off"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onTouched()"
+    />
+
+    @if (isLoading()) {
+      <span class="combobox-spinner" aria-hidden="true"></span>
+    } @else if (citizenId()) {
+      <button
+        type="button"
+        class="combobox-clear"
+        [disabled]="disabled()"
+        [attr.aria-label]="'global.delete' | translate"
+        (mousedown)="$event.preventDefault(); clearSelection()"
+      >
+        ✕
+      </button>
+    }
+  </div>
+
+  @if (isOpen()) {
+    <ul class="combobox-listbox" role="listbox" [id]="id() + '-listbox'">
+      @for (citizen of citizens$ | async; track citizen.id; let i = $index) {
+        <li
+          [id]="id() + '-option-' + i"
+          role="option"
+          class="combobox-option"
+          [class.active]="i === activeIndex()"
+          [class.selected]="citizen.id === citizenId()"
+          [attr.aria-selected]="citizen.id === citizenId()"
+          (mousedown)="$event.preventDefault(); selectCitizen(citizen)"
+          (mouseenter)="activeIndex.set(i)"
+        >
+          <span class="option-name">{{ citizen.firstName }} {{ citizen.lastName }}</span>
+          <span class="option-details">
+            {{ citizen.birthDate | date: 'dd/MM/yyyy' }} — {{ citizen.birthPlace }}
+          </span>
+        </li>
+      } @empty {
+        @if (!isLoading()) {
+          <li class="combobox-empty">
+            {{ (inputText().length < 3 ? 'searchCitizenUi.minLength' : 'global.noData') | translate }}
+          </li>
+        }
+      }
+    </ul>
+  }
+</div>

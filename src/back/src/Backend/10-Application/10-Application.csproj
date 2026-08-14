@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\22-Infrastructure.Persistence.SQLServer\22-Infrastructure.Persistence.SQLServer.csproj" />
     <ProjectReference Include="..\99-Tools\99-Tools.csproj" />
+    <ProjectReference Include="..\Pcea.Core\Pcea.Core.Net.AuditTrail\Pcea.Core.Net.AuditTrail.csproj" />
     <ProjectReference Include="..\Pcea.Core\Pcea.Core.Net.Authorization.Application\Pcea.Core.Net.Authorization.Application.csproj" />
   </ItemGroup>
 </Project>

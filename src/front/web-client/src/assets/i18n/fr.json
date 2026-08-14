@@ -11,7 +11,7 @@
     "refresh": "Actualiser",
     "login": "Se connecter",
     "actions": "Actions",
-    "selectFile": "Sélectionner un fichier",
+    "selectFile": "Choisir un fichier",
     "select": "...Veuillez choisir une option...",
     "no": "Non",
     "yes": "Oui",
@@ -281,5 +281,110 @@
     "register": "S'inscrire",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "login": "Connectez-vous"
+  },
+  "registrationRequests": {
+    "title": "Mes demandes",
+    "titleForAdmin": "Liste des demandes",
+    "titleForManagement": "Liste des demandes",
+    "deleteSuccess": "La demande d'inscription a été supprimée avec succès",
+    "deleteError": "Une erreur est survenue lors de la suppression de la demande d'inscription",
+    "actions": {
+      "create": "Nouvelle demande"
+    },
+    "gender": {
+      "feminine": "Féminin",
+      "masculine": "Masculin"
+    },
+    "columns": {
+      "reference": "Référence",
+      "citizen": "Électeur",
+      "requestType": "Type de demande",
+      "district": "Circonscription",
+      "requestDate": "Date de la demande",
+      "author": "Auteur",
+      "status": "Statut"
+    },
+    "maritalStatus": {
+      "single": "Célibataire",
+      "married": "Marié(e)",
+      "divorced": "Divorcé(e)",
+      "widowed": "Veuf(ve)"
+    },
+    "type": {
+      "registrationRequest": "Inscription",
+      "registrationDataUpdate": "Modification de données"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "toBeProcessed": "À traiter",
+      "approved": "Approuvée",
+      "rejected": "Rejetée"
+    }
+  },
+  "registrationRequest": {
+    "title": "Créer une demande",
+    "approve": "Approuver",
+    "cancelRequest": "Annuler la demande",
+    "submitRequest": "Soumettre la demande",
+    "newRegistrationRequestTitle": "Nouvelle demande d'inscription",
+    "requestDetails": "Détails de la demande d'inscription",
+    "supportingDocuments": "Documents justificatifs",
+    "citizenInformation": "Informations du citoyen",
+    "requestInformation": "Informations de la demande",
+    "residenceSection": "Résidence",
+    "docType": "Type de pièce",
+    "documentType": {
+      "passportPhoto": "Photo d'identité",
+      "identityDocumentOrNationalCertificate": "CNI / Certificat de nationalité",
+      "residenceCertificate": "Attestation de résidence"
+    },
+    "request": {
+      "district": "Circonscription électorale",
+      "registrationType": "Type de demande",
+      "comment": "Commentaire",
+      "requestType": {
+        "registrationRequest": "Demande d'inscription",
+        "registrationDataUpdate": "Modification de données"
+      }
+    },
+    "residence": {
+      "region": "Région",
+      "department": "Département",
+      "subPrefecture": "Sous-préfecture",
+      "municipality": "Commune / Village",
+      "vottingLocation": "Lieu de vote"
+    },
+    "citizen": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "gender": "Genre",
+      "birthDate": "Date de naissance",
+      "birthPlace": "Lieu de naissance",
+      "nationality": "Nationnalité",
+      "occupation": "Profession",
+      "physicalAddress": "Adresse physique",
+      "postalAddress": "Adresse postale",
+      "maritalStatus": "Statut matrimonial",
+      "marriedName": "Nom d'épouse",
+      "email": "E-mail",
+      "father": "Père",
+      "mother": "Mère"
+    },
+    "supportingAttachments": {
+      "identityDocsAttachments": "CNI / Certificat de nationalité",
+      "residCertificateAttachments": "Attestation de résidence",
+      "photoAttachments": "Photo"
+    }
+  },
+  "searchCitizenUi": {
+    "placeholder": "Rechercher un électeur (nom, prénom...)",
+    "minLength": "Veuillez saisir au moins 3 caractères"
+  },
+  "citizen": {
+    "searchOrCreate": {
+      "citizen":"Citoyen",
+      "createCitizen": "Créer un nouveau citoyen",
+      "cancelCitizenCreation": "Annuler la création de citoyen"
+    }
   }
 }

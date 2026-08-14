@@ -4,6 +4,7 @@ using Application.Common.Enums;
 using Application.Common.Interfaces.Services;
 using Application.Features;
 using Application.Features.Districts.Common;
+using Application.Features.RegistrationRequests.Common;
 using Application.Features.Security.Common;
 using Application.Interfaces.Services;
 using Application.Models.Errors;
@@ -49,28 +50,26 @@ namespace Application.UnitTests.Common
         {
             var currentUserServiceSub = Substitute.For<ICurrentUserService>();
             var tokenRoleClaimBuilderSub = Substitute.For<ITokenRoleClaimBuilder<long>>();
-            var currentUserPermissionsProviderSub =
-                Substitute.For<ICurrentUserPermissionsProvider>();
+            var currentUserPermissionsProviderSub = Substitute.For<ICurrentUserPermissionsProvider>();
             var currentUserEntityPermissionsProviderSub = Substitute.For<
                 ICurrentUserEntityPermissionsProvider<long>
             >();
 
             var timeProviderSub = Substitute.For<TimeProvider>();
             BlobServiceClient blobServiceSub = ConfigureBlobServiceSubstitute(setupBlobClient);
-            timeProviderSub
-                .GetUtcNow()
-                .Returns(new DateTimeOffset(2026, 1, 1, 10, 0, 0, TimeSpan.Zero));
+            timeProviderSub.GetUtcNow().Returns(new DateTimeOffset(2026, 1, 1, 10, 0, 0, TimeSpan.Zero));
             var externalAuthSub = Substitute.For<IExternalAuthService>();
-            var fileServiceSub = setupFileService != null ? Substitute.For<IFileService>() : null;
+            var fileServiceSub = Substitute.For<IFileService>();
 
             setupDateService?.Invoke(timeProviderSub);
-            setupFileService?.Invoke(fileServiceSub!);
+            setupFileService?.Invoke(fileServiceSub);
 
             var configuration = new ConfigurationBuilder().Build();
 
             var services = new ServiceCollection();
             services
                 .AddApplicationServices()
+                .AddApplicationFeaturesServices()
                 .AddMediator()
                 .AddDatabase(timeProviderSub)
                 .AddInfrastructureIdentityServices(configuration)
@@ -82,18 +81,17 @@ namespace Application.UnitTests.Common
                 .AddSingleton(currentUserEntityPermissionsProviderSub)
                 .AddSingleton(timeProviderSub)
                 .AddSingleton(blobServiceSub)
+                .AddSingleton(fileServiceSub)
                 .AddScoped<ITokenService, TokenService>()
                 .AddScoped<ITokenHelper, TokenHelper>()
                 .AddScoped<IAuthorizationHandler, AuthorizationHandler>()
                 //.AddScoped<CriteriaService>()
                 //.AddScoped<PanelReferenceService>()
-                //.AddScoped<StakeholderService>()
+                .AddScoped<CitizenService>()
                 .AddScoped<DistrictService>()
                 .AddKeyedSingleton(ExternalAuthServiceKeys.GoogleAuthService, externalAuthSub)
                 .AddKeyedSingleton(ExternalAuthServiceKeys.MicrosoftAuthService, externalAuthSub)
-                .Configure<TokenConfiguration>(c =>
-                    c.Secret = "DEV_SECRET_JWT_KEY_VERY_LONG_FOR_SECURITY"
-                )
+                .Configure<TokenConfiguration>(c => c.Secret = "DEV_SECRET_JWT_KEY_VERY_LONG_FOR_SECURITY")
                 .Configure<AppConfiguration>(c =>
                 {
                     c.AppUrl = "http://localhost:44026";
@@ -101,7 +99,7 @@ namespace Application.UnitTests.Common
                 .Configure<DataConfiguration>(c =>
                 {
                     c.Seed = true;
-                    c.DefaultUserPassword = "Secret1";
+                    c.DefaultUserPassword = "Secret12";
                 });
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture;
@@ -133,9 +131,7 @@ namespace Application.UnitTests.Common
             return services;
         }
 
-        private static BlobServiceClient ConfigureBlobServiceSubstitute(
-            Action<BlobClient>? setupBlobClient
-        )
+        private static BlobServiceClient ConfigureBlobServiceSubstitute(Action<BlobClient>? setupBlobClient)
         {
             var blobDownloadResult = CreateBlobDownloadStreamingResult(new MemoryStream());
             var mockResponse = Substitute.For<Response<BlobDownloadStreamingResult>>();
@@ -143,25 +139,18 @@ namespace Application.UnitTests.Common
             mockResponse.HasValue.Returns(true);
             var blobClientSub = Substitute.For<BlobClient>();
             blobClientSub
-                .DownloadStreamingAsync(
-                    Arg.Any<BlobDownloadOptions?>(),
-                    Arg.Any<CancellationToken>()
-                )
+                .DownloadStreamingAsync(Arg.Any<BlobDownloadOptions?>(), Arg.Any<CancellationToken>())
                 .Returns(mockResponse);
             var blobContainerClientSub = Substitute.For<BlobContainerClient>();
             blobContainerClientSub.GetBlobClient(Arg.Any<string>()).Returns(blobClientSub);
             var blobServiceSub = Substitute.For<BlobServiceClient>();
-            blobServiceSub
-                .GetBlobContainerClient(Arg.Any<string>())
-                .Returns(blobContainerClientSub);
+            blobServiceSub.GetBlobContainerClient(Arg.Any<string>()).Returns(blobContainerClientSub);
             setupBlobClient?.Invoke(blobClientSub);
 
             return blobServiceSub;
         }
 
-        protected static BlobDownloadStreamingResult? CreateBlobDownloadStreamingResult(
-            Stream content
-        )
+        protected static BlobDownloadStreamingResult? CreateBlobDownloadStreamingResult(Stream content)
         {
             var result = (BlobDownloadStreamingResult?)
                 Activator.CreateInstance(typeof(BlobDownloadStreamingResult), nonPublic: true);
@@ -209,9 +198,7 @@ namespace Application.UnitTests.Common
             currentPermissionService
                 .GetCurrentUserPermissionsAsync()
                 .Returns(Task.FromResult(permissions?.Select(p => p.ToString()) ?? []));
-            currentPermissionService
-                .IsCurrentUserAuthenticatedAsync()
-                .Returns(Task.FromResult(true));
+            currentPermissionService.IsCurrentUserAuthenticatedAsync().Returns(Task.FromResult(true));
             return user;
         }
 
@@ -289,12 +276,52 @@ namespace Application.UnitTests.Common
             return district;
         }
 
+        protected static async Task<CitizenDao> CreateCitizenAsync(
+            WritableDbContext context,
+            TimeProvider timeProvider,
+            string firstName = "Harvey",
+            string lastName = "Specter",
+            Gender gender = Gender.Masculine,
+            MaritalStatus maritalStatus = MaritalStatus.Single,
+            Guid? fatherId = null,
+            Guid? motherId = null
+        )
+        {
+            var now = timeProvider.GetUtcNow();
+
+            var citizen = new CitizenDao()
+            {
+                Gender = gender,
+                FirstName = firstName,
+                LastName = lastName,
+                BirthDate = now.AddYears(-30),
+                BirthPlace = "Yamoussoukro",
+                Nationality = "Ivoirienne",
+                MaritalStatus = maritalStatus,
+                Email = $"{firstName}.{lastName}@yopmail.com".ToLowerInvariant(),
+                PhysicalAddress = "123 Main St",
+                PostalAddress = "BP 123 Abidjan",
+                FatherId = fatherId,
+                MotherId = motherId,
+                CreatedAt = now,
+                ModifiedAt = now,
+            };
+
+            await context.Citizens.AddAsync(citizen);
+            await context.SaveChangesAsync();
+
+            return citizen;
+        }
+
         protected static async Task<RegistrationRequestDao> CreateRegistrationRequestAsync(
             WritableDbContext context,
             TimeProvider timeProvider,
             Guid authorId,
             string reference = "DE-2026-0000001",
-            long? districtId = null
+            long? districtId = null,
+            RegistrationStatus status = RegistrationStatus.ToBeProcessed,
+            RegistrationRequestType requestType = RegistrationRequestType.RegistrationRequest,
+            string? reasonForRejection = ""
         )
         {
             districtId ??= (
@@ -306,12 +333,12 @@ namespace Application.UnitTests.Common
             var registrationRequest = new RegistrationRequestDao()
             {
                 AuthorId = authorId,
-                RequestType = RegistrationRequestType.RegistrationRequest,
-                Status = RegistrationStatus.ToBeProcessed,
+                RequestType = requestType,
+                Status = status,
                 SubmissionDate = now,
                 DistrictId = districtId.Value,
                 LastUpdaterId = authorId,
-                ReasonForRejection = "",
+                ReasonForRejection = reasonForRejection,
                 Reference = reference,
                 Citizen = new CitizenDao()
                 {
@@ -325,7 +352,7 @@ namespace Application.UnitTests.Common
                     MaritalStatus = MaritalStatus.Single,
                     Email = "harvey.spector@yopmail.com",
                     ModifiedAt = now,
-                }
+                },
             };
 
             await context.RegistrationRequests.AddAsync(registrationRequest);

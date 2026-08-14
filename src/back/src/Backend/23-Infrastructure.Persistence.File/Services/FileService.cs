@@ -66,10 +66,8 @@ namespace Infrastructure.Persistence.File.Services
             else
             {
                 document =
-                    await context.Documents.FirstOrDefaultAsync(
-                        x => x.Id == existingDocumentId,
-                        token
-                    ) ?? throw new NotFoundException(nameof(DocumentDao), existingDocumentId);
+                    await context.Documents.FirstOrDefaultAsync(x => x.Id == existingDocumentId, token)
+                    ?? throw new NotFoundException(nameof(DocumentDao), existingDocumentId);
 
                 document.FileName = fileName;
                 document.ContentType = contentType;
@@ -99,9 +97,7 @@ namespace Infrastructure.Persistence.File.Services
             Response<BlobDownloadStreamingResult>? result;
             try
             {
-                result = await blobClient.DownloadStreamingAsync(
-                    cancellationToken: cancellationToken
-                );
+                result = await blobClient.DownloadStreamingAsync(cancellationToken: cancellationToken);
             }
             catch (Exception ex)
             {
@@ -117,18 +113,13 @@ namespace Infrastructure.Persistence.File.Services
         public async Task DeleteFileByIdAsync(Guid documentId, CancellationToken cancellationToken)
         {
             var document =
-                await context.Documents.FirstOrDefaultAsync(
-                    d => d.Id == documentId,
-                    cancellationToken
-                ) ?? throw new NotFoundException(nameof(DocumentDao), documentId);
+                await context.Documents.FirstOrDefaultAsync(d => d.Id == documentId, cancellationToken)
+                ?? throw new NotFoundException(nameof(DocumentDao), documentId);
             await DeleteFileAsync(document, cancellationToken);
             await context.SaveChangesAsync(cancellationToken: default);
         }
 
-        private async Task DeleteFileAsync(
-            DocumentDao document,
-            CancellationToken cancellationToken
-        )
+        private async Task DeleteFileAsync(DocumentDao document, CancellationToken cancellationToken)
         {
             BlobClient blobClient = await GetBlobClientAsync(document.Id, cancellationToken);
 
@@ -159,6 +150,10 @@ namespace Infrastructure.Persistence.File.Services
             {
                 await DeleteFileAsync(document, cancellationToken: default);
             }
+
+            //await context.Documents
+            //    .Where(d => documentIds.Contains(d.Id))
+            //    .ExecuteDeleteAsync(cancellationToken);
 
             await context.SaveChangesAsync(cancellationToken: default);
         }

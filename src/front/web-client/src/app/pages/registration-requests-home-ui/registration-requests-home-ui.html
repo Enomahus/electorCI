@@ -1,0 +1,17 @@
+<ng-container *appHideIfAdmin>
+  @if (showRequests()) {
+    <app-registration-requests-ui
+      *appHasPermission="'accessRegistrationRequestsPage'"
+    ></app-registration-requests-ui>
+  } @else if (showManagementRequests()) {
+    <app-registration-requests-for-management-ui
+      *appHasPermission="'accessRegistrationRequestsForManagementPage'"
+    ></app-registration-requests-for-management-ui>
+  }
+</ng-container>
+
+@if (showAdminRequests()) {
+  <app-registration-requests-for-admin-ui
+    *appHasPermission="'accessRegistrationRequestsForAdminPage'"
+  ></app-registration-requests-for-admin-ui>
+}
