@@ -28,6 +28,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    min-height: 580px;
 
     /* Passage en 2 colonnes sur écran large */
     @media (min-width: 768px) {

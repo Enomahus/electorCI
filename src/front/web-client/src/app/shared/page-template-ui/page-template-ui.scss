@@ -11,6 +11,7 @@
     .content {
       width: 100%;
       background: linear-gradient(135deg, #f77f00 0%, #ffffff 50%, #009e49 100%);
+      height: calc(100% - 50px);
     }
   }
 }

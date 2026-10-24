@@ -18,7 +18,9 @@ import { ConfirmDialogUi } from '../../../shared/confirm-dialog/confirm-dialog';
   providers: [DatePipe],
   template: '',
 })
-export abstract class AbstractRegistrationRequestsUi<TResponse extends GetRegistrationRequestsResponseModel>
+export abstract class AbstractRegistrationRequestsUi<
+  TResponse extends GetRegistrationRequestsResponseModel,
+>
   extends BaseTable<TResponse>
   implements OnInit
 {
