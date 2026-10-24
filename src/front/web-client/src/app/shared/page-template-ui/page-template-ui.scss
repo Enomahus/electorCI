@@ -1,17 +1,24 @@
 .page {
-  //height: 100vh;
   display: flex;
   flex-direction: column;
+  // Sticky footer: the page is at least as tall as the viewport, `.container` absorbs the free space
+  min-height: 100vh;
+  min-height: 100dvh;
 
   .container {
-    flex: 1;
+    flex: 1 0 auto;
     display: flex;
     justify-content: center;
 
     .content {
-      width: 100%;
+      // stretches to the full height of `.container` (no fragile percentage height)
+      flex: 1;
+      min-width: 0;
       background: linear-gradient(135deg, #f77f00 0%, #ffffff 50%, #009e49 100%);
-      height: calc(100% - 50px);
     }
+  }
+
+  app-footer-ui {
+    flex-shrink: 0;
   }
 }
