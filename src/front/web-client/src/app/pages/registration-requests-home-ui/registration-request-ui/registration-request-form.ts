@@ -30,6 +30,20 @@ export type RequestForm = FormGroup<{
   comment: FormControl<string | undefined>;
 }>;
 
+export interface CitizenPrefill {
+  gender?: Gender;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}
+
+export interface RegistrationRequestPrefill {
+  citizen?: CitizenPrefill;
+  /** Most specific residence district picked by the citizen (region down to voting location). */
+  districtId?: number;
+  requestType?: RegistrationRequestType;
+}
+
 export type CitizenForm = FormGroup<{
   gender: FormControl<Gender | undefined>;
   firstName: FormControl<string | undefined>;

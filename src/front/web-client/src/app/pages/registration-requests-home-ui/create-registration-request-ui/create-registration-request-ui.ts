@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RegistrationRequestsApiService } from '../../../services/api/registration-requests.api.service';
 import { FileParameter, RegistrationRequestModel } from '../../../services/nswag/api-nswag-client';
 import { getFileParametersAsync } from '../../../shared/upload-multiple-ui/file-upload-helper';
+import { RegistrationRequestPrefill } from '../registration-request-ui/registration-request-form';
 import { RegistrationRequestUi } from '../registration-request-ui/registration-request-ui';
 
 @Component({
@@ -18,6 +19,10 @@ export class CreateRegistrationRequestUi {
   private readonly router = inject(Router);
 
   isSaving = signal(false);
+  // Pre-filled from the account creation form via router navigation state (see CreateAccountUi).
+  prefill = signal<RegistrationRequestPrefill | undefined>(
+    (history.state as { prefill?: RegistrationRequestPrefill } | undefined)?.prefill,
+  );
 
   async saveCreatedRequest(event: {
     registrationRequest: RegistrationRequestModel;
