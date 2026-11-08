@@ -16,6 +16,7 @@
     "no": "Non",
     "yes": "Oui",
     "noData": "Aucune données",
+    "noMoreOptions": "Aucune autre option disponible",
     "noTitleTemplate": "ELector-CI",
     "titleTemplate": "{{title}} | ELector-CI",
     "constituency": "Circonscription",
@@ -382,7 +383,7 @@
   },
   "citizen": {
     "searchOrCreate": {
-      "citizen":"Citoyen",
+      "citizen": "Citoyen",
       "createCitizen": "Créer un nouveau citoyen",
       "cancelCitizenCreation": "Annuler la création de citoyen"
     }

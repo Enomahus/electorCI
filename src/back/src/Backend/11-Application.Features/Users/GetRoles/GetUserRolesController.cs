@@ -1,5 +1,6 @@
 ﻿using Application.Api;
 using Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
@@ -22,6 +23,7 @@ namespace Application.Features.Users.GetRoles
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet()]
         [Route("roles", Name = "GetUserRoles")]
         [OpenApiOperation("GetUserRoles", "Récupère tous les rôles possibles pour un utilisateur.", "")]

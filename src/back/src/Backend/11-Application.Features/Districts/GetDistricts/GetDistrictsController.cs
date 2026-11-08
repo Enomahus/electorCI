@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Application.Api;
 using Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
@@ -20,6 +21,7 @@ namespace Application.Features.Districts.GetDistricts
         /// <param name="query"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("get-districts")]
         [OpenApiOperation("GetDistricts", "Récupère les circonscriptions.", "")]
         [ProducesResponseType(

@@ -66,16 +66,13 @@ namespace Application.Features.Users.RegisterUser
             await strategy.ExecuteInTransactionAsync(
                 async () =>
                 {
-                    //string userRoleName = GetUserRoleName(command.RoleName!);
                     await MapToDaoAsync(command, userDao, skipAdminFields: true, cancellationToken);
 
-                    var defaultRoleId = await _context
-                        .Roles.Where(r => r.Name == AppConstants.ElectorRole)
-                        //.Roles.Where(r => r.Name == userRoleName)
-                        .Select(r => r.Id)
-                        .FirstAsync(cancellationToken);
                     userDao.UserRoles.Clear();
-                    userDao.UserRoles.Add(new UserRoleDao() { RoleId = defaultRoleId });
+                    foreach (var role in command.Roles)
+                    {
+                        userDao.UserRoles.Add(new UserRoleDao() { RoleId = role });
+                    }
 
                     var result = await _userManager.CreateAsync(userDao, command.Password!);
                     EnsureIdentitySucceeded(result);

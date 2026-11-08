@@ -68,8 +68,6 @@ export function createUserForm(isEditMode: boolean): UserFormFactory {
     },
   ) as UserFormFactory;
 
-  //form.controls.authProvider.disable();
-
   return form;
 }
 

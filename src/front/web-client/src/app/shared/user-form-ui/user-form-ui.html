@@ -95,6 +95,7 @@
         </div>
       </div>
     </section>
+
     <section class="grid-item user-layout">
       <h2>Information d'identification</h2>
 
@@ -240,23 +241,6 @@
 
       <!-- activité user et matricule -->
       <div class="inputs-container">
-        <!-- <div class="input-block required">
-          <label for="roles-select">{{ 'user.activity' | translate }}</label>
-          <select id="roles-select" formControlName="roles" multiple>
-            @for (role of roles(); track role.id) {
-              <option [value]="role.id">{{ 'roles.' + role.name | translate }}</option>
-            }
-          </select>
-          @if (form().controls.roles.touched && form().controls.roles.errors) {
-            <ul class="form-error">
-              @if (form().controls.roles.errors?.['required']) {
-                <li>
-                  {{ 'formError.required' | translate }}
-                </li>
-              }
-            </ul>
-          }
-        </div> -->
         <div class="input-block required custom-multi-select" (click)="toggleRoleDropdown($event)">
           <label for="roles-select">{{ 'user.activity' | translate }}</label>
           <div class="multi-select-input" tabindex="0">
@@ -294,7 +278,7 @@
                   </div>
                 }
               }
-              @if (roles().length === selectedRolesIds.length) {
+              @if (roles().length > 0 && roles().length === selectedRolesIds.length) {
                 <div class="option-item empty">{{ 'global.noMoreOptions' | translate }}</div>
               }
             </div>

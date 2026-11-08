@@ -39,12 +39,11 @@ export class UserUpdateUi implements OnInit {
         switchMap((id) => this.userService.getUser(id)),
         tap((user) => {
           this.user.set(user);
-           this.setBreadcrumb(user);
+          this.setBreadcrumb(user);
           this.updateFormContent(user);
         }),
       )
       .subscribe();
-
   }
 
   private setBreadcrumb(user: UserModel): void {
@@ -72,6 +71,7 @@ export class UserUpdateUi implements OnInit {
         roles: user.roles,
         districtId: user.districtId,
         authProvider: user.authProvider,
+        isActive: user.isActive,
       },
       { emitEvent: false },
     );

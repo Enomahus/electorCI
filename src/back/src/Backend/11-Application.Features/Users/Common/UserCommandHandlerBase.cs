@@ -36,15 +36,12 @@ namespace Application.Features.Users.Common
             dao.PhoneNumber = model.Phone;
             dao.ModifiedAt = _timeProvider.GetUtcNow();
             dao.EmployeeNumber = model.EmployeeNumber;
+            dao.AuthProvider = model.AuthProvider;
 
             if (!skipAdminFields)
             {
-                var rolesToRemove = dao
-                    .UserRoles.Where(ur => !model.Roles.Contains(ur.RoleId))
-                    .ToList();
-                var roleIdsToAdd = model
-                    .Roles.Where(r => !dao.UserRoles.Any(ur => ur.RoleId == r))
-                    .ToList();
+                var rolesToRemove = dao.UserRoles.Where(ur => !model.Roles.Contains(ur.RoleId)).ToList();
+                var roleIdsToAdd = model.Roles.Where(r => !dao.UserRoles.Any(ur => ur.RoleId == r)).ToList();
                 foreach (var role in rolesToRemove)
                 {
                     dao.UserRoles.Remove(role);
@@ -78,9 +75,7 @@ namespace Application.Features.Users.Common
             if (!dao.UserDistricts.Any(us => us.DistrictId == model.DistrictId))
             {
                 dao.UserDistricts.Clear();
-                dao.UserDistricts.Add(
-                    new UserDistrictDao() { DistrictId = model.DistrictId!.Value }
-                );
+                dao.UserDistricts.Add(new UserDistrictDao() { DistrictId = model.DistrictId!.Value });
             }
         }
 
@@ -88,9 +83,7 @@ namespace Application.Features.Users.Common
         {
             if (!result.Succeeded)
             {
-                throw new ValidationException(
-                    result.Errors.ToDictionary(e => e.Code, e => e.Description)
-                );
+                throw new ValidationException(result.Errors.ToDictionary(e => e.Code, e => e.Description));
             }
         }
     }
