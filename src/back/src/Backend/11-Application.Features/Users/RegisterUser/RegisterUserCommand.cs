@@ -18,7 +18,6 @@ namespace Application.Features.Users.RegisterUser
     {
         [SensitiveData]
         public string? Password { get; set; }
-        //public string? RoleName { get; set; }
     }
 
     public class RegisterUserCommandValidator : UserCommandValidatorBase<RegisterUserCommand>
@@ -37,9 +36,6 @@ namespace Application.Features.Users.RegisterUser
                 .WithMessage(ValidationErrorCode.InvalidPassword.ToString())
                 .Matches(@"[0-9]+")
                 .WithMessage(ValidationErrorCode.InvalidPassword.ToString());
-            //RuleFor(v => v.RoleName)
-            //    .NotEmpty()
-            //    .WithMessage(ValidationErrorCode.Required.ToString());
         }
     }
 
