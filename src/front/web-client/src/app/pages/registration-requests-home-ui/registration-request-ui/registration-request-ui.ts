@@ -10,10 +10,11 @@ import {
   signal,
   SimpleChanges,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { filter, take } from 'rxjs';
 import { DistrictNode } from '../../../models/district.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { PermissionDirective } from '../../../services/auth/permission.directive';
@@ -43,6 +44,7 @@ import {
   createRegistrationRequestForm,
   createSearchCreateCitizenForm,
   RegistrationRequestForm,
+  RegistrationRequestPrefill,
   RequestDocumentsForm,
   RequestForm,
   ResidenceForm,
@@ -72,11 +74,13 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly nodes$ = toObservable(this.store.nodesData);
 
   isSaving = input<boolean>(false);
   isEditMode = input<boolean>(false);
   selectedStatus = input<RegistrationStatus | null>(null);
   registrationRequest = input<GetRegistrationRequestResponse | undefined>(undefined);
+  prefill = input<RegistrationRequestPrefill | undefined>(undefined);
   save = output<{
     registrationRequest: RegistrationRequestModel;
     identityDocs: File[];
@@ -160,9 +164,16 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
       this.registrationRequestId.set(idParam as string);
     }
     this.setBreadcrums();
+    this.applyPrefill();
 
-    this.syncParentSearchCreateForm(this.fatherSearchCreateForm, this.citizenForm().controls.fatherId);
-    this.syncParentSearchCreateForm(this.motherSearchCreateForm, this.citizenForm().controls.motherId);
+    this.syncParentSearchCreateForm(
+      this.fatherSearchCreateForm,
+      this.citizenForm().controls.fatherId,
+    );
+    this.syncParentSearchCreateForm(
+      this.motherSearchCreateForm,
+      this.citizenForm().controls.motherId,
+    );
   }
 
   /**
@@ -191,6 +202,31 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
         }
         parentIdControl.updateValueAndValidity();
       });
+  }
+
+  private applyPrefill(): void {
+    if (this.isEditMode()) return;
+
+    const prefill = this.prefill();
+    if (!prefill) return;
+
+    if (prefill.citizen) {
+      this.citizenForm().patchValue(prefill.citizen);
+    }
+
+    if (prefill.requestType) {
+      this.requestForm().controls.requestType.setValue(prefill.requestType);
+    }
+
+    if (prefill.districtId) {
+      this.nodes$
+        .pipe(
+          filter((nodes) => nodes.length > 0),
+          take(1),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe(() => this.initializeResidenceFromDistrict(prefill.districtId!));
+    }
   }
 
   onRegionChange(regionId: number | null): void {
@@ -228,6 +264,39 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
     let node = this.store.findNode(id);
     if (node) this.districtSelected.set([node]);
     this.form().controls.request.controls.districtId.setValue(id);
+  }
+
+  // Le districtId pré-rempli ne pointe qu'un niveau (le plus précis choisi à l'inscription) : on
+  // remonte l'arbre via parentId pour déduire région/département/sous-préfecture/commune/lieu de vote.
+  private initializeResidenceFromDistrict(districtId: number): void {
+    this.onSelectDistrcit(districtId);
+
+    let node = this.store.findNode(districtId);
+    while (node) {
+      switch (node.level) {
+        case 'region':
+          this.selectedRegionId.set(node.id);
+          this.residenceForm().controls.regionId.setValue(node.id);
+          break;
+        case 'department':
+          this.selectedDepartmentId.set(node.id);
+          this.residenceForm().controls.departmentId.setValue(node.id);
+          break;
+        case 'subPrefecture':
+          this.selectedSubPrefectureId.set(node.id);
+          this.residenceForm().controls.subPrefectureId.setValue(node.id);
+          break;
+        case 'municipality':
+          this.selectedMunicipalityId.set(node.id);
+          this.residenceForm().controls.municipalityId.setValue(node.id);
+          break;
+        case 'votingLocation':
+          this.selectedVotingLocationId.set(node.id);
+          this.residenceForm().controls.vottingLocationId.setValue(node.id);
+          break;
+      }
+      node = node.parentId ? this.store.findNode(node.parentId) : undefined;
+    }
   }
 
   protected parseDistrictId(event: Event): number | null {
@@ -286,7 +355,9 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
 
   onSave(): void {
     const isInvalid =
-      this.form().invalid || this.fatherSearchCreateForm.invalid || this.motherSearchCreateForm.invalid;
+      this.form().invalid ||
+      this.fatherSearchCreateForm.invalid ||
+      this.motherSearchCreateForm.invalid;
     if (isInvalid) {
       this.form().markAllAsTouched();
       this.fatherSearchCreateForm.markAllAsTouched();
