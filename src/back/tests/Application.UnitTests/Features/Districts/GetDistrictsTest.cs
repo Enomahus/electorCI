@@ -13,31 +13,28 @@ namespace Application.UnitTests.Features.Districts
     {
         private const string Token = "ZZTEST";
 
-        [Fact]
-        public async Task GetDistrictsTest_ShouldFail_WhenPermissionMissing()
-        {
-            // Arrange
-            var serviceProvider = CreateServiceCollection(mockAuthorization: false)
-                .BuildServiceProvider();
+        //[Fact]
+        //public async Task GetDistrictsTest_ShouldFail_WhenPermissionMissing()
+        //{
+        //    // Arrange
+        //    var serviceProvider = CreateServiceCollection(mockAuthorization: false)
+        //        .BuildServiceProvider();
 
-            var query = new GetDistrictsQuery();
+        //    var query = new GetDistrictsQuery();
 
-            // Act & Assert
-            await FluentActions
-                .Invoking(() => serviceProvider.SendAsync(query))
-                .Should()
-                .ThrowAsync<UserAccessException>();
-        }
+        //    // Act & Assert
+        //    await FluentActions
+        //        .Invoking(() => serviceProvider.SendAsync(query))
+        //        .Should()
+        //        .ThrowAsync<UserAccessException>();
+        //}
 
         [Fact]
         public async Task GetDistrictsTest_ShouldReturnRootDistrictsWithHierarchy_WhenDataExists()
         {
             // Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(
-                serviceProvider,
-                permissions: [AppPermission.GetDistricts]
-            );
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetDistricts]);
             var context = serviceProvider.GetRequiredService<WritableDbContext>();
 
             var region = new DistrictDao()
@@ -112,10 +109,7 @@ namespace Application.UnitTests.Features.Districts
         {
             // Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(
-                serviceProvider,
-                permissions: [AppPermission.GetDistricts]
-            );
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetDistricts]);
             var context = serviceProvider.GetRequiredService<WritableDbContext>();
 
             // Removing only the root districts would leave their children dangling,

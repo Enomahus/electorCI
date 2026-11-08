@@ -19,6 +19,7 @@ namespace Application.UnitTests.Features.Users
 
         private static RegisterUserCommand BuildValidCommand(
             long districtId,
+            List<Guid>? roles = null,
             string email = "new.user@yopmail.com",
             string? password = ValidPassword
         )
@@ -32,6 +33,7 @@ namespace Application.UnitTests.Features.Users
                 Phone = "+33 1 23 45 67 89",
                 DistrictId = districtId,
                 Password = password,
+                Roles = roles ?? [],
             };
         }
 
@@ -102,15 +104,13 @@ namespace Application.UnitTests.Features.Users
                 .Select(r => r.Id)
                 .FirstAsync();
 
-            var command = BuildValidCommand(district.Id, email: "elector@yopmail.com");
+            var command = BuildValidCommand(district.Id, [electorRoleId], email: "elector@yopmail.com");
 
             // Act
             var result = await serviceProvider.SendAsync(command);
 
             // Assert
-            var created = await context
-                .Users.Include(u => u.UserRoles)
-                .FirstAsync(u => u.Id == result.Data);
+            var created = await context.Users.Include(u => u.UserRoles).FirstAsync(u => u.Id == result.Data);
             created.UserRoles.Should().ContainSingle(ur => ur.RoleId == electorRoleId);
         }
 

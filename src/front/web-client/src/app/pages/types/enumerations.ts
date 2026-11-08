@@ -27,3 +27,5 @@ export const allRegistrationDocumentType: RegistrationRequestDocumentType[] = [
   'residenceCertificate',
   'passportPhoto',
 ];
+
+export const allRoles: string[] = ['organismAgent', 'supervisor', 'elector'];

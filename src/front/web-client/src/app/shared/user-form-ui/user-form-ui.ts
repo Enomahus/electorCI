@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   HostListener,
   inject,
   input,
@@ -42,6 +43,7 @@ export class UserFormUi implements OnInit {
   isSaving = input<boolean>(false);
   isEditMode = input<boolean>(false);
   isRegistration = input<boolean>(false);
+
   formSubmitted = output<UserModel>();
   goBack = output<void>();
 
@@ -55,6 +57,14 @@ export class UserFormUi implements OnInit {
   allDistrict = signal<DistrictNode[]>([]);
   selectedDistrictId = signal<number | null>(null);
   roles = toSignal(this.userService.getUserRoles(), { initialValue: [] });
+
+  filteredRoles = computed(() => {
+    const allRoles = this.roles();
+    if (this.isRegistration()) {
+      return allRoles.filter((r) => r.name !== 'ElectorRole');
+    }
+    return allRoles;
+  });
 
   allRegions = this.store.nodesData;
 
@@ -74,34 +84,6 @@ export class UserFormUi implements OnInit {
   getRoleNameById(id: string): string {
     const role = this.roles().find((r) => r.id === id);
     return role ? role.name! : id;
-  }
-
-  toggleRoleDropdown(event: Event): void {
-    event.stopPropagation(); // Évite que le click document ne ferme tout de suite le dropdown
-    this.isRolesDropdownOpen.update((v) => !v);
-  }
-
-  addRole(id: string, event: Event): void {
-    event.stopPropagation();
-    const currentRoles = this.selectedRolesIds;
-    if (!currentRoles.includes(id)) {
-      this.form().controls.roles.setValue([...currentRoles, id]);
-      this.form().controls.roles.markAsTouched();
-    }
-    this.isRolesDropdownOpen.set(false);
-  }
-
-  removeRole(id: string, event: Event): void {
-    event.stopPropagation();
-    const currentRoles = this.selectedRolesIds;
-    this.form().controls.roles.setValue(currentRoles.filter((r) => r !== id));
-    this.form().controls.roles.markAsTouched();
-  }
-
-  clearAllRoles(event: Event): void {
-    event.stopPropagation();
-    this.form().controls.roles.setValue([]);
-    this.form().controls.roles.markAsTouched();
   }
 
   // Ferme le dropdown si on clique en dehors
@@ -133,6 +115,23 @@ export class UserFormUi implements OnInit {
   isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
   isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
 
+  constructor() {
+    effect(() => {
+      if (this.isRegistration()) {
+        const availableRoles = this.roles();
+        const electorRole = availableRoles.find((r) => r.name === 'ElectorRole');
+
+        if (electorRole && electorRole.id) {
+          const currentRoles = this.selectedRolesIds;
+          if (!currentRoles.includes(electorRole.id)) {
+            this.form().controls.roles.setValue([...currentRoles, electorRole.id]);
+            this.form().controls.roles.markAsTouched();
+          }
+        }
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.setupEmployeeNumberValidation();
     if (!this.isEditMode()) return;
@@ -149,6 +148,34 @@ export class UserFormUi implements OnInit {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(([, districtId]) => this.initializeChainFromDistrict(districtId!));
+  }
+
+  toggleRoleDropdown(event: Event): void {
+    event.stopPropagation(); // Évite que le click document ne ferme tout de suite le dropdown
+    this.isRolesDropdownOpen.update((v) => !v);
+  }
+
+  addRole(id: string, event: Event): void {
+    event.stopPropagation();
+    const currentRoles = this.selectedRolesIds;
+    if (!currentRoles.includes(id)) {
+      this.form().controls.roles.setValue([...currentRoles, id]);
+      this.form().controls.roles.markAsTouched();
+    }
+    this.isRolesDropdownOpen.set(false);
+  }
+
+  removeRole(id: string, event: Event): void {
+    event.stopPropagation();
+    const currentRoles = this.selectedRolesIds;
+    this.form().controls.roles.setValue(currentRoles.filter((r) => r !== id));
+    this.form().controls.roles.markAsTouched();
+  }
+
+  clearAllRoles(event: Event): void {
+    event.stopPropagation();
+    this.form().controls.roles.setValue([]);
+    this.form().controls.roles.markAsTouched();
   }
 
   private setupEmployeeNumberValidation(): void {

@@ -51,9 +51,10 @@ export class FaqUi {
         "Quelles sont les étapes à suivre pour s'inscrire en ligne sur la liste électorale ?",
       answer: `Pour s'inscrire en ligne sur la liste électorale, il faut:
       <ul>
-        <li>Se connecter à la plateforme <a href="https://www.monelection.ci">monelection.ci</a></li>
-        <li>Se créer un compte </li>
-        <li>Faire une demande d'inscription en remplissant le formulaire avec tous les chanmps requis et la soumettre.</li>
+        <li>a) Se connecter à la plateforme <a href="https://www.monelection.ci">monelection.ci</a></li>
+        <li>b) Se créer un compte </li>
+        <li>c) Se connecter à son compte</li>
+        <li>d) Dans le menu, sélectionner, <strong>Demande d'inscription</strong> et remplissant le formulaire avec tous les chanmps requis et la soumettre.</li>
       </ul>
       `,
     },
@@ -79,14 +80,14 @@ export class FaqUi {
       categoryId: 'request',
       question: 'Comment créer un compte ?',
       answer:
-        "Pour créer un compte, cliquez sur le lien 'S'inscrire' sur la page de connexion et remplissez le formulaire d'inscription.",
+        "Pour créer un compte, cliquez sur le lien <strong>S'inscrire</strong> sur la page de connexion et remplissez le formulaire de création de compte.",
     },
     {
       id: 'q5',
       categoryId: 'request',
       question: 'Comment réinitialiser mon mot de passe ?',
       answer:
-        "Pour réinitialiser votre mot de passe, cliquez sur le lien 'Mot de passe oublié' sur la page de connexion et suivez les instructions pour recevoir un e-mail de réinitialisation.",
+        'Pour réinitialiser votre mot de passe, cliquez sur le lien <strong>Mot de passe oublié</strong> sur la page de connexion et suivez les instructions pour recevoir un e-mail de réinitialisation.',
     },
 
     // Catégorie: Comment nous contacter (contact)
@@ -118,14 +119,5 @@ export class FaqUi {
   // Méthodes d'interaction
   selectCategory(id: string): void {
     this.selectedCategoryId.set(id);
-    //this.openedQuestionId.set(null); // Fermer toutes les questions lors du changement de catégorie
   }
-
-  // toggleQuestion(id: number): void {
-  //   if (this.openedQuestionId() === id) {
-  //     this.openedQuestionId.set(null);
-  //   } else {
-  //     this.openedQuestionId.set(id);
-  //   }
-  // }
 }

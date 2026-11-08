@@ -21,12 +21,25 @@
     "lang": {
       "fr": "fr",
       "en": "en"
+    },
+    "civility": {
+      "mr": "Mr.",
+      "mrs": "Mrs",
+      "ms": "Ms."
     }
+  },
+  "dialog": {
+    "title": "Confirmation",
+    "message": "Are you sure you want to delete <strong>{{ data.name }}</strong> ?",
+    "delete": "Delete",
+    "cancel": "Cancel"
   },
   "breadcrumb": {
     "pollingStations": "Polling stations",
     "pollingStationCreate": "New polling station",
     "pollingStationEdit": "Edit polling station",
+    "districts": "Districts",
+    "createDistrict": "New district",
     "constituencies": "Constituencies",
     "constituencyCreate": "New constituency",
     "registrationRequests": "My requests",
@@ -62,52 +75,308 @@
     "myAccount": "My account",
     "login": "Connexion",
     "loginAsElector": "Elector",
-    "loginAsOrganismAgent": "Agent organisme",
-    "loginAsSupervisor": "Superviseur"
+    "loginAsOrganismAgent": "Organism agent",
+    "loginAsSupervisor": "Supervisor"
   },
   "formError": {
-    "required": "Champ requis",
-    "emailInvalid": "L'email n'est pas au bon format",
-    "positiveNumber": "Doit être un nombre supérieur à zéro",
-    "passwordFormat": "Le mot de passe doit contenir entre 8 et 24 caractères et avoir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caracère spécial",
-    "passwordMismatch": "Les mots de passe ne correspondent pas",
-    "emailUnique": "Cet e-mail existe déjà. Merci d'utiliser un autre e-mail",
-    "employeeNumberUnique": "Ce numéro matricule existe déjà.",
-    "phoneInvalid": "Le numéro de téléphone n'est pas au bon format"
+    "required": "Required field",
+    "emailInvalid": "Invalid email format",
+    "positiveNumber": "Must be a positive number",
+    "passwordFormat": "Password must contain between 8 and 24 characters and have at least one lowercase letter, one uppercase letter, one digit and one special character",
+    "passwordMismatch": "Passwords do not match",
+    "emailUnique": "This email already exists. Please use another email",
+    "employeeNumberUnique": "This employee number already exists. Please use another employee number",
+    "phoneInvalid": "The phone number is not in the correct format",
+    "requireEmployeeNumber": "The employee number is required for this role"
   },
   "errors": {
     "backendCodes": {
-      "accessRights": "Droits insuffisants",
-      "notFound": "L'élément demandé n'existe pas",
+      "accessRights": "Insufficient rights",
+      "notFound": "The requested resource was not found.",
       "validation": "",
       "validationCodes": {
-        "CountryMustExist": "Le pays n'a pas été trouvé.",
-        "InvalidEmail": "Le champ {{field}} n'est pas un email valide.",
-        "InvalidPassword": "Le mot de passe est invalide.",
-        "InvalidPostcode": "Le code postal est invalide.",
-        "MaxLength": "La valeur saisie dans le champ {{field}} est trop longue.",
-        "PanelReferenceMustExist": "La référence de panneau n'a pas été trouvée.",
-        "PositiveNumber": "La valeur saisie dans le champ {{field}} doit être positive.",
-        "RequesterMustExist": "Le demandeur n'a pas été trouvé.",
-        "Required": "Le champ {{field}} est requis.",
-        "StakeholderLinked": "La société ne peut pas être supprimée car des éléments lui sont liés. Vous pouvez cependant la désactiver.",
-        "ConstituencyMustExist": "La circonscription n'a pas été trouvée.",
-        "Unique": "La valeur saisie dans le champ {{field}} existe déjà.",
-        "UserMustExist": "L'utilisateur n'a pas été trouvé.",
-        "PollingStationMustExist": "Le bureau de vote n'a pas été trouvé."
+        "CountryMustExist": "The country was not found.",
+        "InvalidEmail": "The {{field}} field is not a valid email address.",
+        "InvalidPassword": "The password is invalid.",
+        "InvalidPostcode": "The postcode is invalid.",
+        "MaxLength": "The value entered in the {{field}} field is too long.",
+        "PanelReferenceMustExist": "The panel reference was not found.",
+        "PositiveNumber": "The value entered in the {{field}} field must be positive.",
+        "RequesterMustExist": "The requester was not found.",
+        "Required": "The {{field}} field is required.",
+        "StakeholderLinked": "The company cannot be deleted because items are linked to it. You can however disable it.",
+        "ConstituencyMustExist": "The constituency was not found.",
+        "Unique": "The value entered in the {{field}} field already exists.",
+        "UserMustExist": "The user was not found.",
+        "PollingStationMustExist": "The polling station was not found."
       }
     },
-    "gridError": "Une erreur est survenue lors de la récupération des données de la grille",
-    "serverError": "Erreur serveur"
+    "gridError": "An error occurred while retrieving the grid data.",
+    "serverError": "Server error"
   },
   "login": {
-    "externalLoginFailed": "Une erreur est survenue lors de la connexion, veuillez réessayer.",
-    "forgotPassword": "Mot de passe oublié",
-    "loginFailed": "Mot de passe ou identifiant erroné",
-    "password": "Mot de passe",
-    "passwordConfirm": "Confirmation du mot de passe",
-    "title": "Connexion",
-    "username": "Identifiant (email)",
-    "continueWithEmail": "ou continuer avec l'email"
+    "externalLoginFailed": "An error occurred while logging in, please try again.",
+    "forgotPassword": "Forgot password",
+    "loginFailed": "Invalid password or username",
+    "password": "Password",
+    "passwordConfirm": "Password confirmation",
+    "title": "Login",
+    "username": "Username (email)",
+    "continueWithEmail": "or continue with email"
+  },
+  "districts": {
+    "title": "Electoral Districts",
+    "subtitle": "View and manage the list of electoral districts.",
+    "createDistrict": "Create District",
+    "columns": {
+      "code": "Code",
+      "wording": "Label",
+      "level": "Hierarchy"
+    },
+    "levels": {
+      "region": "Region",
+      "department": "Department",
+      "subPrefecture": "Sub-Prefecture",
+      "municipality": "Municipality",
+      "votingLocation": "Voting Location"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "toggleEnable": "Enable",
+      "toggleDisable": "Disable"
+    }
+  },
+  "district": {
+    "updateDistrict": "Update District",
+    "successCreating": "District created successfully",
+    "errorCreating": "Error occurred while creating the district.",
+    "successUpdating": "District updated successfully",
+    "errorUpdating": "Error occurred while updating the district.",
+    "successDeleting": "District deleted successfully",
+    "errorDeleting": "Error occurred while deleting the district.",
+    "createDistrict": "Create District",
+    "generalInfos": "General Information",
+    "parent": "Electoral Attachment",
+    "wording": "Label",
+    "level": "Hierarchy",
+    "parentId": "Attachment",
+    "isActive": "Active",
+    "code": "Code"
+  },
+  "districtLevels": {
+    "region": "Region",
+    "department": "Department",
+    "subPrefecture": "Sub-Prefecture",
+    "municipality": "Municipality",
+    "votingLocation": "Voting Location"
+  },
+  "pollingStations": {
+    "title": "Polling Stations",
+    "votingLocationName": "Voting location",
+    "stationNumber": "Station",
+    "municipalityName": "Municipality",
+    "subPrefectureName": "Sub-Prefecture",
+    "departmentName": "Department",
+    "regionName": "Region",
+    "action": "Actions",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "toggleEnable": "Enable",
+      "toggleDisable": "Disable"
+    },
+    "updatePollingStationSuccess": "Polling station updated successfully",
+    "updatePollingStationError": "Error occurred while updating the polling station",
+    "deletePollingStationSuccess": "Polling station deleted successfully",
+    "deletePollingStationError": "Error occurred while deleting the polling station",
+    "disablePollingStationError": "Error occurred while disabling the polling station",
+    "disablePollingStationSuccess": "Polling station disabled successfully"
+  },
+  "pollingStation": {
+    "stationNumber": "Station Number",
+    "wording": "Description",
+    "votingLocation": "Voting Location",
+    "municipality": "Municipality",
+    "subPrefecture": "Sub-Prefecture",
+    "department": "Department",
+    "region": "Region",
+    "isActive": "Active"
+  },
+  "users": {
+    "title": "Users",
+    "createUser": "Create User",
+    "editUser": "Edit User",
+    "subtitle": "View and manage the list of users.",
+    "disableUserError": "Error occurred while disabling the user",
+    "disableUserSuccess": "User disabled successfully",
+    "successDeleting": "User deleted successfully",
+    "errorDeleting": "Error occurred while deleting the user.",
+    "columns": {
+      "lastName": "Last Name",
+      "firstName": "First Name",
+      "email": "Email",
+      "phone": "Phone",
+      "district": "District",
+      "roles": "Roles",
+      "status": "Status",
+      "isAdmin": "Administrator",
+      "createdAt": "Created At",
+      "authMethods": {
+        "label": "Authentication",
+        "google": "Google",
+        "microsoft": "Microsoft",
+        "email": "Email"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  },
+  "user": {
+    "errorCreating": "Error occurred while creating the user.",
+    "successCreating": "User created successfully",
+    "errorUpdating": "Error occurred while updating the user.",
+    "successUpdating": "User updated successfully",
+    "errorDeleting": "Error occurred while deleting the user.",
+    "successDeleting": "User deleted successfully",
+    "myInformations": "Modify My Information",
+    "lastName": "Last Name",
+    "firstName": "First Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "phone": "Phone",
+    "employeeNumber": "Employee Number",
+    "district": "District",
+    "activity": "Activity",
+    "isActive": "Active",
+    "authMethods": {
+      "label": "Authentication",
+      "google": "Google",
+      "microsoft": "Microsoft",
+      "email": "Email"
+    }
+  },
+  "roles": {
+    "OrganismAgentRole": "Organism Agent",
+    "ElectorRole": "Elector",
+    "SuperAdmin": "Administrator"
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "I'm signing up!",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "register": "Sign Up",
+    "alreadyHaveAccount": "You already have an account?",
+    "login": "Log in"
+  },
+  "registrationRequests": {
+    "title": "My Requests",
+    "titleForAdmin": "List of Requests",
+    "titleForManagement": "List of Requests",
+    "deleteSuccess": "The registration request has been deleted successfully",
+    "deleteError": "An error occurred while deleting the registration request",
+    "actions": {
+      "create": "New Request"
+    },
+    "gender": {
+      "feminine": "Feminine",
+      "masculine": "Masculine"
+    },
+    "columns": {
+      "reference": "Reference",
+      "citizen": "Citizen",
+      "requestType": "Request Type",
+      "district": "District",
+      "requestDate": "Request Date",
+      "author": "Author",
+      "status": "Status"
+    },
+    "maritalStatus": {
+      "single": "Single",
+      "married": "Married",
+      "divorced": "Divorced",
+      "widowed": "Widowed"
+    },
+    "type": {
+      "registrationRequest": "Registration",
+      "registrationDataUpdate": "Data Update"
+    },
+    "status": {
+      "draft": "Draft",
+      "toBeProcessed": "To Be Processed",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
+  },
+  "registrationRequest": {
+    "title": "Create Request",
+    "approve": "Approve",
+    "cancelRequest": "Cancel Request",
+    "submitRequest": "Submit Request",
+    "newRegistrationRequestTitle": "New Registration Request",
+    "requestDetails": "Registration Request Details",
+    "supportingDocuments": "Supporting Documents",
+    "citizenInformation": "Citizen Information",
+    "requestInformation": "Request Information",
+    "residenceSection": "Residence",
+    "docType": "Document Type",
+    "documentType": {
+      "passportPhoto": "Identity Photo",
+      "identityDocumentOrNationalCertificate": "National ID / Nationality Certificate",
+      "residenceCertificate": "Residence Certificate"
+    },
+    "request": {
+      "district": "Electoral District",
+      "registrationType": "Registration Type",
+      "comment": "Comment",
+      "requestType": {
+        "registrationRequest": "Registration Request",
+        "registrationDataUpdate": "Data Update Request"
+      }
+    },
+    "residence": {
+      "region": "Region",
+      "department": "Department",
+      "subPrefecture": "Sub-Prefecture",
+      "municipality": "Municipality / Village",
+      "vottingLocation": "Voting Location"
+    },
+    "citizen": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "gender": "Gender",
+      "birthDate": "Birth Date",
+      "birthPlace": "Birth Place",
+      "nationality": "Nationality",
+      "occupation": "Occupation",
+      "physicalAddress": "Physical Address",
+      "postalAddress": "Postal Address",
+      "maritalStatus": "Marital Status",
+      "marriedName": "Spouse's Name",
+      "email": "Email",
+      "father": "Father",
+      "mother": "Mother"
+    },
+    "supportingAttachments": {
+      "identityDocsAttachments": "CNI / Nationality Certificate",
+      "residCertificateAttachments": "Residence Certificate",
+      "photoAttachments": "Photo"
+    }
+  },
+  "searchCitizenUi": {
+    "placeholder": "Search for a voter (name, first name...)",
+    "minLength": "Please enter at least 3 characters"
+  },
+  "citizen": {
+    "searchOrCreate": {
+      "citizen": "Citizen",
+      "createCitizen": "Create New Citizen",
+      "cancelCitizenCreation": "Cancel Citizen Creation"
+    }
   }
 }

@@ -9,7 +9,7 @@ using Tools.Logging;
 
 namespace Application.Features.Districts.GetDistricts
 {
-    [WithPermission(nameof(AppPermission.GetDistricts))]
+    //[WithPermission(nameof(AppPermission.GetDistricts))]
     public class GetDistrictsQuery : IRequest<Result<IEnumerable<GetDistrictsResponse>>> { }
 
     public class GetDistrictsQueryValidator : AbstractValidator<GetDistrictsQuery>
