@@ -7,9 +7,6 @@ using Infrastructure.Persistence.SQLServer.Contexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Pcea.Core.Net.Authorization.Application.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Tools.Logging;
 
 namespace Application.Features.PollingStation.UpdatePollingStation
@@ -19,15 +16,16 @@ namespace Application.Features.PollingStation.UpdatePollingStation
     {
         public long Id { get; set; }
     }
-    public class UpdatePollingStationCommandValidator : PollingStationValidatorBase<UpdatePollingStationCommand>
+
+    public class UpdatePollingStationCommandValidator
+        : PollingStationValidatorBase<UpdatePollingStationCommand>
     {
-        public UpdatePollingStationCommandValidator(ReadOnlyDbContext context) : base(context)
-        {
-        }
+        public UpdatePollingStationCommandValidator(ReadOnlyDbContext context)
+            : base(context) { }
     }
 
     public class UpdatePollingStationCommandHandler(WritableDbContext context)
-    : IRequestHandler<UpdatePollingStationCommand, Result<long>>
+        : IRequestHandler<UpdatePollingStationCommand, Result<long>>
     {
         public async Task<Result<long>> Handle(
             UpdatePollingStationCommand command,
@@ -36,8 +34,8 @@ namespace Application.Features.PollingStation.UpdatePollingStation
         {
             using var activity = ActivitySourceLog.CQRS.Start();
 
-            var existingEntity = await context.PollingStations
-                .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
+            var existingEntity =
+                await context.PollingStations.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
                 ?? throw new NotFoundException(nameof(PollingStationDao), command.Id);
 
             existingEntity.Wording = command.Wording!;

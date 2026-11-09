@@ -14,17 +14,10 @@ namespace Application.Features.PollingStation.GetPollingStations
         : GridDataQuery,
             IRequest<Result<GridDataResponse<GetPollingStationsResponse>>> { }
 
-    public class GetPollingStationsQueryValidator
-        : GridDataQueryValidator<GetPollingStationsQuery> { }
+    public class GetPollingStationsQueryValidator : GridDataQueryValidator<GetPollingStationsQuery> { }
 
-    public class GetPollingStationsQueryHandler(
-        ReadOnlyDbContext context,
-        TimeProvider timeProvider
-    )
-        : IRequestHandler<
-            GetPollingStationsQuery,
-            Result<GridDataResponse<GetPollingStationsResponse>>
-        >
+    public class GetPollingStationsQueryHandler(ReadOnlyDbContext context, TimeProvider timeProvider)
+        : IRequestHandler<GetPollingStationsQuery, Result<GridDataResponse<GetPollingStationsResponse>>>
     {
         public async Task<Result<GridDataResponse<GetPollingStationsResponse>>> Handle(
             GetPollingStationsQuery request,
@@ -42,14 +35,10 @@ namespace Application.Features.PollingStation.GetPollingStations
                     .ThenInclude(c => c.Parent)
                         .ThenInclude(c => c.Parent)
                             .ThenInclude(c => c.Parent)
-                                .ThenInclude(c => c.Parent)
                 .ToListAsync(cancellationToken);
 
             var rows = pollingStations
                 .Select(ps => new GetPollingStationsResponse(
-                    (long?)ps.District.Parent.Parent.Parent.Parent.Id,
-                    ps.District.Parent.Parent.Parent.Parent.Code,
-                    ps.District.Parent.Parent.Parent.Parent.Wording,
                     (long?)ps.District.Parent.Parent.Parent.Id,
                     ps.District.Parent.Parent.Parent.Code,
                     ps.District.Parent.Parent.Parent.Wording,

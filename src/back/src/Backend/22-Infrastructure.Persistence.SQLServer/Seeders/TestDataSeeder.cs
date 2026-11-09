@@ -192,7 +192,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         PhoneNumber = "01 02 03 04 05",
                         Email = "bilbo.baggins@pcea.com",
                         AuthProvider = AuthProvider.Email,
-                        UserDistricts = [new() { DistrictId = 151 }],
+                        UserDistricts = [new() { DistrictId = 146 }],
                     },
                     new List<string> { AppConstants.ElectorRole }
                 ),
@@ -205,7 +205,7 @@ namespace Infrastructure.Persistence.SQLServer.Seeders
                         PhoneNumber = "01 02 03 04 05",
                         Email = "eowyn.shieldmaiden@pcea.com",
                         AuthProvider = AuthProvider.Email,
-                        UserDistricts = [new() { DistrictId = 151 }],
+                        UserDistricts = [new() { DistrictId = 146 }],
                     },
                     new List<string> { AppConstants.ElectorRole }
                 ),

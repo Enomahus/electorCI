@@ -70,7 +70,6 @@ export class UserFormUi implements OnInit {
 
   selectedRegionId = signal<number | null>(null);
   selectedDepartmentId = signal<number | null>(null);
-  selectedSubPrefectureId = signal<number | null>(null);
   selectedMunicipalityId = signal<number | null>(null);
   selectedVotingLocationId = signal<number | null>(null);
   selectedRoleId = signal<string | null>(null);
@@ -96,12 +95,8 @@ export class UserFormUi implements OnInit {
     this.store.findChildren(this.allRegions(), this.selectedRegionId()),
   );
 
-  allSubPrefectures = computed<DistrictNode[]>(() =>
-    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
-  );
-
   allMunicipalities = computed<DistrictNode[]>(() =>
-    this.store.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
+    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
   );
 
   allVotingLocations = computed<DistrictNode[]>(() =>
@@ -111,8 +106,7 @@ export class UserFormUi implements OnInit {
   // En création, chaque niveau reste verrouillé tant que son parent n'est pas choisi.
   // En édition, tous les niveaux sont actifs car ils sont déjà déduits du districtId existant.
   isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
-  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
-  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedDepartmentId() == null);
   isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
 
   constructor() {
@@ -210,20 +204,12 @@ export class UserFormUi implements OnInit {
     this.selectedRegionId.set(regionId);
     this.onSelectDistrcit(regionId!);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
   }
 
   onDepartmentChange(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
     this.onSelectDistrcit(departmentId!);
-    this.selectedSubPrefectureId.set(null);
-    this.selectedMunicipalityId.set(null);
-  }
-
-  onSubPrefectureChange(subPrefectureId: number | null): void {
-    this.selectedSubPrefectureId.set(subPrefectureId);
-    this.onSelectDistrcit(subPrefectureId!);
     this.selectedMunicipalityId.set(null);
   }
 
@@ -260,7 +246,6 @@ export class UserFormUi implements OnInit {
   private initializeChainFromDistrict(districtId: number): void {
     this.selectedRegionId.set(null);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
     this.selectedVotingLocationId.set(null);
 
@@ -275,9 +260,6 @@ export class UserFormUi implements OnInit {
           break;
         case 'department':
           this.selectedDepartmentId.set(node.id);
-          break;
-        case 'subPrefecture':
-          this.selectedSubPrefectureId.set(node.id);
           break;
         case 'municipality':
           this.selectedMunicipalityId.set(node.id);

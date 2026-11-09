@@ -1173,142 +1173,102 @@ namespace Infrastructure.Persistence.SQLServer.Contexts.Data
                     Code = "005001001",
                     Wording = "Boli",
                     ParentId = 17,
-                    Level = ElectoralDistrictLevel.SubPrefecture,
-                },
-                new DistrictDao
-                {
-                    Id = 147,
-                    Code = "005001002",
-                    Wording = "Didiévi",
-                    ParentId = 17,
-                    Level = ElectoralDistrictLevel.SubPrefecture,
-                },
-                new DistrictDao
-                {
-                    Id = 148,
-                    Code = "005001003",
-                    Wording = "Molonou-blé",
-                    ParentId = 17,
-                    Level = ElectoralDistrictLevel.SubPrefecture,
-                },
-                new DistrictDao
-                {
-                    Id = 149,
-                    Code = "005001004",
-                    Wording = "Raviart",
-                    ParentId = 17,
-                    Level = ElectoralDistrictLevel.SubPrefecture,
-                },
-                new DistrictDao
-                {
-                    Id = 150,
-                    Code = "005001005",
-                    Wording = "Tié-N'diekro",
-                    ParentId = 17,
-                    Level = ElectoralDistrictLevel.SubPrefecture,
-                },
-                new DistrictDao
-                {
-                    Id = 151,
-                    Code = "005001001001",
-                    Wording = "Boli",
-                    ParentId = 146,
                     Level = ElectoralDistrictLevel.Municipality,
                 },
                 new DistrictDao
                 {
                     Id = 152,
-                    Code = "005001001001001",
+                    Code = "005001001001",
                     Wording = "EPP Allanikro",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 153,
-                    Code = "005001001001002",
+                    Code = "005001001002",
                     Wording = "EPP Anokoi-Kouamekro",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 154,
-                    Code = "005001001001003",
+                    Code = "005001001003",
                     Wording = "EPP Labo",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 155,
-                    Code = "005001001001004",
+                    Code = "005001001004",
                     Wording = "EPP Adjebo",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 156,
-                    Code = "005001001001005",
+                    Code = "005001001005",
                     Wording = "EPP Takikro",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 157,
-                    Code = "005001001001006",
+                    Code = "005001001006",
                     Wording = "EPP Aka Kouamekro",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 158,
-                    Code = "005001001001007",
+                    Code = "005001001007",
                     Wording = "EPP Kongobo",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 159,
-                    Code = "005001001001008",
+                    Code = "005001001008",
                     Wording = "EPP Boli 1",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 160,
-                    Code = "005001001001009",
+                    Code = "005001001009",
                     Wording = "EPP Boli 3",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 161,
-                    Code = "005001001001010",
+                    Code = "005001001010",
                     Wording = "EPP Yoboueplissou",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 162,
-                    Code = "005001001001011",
+                    Code = "005001001011",
                     Wording = "EPP Anokoi-Djezou",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao
                 {
                     Id = 163,
-                    Code = "005001001001012",
+                    Code = "005001001012",
                     Wording = "EPP Grodiekro",
-                    ParentId = 151,
+                    ParentId = 146,
                     Level = ElectoralDistrictLevel.VotingLocation,
                 },
                 new DistrictDao

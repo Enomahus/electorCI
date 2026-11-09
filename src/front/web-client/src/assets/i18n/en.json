@@ -136,7 +136,6 @@
     "levels": {
       "region": "Region",
       "department": "Department",
-      "subPrefecture": "Sub-Prefecture",
       "municipality": "Municipality",
       "votingLocation": "Voting Location"
     },
@@ -167,7 +166,6 @@
   "districtLevels": {
     "region": "Region",
     "department": "Department",
-    "subPrefecture": "Sub-Prefecture",
     "municipality": "Municipality",
     "votingLocation": "Voting Location"
   },
@@ -176,7 +174,6 @@
     "votingLocationName": "Voting location",
     "stationNumber": "Station",
     "municipalityName": "Municipality",
-    "subPrefectureName": "Sub-Prefecture",
     "departmentName": "Department",
     "regionName": "Region",
     "action": "Actions",
@@ -198,7 +195,6 @@
     "wording": "Description",
     "votingLocation": "Voting Location",
     "municipality": "Municipality",
-    "subPrefecture": "Sub-Prefecture",
     "department": "Department",
     "region": "Region",
     "isActive": "Active"
@@ -342,7 +338,6 @@
     "residence": {
       "region": "Region",
       "department": "Department",
-      "subPrefecture": "Sub-Prefecture",
       "municipality": "Municipality / Village",
       "vottingLocation": "Voting Location"
     },

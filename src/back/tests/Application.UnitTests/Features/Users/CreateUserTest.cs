@@ -189,7 +189,7 @@ namespace Application.UnitTests.Features.Users
                     Code = "code",
                     Wording = "Test district",
                     Level = ElectoralDistrictLevel.VotingLocation,
-                    ParentId = 151,
+                    ParentId = 146,
                 },
             };
 

@@ -32,27 +32,6 @@
         </div>
 
         <div class="input-block required">
-          <label for="subPrefecture">Sous-Préfecture</label>
-          <select
-            id="subPrefecture"
-            [disabled]="isSubPrefectureDisabled()"
-            (change)="onSubPrefectureChange(parseDistrictId($event))"
-          >
-            <option value="" [selected]="selectedRegionId() === null">
-              {{ 'global.select' | translate }}
-            </option>
-            @for (subPrefecture of allSubPrefectures(); track subPrefecture.id) {
-              <option
-                [value]="subPrefecture.id"
-                [selected]="subPrefecture.id === selectedSubPrefectureId()"
-              >
-                {{ subPrefecture.code }} {{ subPrefecture.wording }}
-              </option>
-            }
-          </select>
-        </div>
-
-        <div class="input-block required">
           <label for="municipalityId">Municipalité / Village</label>
           <select
             id="municipalityId"

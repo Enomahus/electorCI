@@ -22,7 +22,6 @@
     "constituency": "Circonscription",
     "region": "Région",
     "department": "Département",
-    "subPrefecture": "Sous-préfecture",
     "municipality": "Commune / Village",
     "votingLocation": "Lieu de vote",
     "identityInfos": "Information d'identification",
@@ -145,7 +144,6 @@
     "levels": {
       "region": "Région",
       "department": "Département",
-      "subPrefecture": "Sous-préfecture",
       "municipality": "Commune",
       "votingLocation": "Lieu de vote"
     },
@@ -176,7 +174,6 @@
   "districtLevels": {
     "region": "Région",
     "department": "Département",
-    "subPrefecture": "Sous-préfecture",
     "municipality": "Commune / Village",
     "votingLocation": "Lieu de vote"
   },
@@ -185,7 +182,6 @@
     "votingLocationName": "Lieu de vote",
     "stationNumber": "Bureau",
     "municipalityName": "Commune / Village",
-    "subPrefectureName": "Sous-préfecture",
     "departmentName": "Département",
     "regionName": "Région",
     "action": "Actions",
@@ -207,7 +203,6 @@
     "wording": "Description",
     "votingLocation": "Lieu de vote",
     "municipality": "Commune / Village",
-    "subPrefecture": "Sous-préfecture",
     "department": "Département",
     "region": "Région",
     "isActive": "Activé"
@@ -351,7 +346,6 @@
     "residence": {
       "region": "Région",
       "department": "Département",
-      "subPrefecture": "Sous-préfecture",
       "municipality": "Commune / Village",
       "vottingLocation": "Lieu de vote"
     },

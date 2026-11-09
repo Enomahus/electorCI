@@ -9,7 +9,6 @@ using Infrastructure.Persistence.SQLServer.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Pcea.Core.Net.Authorization.Application.Attributes;
 using Tools.Logging;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForManagement
 {
@@ -128,10 +127,8 @@ namespace Application.Features.RegistrationRequests.GetRegistrationRequestsForMa
                     userRegionIds.Contains(d.ParentId ?? 0)
                     || // Niveau 1 (Departement)
                     userRegionIds.Contains(d.Parent!.ParentId ?? 0)
-                    || // Niveau 2 (SubPrefecture)
-                    userRegionIds.Contains(d.Parent!.Parent!.ParentId ?? 0)
-                    || // Niveau 3 (Municipality)
-                    userRegionIds.Contains(d.Parent!.Parent!.Parent!.ParentId ?? 0) // Niveau 4 (VotingLocation)
+                    || // Niveau 2 (Municipality)
+                    userRegionIds.Contains(d.Parent!.Parent!.ParentId ?? 0) // Niveau 3 (VotingLocation)
                 )
                 .Select(d => d.Id)
                 .ToListAsync(token);
