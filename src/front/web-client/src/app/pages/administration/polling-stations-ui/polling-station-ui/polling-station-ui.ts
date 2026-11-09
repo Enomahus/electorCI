@@ -53,7 +53,7 @@ export class PollingStationUi implements OnInit {
 
   selectedRegionId = signal<number | null>(null);
   selectedDepartmentId = signal<number | null>(null);
-  selectedSubPrefectureId = signal<number | null>(null);
+  //selectedSubPrefectureId = signal<number | null>(null);
   selectedMunicipalityId = signal<number | null>(null);
   selectedVotingLocationId = signal<number | null>(null);
 
@@ -61,12 +61,12 @@ export class PollingStationUi implements OnInit {
     this.store.findChildren(this.allRegions(), this.selectedRegionId()),
   );
 
-  allSubPrefectures = computed<DistrictNode[]>(() =>
-    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
-  );
+  // allSubPrefectures = computed<DistrictNode[]>(() =>
+  //   this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
+  // );
 
   allMunicipalities = computed<DistrictNode[]>(() =>
-    this.store.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
+    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
   );
 
   allVotingLocations = computed<DistrictNode[]>(() =>
@@ -74,8 +74,8 @@ export class PollingStationUi implements OnInit {
   );
 
   isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
-  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
-  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  //isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedDepartmentId() == null);
   isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
 
   ngOnInit(): void {
@@ -98,7 +98,7 @@ export class PollingStationUi implements OnInit {
   private initilizeChainFromDistrict(districtId: number): void {
     this.selectedRegionId.set(null);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
+    //this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
     this.selectedVotingLocationId.set(null);
     let node = this.store.findNode(districtId);
@@ -111,9 +111,9 @@ export class PollingStationUi implements OnInit {
         case 'department':
           this.selectedDepartmentId.set(node.id);
           break;
-        case 'subPrefecture':
-          this.selectedSubPrefectureId.set(node.id);
-          break;
+        // case 'subPrefecture':
+        //   this.selectedSubPrefectureId.set(node.id);
+        //   break;
         case 'municipality':
           this.selectedMunicipalityId.set(node.id);
           break;
@@ -128,20 +128,20 @@ export class PollingStationUi implements OnInit {
   onRegionChange(regionId: number | null): void {
     this.selectedRegionId.set(regionId);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
+    //this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
   }
 
   onDepartmentChange(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
-    this.selectedSubPrefectureId.set(null);
+    //this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
   }
 
-  onSubPrefectureChange(subPrefectureId: number | null): void {
-    this.selectedSubPrefectureId.set(subPrefectureId);
-    this.selectedMunicipalityId.set(null);
-  }
+  // onSubPrefectureChange(subPrefectureId: number | null): void {
+  //   this.selectedSubPrefectureId.set(subPrefectureId);
+  //   this.selectedMunicipalityId.set(null);
+  // }
 
   onMunicipalityChange(municipalityId: number | null): void {
     this.selectedMunicipalityId.set(municipalityId);

@@ -10,7 +10,6 @@ import {
 export const allLocationLevel: ElectoralDistrictLevel[] = [
   'region',
   'department',
-  'subPrefecture',
   'municipality',
   'votingLocation',
 ];

@@ -66,29 +66,29 @@ export class DistrictUi implements OnInit {
   );
 
   readonly showDepartment = computed(() => this.ancestorLevels().includes('department'));
-  readonly showSubPrefecture = computed(() => this.ancestorLevels().includes('subPrefecture'));
+  //readonly showSubPrefecture = computed(() => this.ancestorLevels().includes('subPrefecture'));
   readonly showMunicipality = computed(() => this.ancestorLevels().includes('municipality'));
 
   allRegions = this.store.nodesData;
 
   selectedRegionId = signal<number | null>(null);
   selectedDepartmentId = signal<number | null>(null);
-  selectedSubPrefectureId = signal<number | null>(null);
+  //selectedSubPrefectureId = signal<number | null>(null);
   selectedMunicipalityId = signal<number | null>(null);
 
   allDepartments = computed<DistrictNode[]>(() =>
     this.findChildren(this.allRegions(), this.selectedRegionId()),
   );
-  allSubPrefectures = computed<DistrictNode[]>(() =>
-    this.findChildren(this.allDepartments(), this.selectedDepartmentId()),
-  );
+  // allSubPrefectures = computed<DistrictNode[]>(() =>
+  //   this.findChildren(this.allDepartments(), this.selectedDepartmentId()),
+  // );
   allMunicipalities = computed<DistrictNode[]>(() =>
-    this.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
+    this.findChildren(this.allDepartments(), this.selectedDepartmentId()),
   );
 
   isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
-  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
-  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  //isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedDepartmentId() == null);
 
   ngOnInit(): void {
     if (!this.isEditMode()) return;
@@ -109,23 +109,23 @@ export class DistrictUi implements OnInit {
   onRegionChange(regionId: number | null): void {
     this.selectedRegionId.set(regionId);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
+    //this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
     this.syncParentId();
   }
 
   onDepartmentChange(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
-    this.selectedSubPrefectureId.set(null);
+    //this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
     this.syncParentId();
   }
 
-  onSubPrefectureChange(subPrefectureId: number | null): void {
-    this.selectedSubPrefectureId.set(subPrefectureId);
-    this.selectedMunicipalityId.set(null);
-    this.syncParentId();
-  }
+  // onSubPrefectureChange(subPrefectureId: number | null): void {
+  //   this.selectedSubPrefectureId.set(subPrefectureId);
+  //   this.selectedMunicipalityId.set(null);
+  //   this.syncParentId();
+  // }
 
   onMunicipalityChange(municipalityId: number | null): void {
     this.selectedMunicipalityId.set(municipalityId);
@@ -173,14 +173,14 @@ export class DistrictUi implements OnInit {
 
     this.selectedRegionId.set(idsByLevel.get('region') ?? null);
     this.selectedDepartmentId.set(idsByLevel.get('department') ?? null);
-    this.selectedSubPrefectureId.set(idsByLevel.get('subPrefecture') ?? null);
+    //this.selectedSubPrefectureId.set(idsByLevel.get('subPrefecture') ?? null);
     this.selectedMunicipalityId.set(idsByLevel.get('municipality') ?? null);
   }
 
   private resetAncestorChain(): void {
     this.selectedRegionId.set(null);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
+    //this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
   }
 
@@ -196,9 +196,9 @@ export class DistrictUi implements OnInit {
         return this.selectedRegionId();
       case 2:
         return this.selectedDepartmentId();
+      //case 3:
+      // return this.selectedSubPrefectureId();
       case 3:
-        return this.selectedSubPrefectureId();
-      case 4:
         return this.selectedMunicipalityId();
       default:
         return null;

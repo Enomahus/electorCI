@@ -69,7 +69,12 @@ namespace Application.UnitTests.Features.RegistrationRequests
             var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
 
             var region = await CreateRegionAsync(context);
-            await CreateRegistrationRequestAsync(context, timeProvider, currentUser.Id, districtId: region.Id);
+            await CreateRegistrationRequestAsync(
+                context,
+                timeProvider,
+                currentUser.Id,
+                districtId: region.Id
+            );
 
             var query = new GetRegistrationRequestsForManagementQuery();
 
@@ -279,7 +284,10 @@ namespace Application.UnitTests.Features.RegistrationRequests
             row.CanBeDeleted.Should().Be(expectedCanBeDeleted);
         }
 
-        private static async Task<DistrictDao> CreateRegionAsync(WritableDbContext context, string code = "REG")
+        private static async Task<DistrictDao> CreateRegionAsync(
+            WritableDbContext context,
+            string code = "REG"
+        )
         {
             return await CreateDistrictAsync(
                 context,
@@ -303,19 +311,19 @@ namespace Application.UnitTests.Features.RegistrationRequests
                 level: ElectoralDistrictLevel.Department,
                 parentId: region.Id
             );
-            var subPrefecture = await CreateDistrictAsync(
-                context,
-                code: $"SPF-{code}",
-                name: $"SubPrefecture-{code}",
-                level: ElectoralDistrictLevel.SubPrefecture,
-                parentId: department.Id
-            );
+            //var subPrefecture = await CreateDistrictAsync(
+            //    context,
+            //    code: $"SPF-{code}",
+            //    name: $"SubPrefecture-{code}",
+            //    level: ElectoralDistrictLevel.SubPrefecture,
+            //    parentId: department.Id
+            //);
             var municipality = await CreateDistrictAsync(
                 context,
                 code: $"MUN-{code}",
                 name: $"Municipality-{code}",
                 level: ElectoralDistrictLevel.Municipality,
-                parentId: subPrefecture.Id
+                parentId: department.Id
             );
             var votingLocation = await CreateDistrictAsync(
                 context,
@@ -334,7 +342,9 @@ namespace Application.UnitTests.Features.RegistrationRequests
             DistrictDao district
         )
         {
-            await context.UserDistricts.AddAsync(new UserDistrictDao { UserId = userId, DistrictId = district.Id });
+            await context.UserDistricts.AddAsync(
+                new UserDistrictDao { UserId = userId, DistrictId = district.Id }
+            );
             await context.SaveChangesAsync();
         }
     }

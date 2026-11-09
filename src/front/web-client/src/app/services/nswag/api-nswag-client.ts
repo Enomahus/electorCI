@@ -3110,7 +3110,7 @@ export interface DistrictModel {
     isActive?: boolean;
 }
 
-export type ElectoralDistrictLevel = "region" | "department" | "subPrefecture" | "municipality" | "votingLocation";
+export type ElectoralDistrictLevel = "region" | "department" | "municipality" | "votingLocation";
 
 export type AuthProvider = "google" | "microsoft" | "email";
 
@@ -3446,9 +3446,6 @@ export interface GetPollingStationsResponse {
     departmentId?: number | undefined;
     departmentCode?: string;
     departmentName?: string;
-    subPrefectureId?: number | undefined;
-    subPrefectureCode?: string;
-    subPrefectureName?: string;
     municipalityId?: number | undefined;
     municipalityCode?: string;
     municipalityName?: string;

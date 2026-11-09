@@ -2,6 +2,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   input,
   OnChanges,
@@ -11,7 +12,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs';
@@ -110,7 +111,6 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
 
   selectedRegionId = signal<number | null>(null);
   selectedDepartmentId = signal<number | null>(null);
-  selectedSubPrefectureId = signal<number | null>(null);
   selectedMunicipalityId = signal<number | null>(null);
   selectedVotingLocationId = signal<number | null>(null);
 
@@ -131,12 +131,8 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
     this.store.findChildren(this.allRegions(), this.selectedRegionId()),
   );
 
-  allSubPrefectures = computed<DistrictNode[]>(() =>
-    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
-  );
-
   allMunicipalities = computed<DistrictNode[]>(() =>
-    this.store.findChildren(this.allSubPrefectures(), this.selectedSubPrefectureId()),
+    this.store.findChildren(this.allDepartments(), this.selectedDepartmentId()),
   );
 
   allVotingLocations = computed<DistrictNode[]>(() =>
@@ -144,9 +140,27 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
   );
 
   isDepartmentDisabled = computed(() => this.selectedRegionId() == null);
-  isSubPrefectureDisabled = computed(() => this.selectedDepartmentId() == null);
-  isMunicipalityDisabled = computed(() => this.selectedSubPrefectureId() == null);
+  isMunicipalityDisabled = computed(() => this.selectedDepartmentId() == null);
   isVotingLocationDisabled = computed(() => this.selectedMunicipalityId() == null);
+
+  constructor() {
+    // With reactive forms, the disabled state must live on the FormControl, not on a [disabled] binding.
+    effect(() => {
+      const residence = this.residenceForm().controls;
+      this.setControlDisabled(residence.departmentId, this.isDepartmentDisabled());
+      this.setControlDisabled(residence.municipalityId, this.isMunicipalityDisabled());
+      this.setControlDisabled(residence.vottingLocationId, this.isVotingLocationDisabled());
+    });
+  }
+
+  private setControlDisabled(control: AbstractControl, disabled: boolean): void {
+    if (disabled === control.disabled) return;
+    if (disabled) {
+      control.disable();
+    } else {
+      control.enable();
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['citizenId'] && changes['citizenId'].currentValue !== undefined) {
@@ -233,19 +247,11 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
     this.selectedRegionId.set(regionId);
     this.onSelectDistrcit(regionId!);
     this.selectedDepartmentId.set(null);
-    this.selectedSubPrefectureId.set(null);
     this.selectedMunicipalityId.set(null);
   }
   onDepartmentChange(departmentId: number | null): void {
     this.selectedDepartmentId.set(departmentId);
     this.onSelectDistrcit(departmentId!);
-    this.selectedSubPrefectureId.set(null);
-    this.selectedMunicipalityId.set(null);
-  }
-
-  onSubPrefectureChange(subPrefectureId: number | null): void {
-    this.selectedSubPrefectureId.set(subPrefectureId);
-    this.onSelectDistrcit(subPrefectureId!);
     this.selectedMunicipalityId.set(null);
   }
 
@@ -281,10 +287,6 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
         case 'department':
           this.selectedDepartmentId.set(node.id);
           this.residenceForm().controls.departmentId.setValue(node.id);
-          break;
-        case 'subPrefecture':
-          this.selectedSubPrefectureId.set(node.id);
-          this.residenceForm().controls.subPrefectureId.setValue(node.id);
           break;
         case 'municipality':
           this.selectedMunicipalityId.set(node.id);

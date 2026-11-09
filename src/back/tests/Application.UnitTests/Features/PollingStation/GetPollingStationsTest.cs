@@ -17,8 +17,7 @@ namespace Application.UnitTests.Features.PollingStation
         public async Task GetPollingStationsTest_ShouldFail_WhenPermissionMissing()
         {
             //Arrange
-            var serviceProvider = CreateServiceCollection(mockAuthorization: false)
-                .BuildServiceProvider();
+            var serviceProvider = CreateServiceCollection(mockAuthorization: false).BuildServiceProvider();
 
             var query = new GetPollingStationsQuery();
 
@@ -34,10 +33,7 @@ namespace Application.UnitTests.Features.PollingStation
         {
             //Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(
-                serviceProvider,
-                permissions: [AppPermission.GetPollingStations]
-            );
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetPollingStations]);
 
             var query = new GetPollingStationsQuery { Take = 0 };
 
@@ -60,10 +56,7 @@ namespace Application.UnitTests.Features.PollingStation
         {
             // Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(
-                serviceProvider,
-                permissions: [AppPermission.GetPollingStations]
-            );
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetPollingStations]);
 
             var query = new GetPollingStationsQuery();
 
@@ -81,10 +74,7 @@ namespace Application.UnitTests.Features.PollingStation
         {
             // Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(
-                serviceProvider,
-                permissions: [AppPermission.GetPollingStations]
-            );
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetPollingStations]);
             var context = serviceProvider.GetRequiredService<WritableDbContext>();
             var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
 
@@ -102,19 +92,19 @@ namespace Application.UnitTests.Features.PollingStation
                 level: ElectoralDistrictLevel.Department,
                 parentId: region.Id
             );
-            var subPrefecture = await CreateDistrictAsync(
-                context,
-                code: "SPF",
-                name: "SubPrefectureName",
-                level: ElectoralDistrictLevel.SubPrefecture,
-                parentId: department.Id
-            );
+            //var subPrefecture = await CreateDistrictAsync(
+            //    context,
+            //    code: "SPF",
+            //    name: "SubPrefectureName",
+            //    level: ElectoralDistrictLevel.SubPrefecture,
+            //    parentId: department.Id
+            //);
             var municipality = await CreateDistrictAsync(
                 context,
                 code: "MUN",
                 name: "MunicipalityName",
                 level: ElectoralDistrictLevel.Municipality,
-                parentId: subPrefecture.Id
+                parentId: department.Id
             );
             var votingLocation = await CreateDistrictAsync(
                 context,
@@ -148,7 +138,7 @@ namespace Application.UnitTests.Features.PollingStation
             row.RegionName.Should().Be(region.Wording);
             row.DepartmentId.Should().Be(department.Id);
             row.DepartmentCode.Should().Be(department.Code);
-            row.SubPrefectureId.Should().Be(subPrefecture.Id);
+            //row.SubPrefectureId.Should().Be(subPrefecture.Id);
             row.MunicipalityId.Should().Be(municipality.Id);
             row.VotingLocationId.Should().Be(votingLocation.Id);
             row.VotingLocationCode.Should().Be(votingLocation.Code);
@@ -163,10 +153,7 @@ namespace Application.UnitTests.Features.PollingStation
         {
             // Arrange
             var serviceProvider = CreateServiceCollection().BuildServiceProvider();
-            await SetupCurrentUserAsync(
-                serviceProvider,
-                permissions: [AppPermission.GetPollingStations]
-            );
+            await SetupCurrentUserAsync(serviceProvider, permissions: [AppPermission.GetPollingStations]);
             var context = serviceProvider.GetRequiredService<WritableDbContext>();
             var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
 
@@ -184,19 +171,19 @@ namespace Application.UnitTests.Features.PollingStation
                 level: ElectoralDistrictLevel.Department,
                 parentId: region.Id
             );
-            var subPrefecture = await CreateDistrictAsync(
-                context,
-                code: "SPF2",
-                name: "SubPrefectureName2",
-                level: ElectoralDistrictLevel.SubPrefecture,
-                parentId: department.Id
-            );
+            //var subPrefecture = await CreateDistrictAsync(
+            //    context,
+            //    code: "SPF2",
+            //    name: "SubPrefectureName2",
+            //    level: ElectoralDistrictLevel.SubPrefecture,
+            //    parentId: department.Id
+            //);
             var municipality = await CreateDistrictAsync(
                 context,
                 code: "MUN2",
                 name: "MunicipalityName2",
                 level: ElectoralDistrictLevel.Municipality,
-                parentId: subPrefecture.Id
+                parentId: department.Id
             );
             var votingLocation = await CreateDistrictAsync(
                 context,

@@ -1671,179 +1671,129 @@ namespace Infrastructure.Persistence.SQLServer.Migrations
                             Id = 146L,
                             Code = "005001001",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Level = "SubPrefecture",
-                            ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 17L,
-                            Wording = "Boli"
-                        },
-                        new
-                        {
-                            Id = 147L,
-                            Code = "005001002",
-                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Level = "SubPrefecture",
-                            ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 17L,
-                            Wording = "Didiévi"
-                        },
-                        new
-                        {
-                            Id = 148L,
-                            Code = "005001003",
-                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Level = "SubPrefecture",
-                            ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 17L,
-                            Wording = "Molonou-blé"
-                        },
-                        new
-                        {
-                            Id = 149L,
-                            Code = "005001004",
-                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Level = "SubPrefecture",
-                            ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 17L,
-                            Wording = "Raviart"
-                        },
-                        new
-                        {
-                            Id = 150L,
-                            Code = "005001005",
-                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Level = "SubPrefecture",
-                            ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 17L,
-                            Wording = "Tié-N'diekro"
-                        },
-                        new
-                        {
-                            Id = 151L,
-                            Code = "005001001001",
-                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "Municipality",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 146L,
+                            ParentId = 17L,
                             Wording = "Boli"
                         },
                         new
                         {
                             Id = 152L,
-                            Code = "005001001001001",
+                            Code = "005001001001",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Allanikro"
                         },
                         new
                         {
                             Id = 153L,
-                            Code = "005001001001002",
+                            Code = "005001001002",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Anokoi-Kouamekro"
                         },
                         new
                         {
                             Id = 154L,
-                            Code = "005001001001003",
+                            Code = "005001001003",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Labo"
                         },
                         new
                         {
                             Id = 155L,
-                            Code = "005001001001004",
+                            Code = "005001001004",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Adjebo"
                         },
                         new
                         {
                             Id = 156L,
-                            Code = "005001001001005",
+                            Code = "005001001005",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Takikro"
                         },
                         new
                         {
                             Id = 157L,
-                            Code = "005001001001006",
+                            Code = "005001001006",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Aka Kouamekro"
                         },
                         new
                         {
                             Id = 158L,
-                            Code = "005001001001007",
+                            Code = "005001001007",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Kongobo"
                         },
                         new
                         {
                             Id = 159L,
-                            Code = "005001001001008",
+                            Code = "005001001008",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Boli 1"
                         },
                         new
                         {
                             Id = 160L,
-                            Code = "005001001001009",
+                            Code = "005001001009",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Boli 3"
                         },
                         new
                         {
                             Id = 161L,
-                            Code = "005001001001010",
+                            Code = "005001001010",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Yoboueplissou"
                         },
                         new
                         {
                             Id = 162L,
-                            Code = "005001001001011",
+                            Code = "005001001011",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Anokoi-Djezou"
                         },
                         new
                         {
                             Id = 163L,
-                            Code = "005001001001012",
+                            Code = "005001001012",
                             CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Level = "VotingLocation",
                             ModifiedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ParentId = 151L,
+                            ParentId = 146L,
                             Wording = "EPP Grodiekro"
                         },
                         new

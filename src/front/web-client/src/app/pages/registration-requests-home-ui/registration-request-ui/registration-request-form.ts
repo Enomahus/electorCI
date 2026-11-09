@@ -18,7 +18,6 @@ export type RegistrationRequestForm = FormGroup<{
 export type ResidenceForm = FormGroup<{
   regionId: FormControl<number | undefined>;
   departmentId: FormControl<number | undefined>;
-  subPrefectureId: FormControl<number | undefined>;
   municipalityId: FormControl<number | undefined>;
   vottingLocationId: FormControl<number | undefined>;
 }>;
@@ -111,10 +110,6 @@ export function createResidenceForm(): ResidenceForm {
       nonNullable: true,
     }),
     departmentId: new FormControl<number | undefined>(undefined, {
-      validators: Validators.required,
-      nonNullable: true,
-    }),
-    subPrefectureId: new FormControl<number | undefined>(undefined, {
       validators: Validators.required,
       nonNullable: true,
     }),

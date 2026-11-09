@@ -34,7 +34,6 @@
             }}</label>
             <select
               id="departmentId"
-              [disabled]="isDepartmentDisabled()"
               formControlName="departmentId"
               (change)="onDepartmentChange(parseDistrictId($event))"
             >
@@ -56,39 +55,11 @@
           </div>
 
           <div class="input-block required">
-            <label for="subPrefecture">{{
-              'registrationRequest.residence.subPrefecture' | translate
-            }}</label>
-            <select
-              id="subPrefecture"
-              [disabled]="isSubPrefectureDisabled()"
-              formControlName="subPrefectureId"
-              (change)="onSubPrefectureChange(parseDistrictId($event))"
-            >
-              <option value="" selected>{{ 'global.select' | translate }}</option>
-              @for (subPrefecture of allSubPrefectures(); track subPrefecture.id) {
-                <option
-                  [value]="subPrefecture.id"
-                  [selected]="subPrefecture.id === selectedSubPrefectureId()"
-                >
-                  {{ subPrefecture.code }} {{ subPrefecture.wording }}
-                </option>
-              }
-            </select>
-            @if (residenceForm().controls.subPrefectureId.hasError('required')) {
-              <ul class="form-error">
-                <li>{{ 'formError.required' | translate }}</li>
-              </ul>
-            }
-          </div>
-
-          <div class="input-block required">
             <label for="municipalityId">{{
               'registrationRequest.residence.municipality' | translate
             }}</label>
             <select
               id="municipalityId"
-              [disabled]="isMunicipalityDisabled()"
               formControlName="municipalityId"
               (change)="onMunicipalityChange(parseDistrictId($event))"
             >
@@ -115,7 +86,6 @@
             }}</label>
             <select
               id="vottingLocationId"
-              [disabled]="isVotingLocationDisabled()"
               formControlName="vottingLocationId"
               (change)="onVotingLocationChange(parseDistrictId($event))"
             >
@@ -148,7 +118,7 @@
             <label for="districtId">{{ 'registrationRequest.request.district' | translate }}</label>
             <select id="districtId" formControlName="districtId">
               <option value="" label="{{ 'global.select' | translate }}"></option>
-              @for (district of districtSelected(); track district) {
+              @for (district of districtSelected(); track district.id) {
                 <option
                   [value]="district.id"
                   [selected]="district.id === selectedDistrictId()"
