@@ -34,7 +34,7 @@ import { AbstractRegistrationRequestsUi } from '../genric-registration-requests-
 export class RegistrationRequestsForManagementUi extends AbstractRegistrationRequestsUi<GetRegistrationRequestsForManagementResponse> {
   protected override apiService = inject(RegistrationRequestsForManagementApiService);
   protected override titleKey = 'registrationRequests.titleForManagement';
-  protected override editPermissionKey = 'updateRegistrationRequestForManagement' as AppPermission;
+  protected override editPermissionKey = 'updateRegistrationRequestsForManagement' as AppPermission;
   protected override createPermissionKey = 'createRegistrationRequestRegistration' as AppPermission;
   protected override deletePermissionKey =
     'deleteRegistrationRequestForManagement' as AppPermission;

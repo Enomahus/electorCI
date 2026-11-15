@@ -1,8 +1,5 @@
-﻿using Application.Common.Interfaces.Services;
+using Application.Common.Interfaces.Services;
 using Application.Exceptions;
-using Azure;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using Infrastructure.Persistence.Entities;
 using Infrastructure.Persistence.File.Configurations;
 using Infrastructure.Persistence.SQLServer.Contexts;
@@ -11,12 +8,13 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Persistence.File.Services
 {
-    public class FileService(
-        BlobServiceClient blobServiceClient,
+    public class LocalFileService(
         IOptions<StorageConfiguration> storageConfig,
         WritableDbContext context
     ) : IFileService
     {
+        private readonly string _rootPath = Path.GetFullPath(storageConfig.Value.LocalStoragePath);
+
         public async Task<Guid> UploadFileAsync(
             Stream stream,
             string fileName,
@@ -77,8 +75,9 @@ namespace Infrastructure.Persistence.File.Services
             await context.SaveChangesAsync(token);
             try
             {
-                BlobClient blobClient = await GetBlobClientAsync(document.Id, token);
-                await blobClient.UploadAsync(stream, true, token);
+                Directory.CreateDirectory(_rootPath);
+                await using var fileStream = System.IO.File.Create(GetFilePath(document.Id));
+                await stream.CopyToAsync(fileStream, token);
             }
             catch (Exception ex)
             {
@@ -87,27 +86,25 @@ namespace Infrastructure.Persistence.File.Services
             return document.Id;
         }
 
-        public async Task<Stream> GetFileDownloadStreamAsync(
+        public Task<Stream> GetFileDownloadStreamAsync(
             Guid documentId,
             CancellationToken cancellationToken
         )
         {
-            var blobClient = await GetBlobClientAsync(documentId, cancellationToken);
+            var filePath = GetFilePath(documentId);
+            if (!System.IO.File.Exists(filePath))
+            {
+                throw new StorageException("No file found in storage.");
+            }
 
-            Response<BlobDownloadStreamingResult>? result;
             try
             {
-                result = await blobClient.DownloadStreamingAsync(cancellationToken: cancellationToken);
+                return Task.FromResult<Stream>(System.IO.File.OpenRead(filePath));
             }
             catch (Exception ex)
             {
                 throw new StorageException("Error while creating file stream from storage.", ex);
             }
-            if (!result.HasValue)
-            {
-                throw new StorageException("No file found in storage.");
-            }
-            return result.Value.Content;
         }
 
         public async Task DeleteFileByIdAsync(Guid documentId, CancellationToken cancellationToken)
@@ -115,26 +112,21 @@ namespace Infrastructure.Persistence.File.Services
             var document =
                 await context.Documents.FirstOrDefaultAsync(d => d.Id == documentId, cancellationToken)
                 ?? throw new NotFoundException(nameof(DocumentDao), documentId);
-            await DeleteFileAsync(document, cancellationToken);
-            await context.SaveChangesAsync(cancellationToken: default);
+            DeleteFile(document);
+            context.Documents.Remove(document);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task DeleteFileAsync(DocumentDao document, CancellationToken cancellationToken)
+        private void DeleteFile(DocumentDao document)
         {
-            BlobClient blobClient = await GetBlobClientAsync(document.Id, cancellationToken);
-
             try
             {
-                await blobClient.DeleteAsync(cancellationToken: default);
+                System.IO.File.Delete(GetFilePath(document.Id));
             }
-            catch (RequestFailedException ex)
+            catch (Exception ex)
             {
-                if (ex.Status != 404)
-                {
-                    throw new StorageException("Error while deleting file", ex);
-                }
+                throw new StorageException("Error while deleting file", ex);
             }
-            context.Documents.Remove(document);
         }
 
         public async Task DeleteFilesByIdsAsync(
@@ -148,27 +140,13 @@ namespace Infrastructure.Persistence.File.Services
 
             foreach (var document in documents)
             {
-                await DeleteFileAsync(document, cancellationToken: default);
+                DeleteFile(document);
+                context.Documents.Remove(document);
             }
 
-            //await context.Documents
-            //    .Where(d => documentIds.Contains(d.Id))
-            //    .ExecuteDeleteAsync(cancellationToken);
-
-            await context.SaveChangesAsync(cancellationToken: default);
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task<BlobClient> GetBlobClientAsync(
-            Guid documentId,
-            CancellationToken cancellationToken
-        )
-        {
-            var containerClient = blobServiceClient.GetBlobContainerClient(
-                storageConfig.Value.BlobContainerName
-            );
-            await containerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-            var blobClient = containerClient.GetBlobClient(documentId.ToString());
-            return blobClient;
-        }
+        private string GetFilePath(Guid documentId) => Path.Combine(_rootPath, documentId.ToString());
     }
 }

@@ -481,7 +481,7 @@
       id="save-registration-request"
       type="submit"
       class="btn primary"
-      [disabled]="form().invalid || isEditMode()"
+      [disabled]="isSaveDisabled() || isEditMode()"
       (click)="onSave()"
     >
       {{ 'global.save' | translate }}
