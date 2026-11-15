@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection;
 using Application.Common.Enums;
 using Application.Common.Interfaces.Services;
 using Application.Features;
@@ -8,9 +7,6 @@ using Application.Features.RegistrationRequests.Common;
 using Application.Features.Security.Common;
 using Application.Interfaces.Services;
 using Application.Models.Errors;
-using Azure;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using FluentAssertions;
 using Infrastructure.Configurations;
 using Infrastructure.ExternalAuth;
@@ -43,7 +39,6 @@ namespace Application.UnitTests.Common
 
         public static IServiceCollection CreateServiceCollection(
             Action<TimeProvider>? setupDateService = null,
-            Action<BlobClient>? setupBlobClient = null,
             Action<IFileService>? setupFileService = null,
             bool mockAuthorization = true
         )
@@ -56,7 +51,6 @@ namespace Application.UnitTests.Common
             >();
 
             var timeProviderSub = Substitute.For<TimeProvider>();
-            BlobServiceClient blobServiceSub = ConfigureBlobServiceSubstitute(setupBlobClient);
             timeProviderSub.GetUtcNow().Returns(new DateTimeOffset(2026, 1, 1, 10, 0, 0, TimeSpan.Zero));
             var externalAuthSub = Substitute.For<IExternalAuthService>();
             var fileServiceSub = Substitute.For<IFileService>();
@@ -80,7 +74,6 @@ namespace Application.UnitTests.Common
                 .AddSingleton(currentUserPermissionsProviderSub)
                 .AddSingleton(currentUserEntityPermissionsProviderSub)
                 .AddSingleton(timeProviderSub)
-                .AddSingleton(blobServiceSub)
                 .AddSingleton(fileServiceSub)
                 .AddScoped<ITokenService, TokenService>()
                 .AddScoped<ITokenHelper, TokenHelper>()
@@ -129,43 +122,6 @@ namespace Application.UnitTests.Common
             }
 
             return services;
-        }
-
-        private static BlobServiceClient ConfigureBlobServiceSubstitute(Action<BlobClient>? setupBlobClient)
-        {
-            var blobDownloadResult = CreateBlobDownloadStreamingResult(new MemoryStream());
-            var mockResponse = Substitute.For<Response<BlobDownloadStreamingResult>>();
-            mockResponse.Value.Returns(blobDownloadResult);
-            mockResponse.HasValue.Returns(true);
-            var blobClientSub = Substitute.For<BlobClient>();
-            blobClientSub
-                .DownloadStreamingAsync(Arg.Any<BlobDownloadOptions?>(), Arg.Any<CancellationToken>())
-                .Returns(mockResponse);
-            var blobContainerClientSub = Substitute.For<BlobContainerClient>();
-            blobContainerClientSub.GetBlobClient(Arg.Any<string>()).Returns(blobClientSub);
-            var blobServiceSub = Substitute.For<BlobServiceClient>();
-            blobServiceSub.GetBlobContainerClient(Arg.Any<string>()).Returns(blobContainerClientSub);
-            setupBlobClient?.Invoke(blobClientSub);
-
-            return blobServiceSub;
-        }
-
-        protected static BlobDownloadStreamingResult? CreateBlobDownloadStreamingResult(Stream content)
-        {
-            var result = (BlobDownloadStreamingResult?)
-                Activator.CreateInstance(typeof(BlobDownloadStreamingResult), nonPublic: true);
-            var contentProperty = typeof(BlobDownloadStreamingResult).GetProperty(
-                nameof(BlobDownloadStreamingResult.Content)
-            );
-            contentProperty?.SetValue(
-                result,
-                content,
-                BindingFlags.NonPublic | BindingFlags.Instance,
-                null,
-                null,
-                null
-            );
-            return result;
         }
 
         #region Data Creation

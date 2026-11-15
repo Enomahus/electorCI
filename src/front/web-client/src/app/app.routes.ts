@@ -12,13 +12,13 @@ import { HomeUi } from './pages/home-ui/home-ui';
 import { CreateAccountUi } from './pages/login-ui/create-account-ui/create-account-ui';
 import { LoginUi } from './pages/login-ui/login-ui';
 import { MyAccountUi } from './pages/my-account-ui/my-account-ui';
+import { CreateRegistrationRequestUi } from './pages/registration-requests-home-ui/create-registration-request-ui/create-registration-request-ui';
 import { RegistrationRequestsForAdminUi } from './pages/registration-requests-home-ui/registration-requests-for-admin-ui/registration-requests-for-admin-ui';
 import { RegistrationRequestsForManagementUi } from './pages/registration-requests-home-ui/registration-requests-for-management-ui/registration-requests-for-management-ui';
 import { RegistrationRequestsUi } from './pages/registration-requests-home-ui/registration-requests-ui/registration-requests-ui';
 import { PermissionsGuard } from './services/auth/permission.guard';
 import { AppPermission } from './services/nswag/api-nswag-client';
 import { PageTemplateUi } from './shared/page-template-ui/page-template-ui';
-import { CreateRegistrationRequestUi } from './pages/registration-requests-home-ui/create-registration-request-ui/create-registration-request-ui';
 
 export function perm(p: AppPermission): AppPermission {
   return p;
@@ -72,14 +72,17 @@ export const routes: Routes = [
         title: 'registrationRequest.title',
         canActivate: [PermissionsGuard],
         data: {
-          permissions: perm('createRegistrationRequest')
-        }
+          permissions: perm('createRegistrationRequest'),
+        },
       },
       {
         path: 'registration-requests-for-management',
         component: RegistrationRequestsForManagementUi,
         title: 'registrationRequests.titleForManagement',
         canActivate: [PermissionsGuard],
+        data: {
+          permissions: perm('updateRegistrationRequestsForManagement'),
+        },
       },
       {
         path: 'registration-requests-for-admin',

@@ -58,8 +58,6 @@ export type CitizenForm = FormGroup<{
   postalAddress: FormControl<string | undefined>;
   fatherId: FormControl<string | undefined>;
   motherId: FormControl<string | undefined>;
-  newFather: BasicCitizenForm;
-  newMother: BasicCitizenForm;
 }>;
 
 export type RequestDocumentsForm = FormGroup<{
@@ -198,8 +196,6 @@ export function createCitizenForm(): CitizenForm {
       validators: Validators.required,
       nonNullable: true,
     }),
-    newFather: createBasicCitizenForm(),
-    newMother: createBasicCitizenForm(),
   }) as CitizenForm;
 }
 
@@ -243,6 +239,11 @@ export function createRegistrationRequestForm(): RegistrationRequestForm {
 }
 
 export function createSearchCreateCitizenForm(): SearchCreateCitizenForm {
+  // isNewCitizen defaults to false (search mode), so the creation sub-form starts disabled —
+  // its required fields would otherwise make this form permanently invalid while searching.
+  const newCitizen = createBasicCitizenForm();
+  newCitizen.disable();
+
   return new FormGroup({
     citizenId: new FormControl<string | undefined>(undefined, {
       validators: [Validators.required],
@@ -252,6 +253,6 @@ export function createSearchCreateCitizenForm(): SearchCreateCitizenForm {
       validators: [Validators.required],
       nonNullable: true,
     }),
-    newCitizen: createBasicCitizenForm(),
+    newCitizen,
   }) as SearchCreateCitizenForm;
 }

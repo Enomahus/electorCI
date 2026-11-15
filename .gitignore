@@ -467,6 +467,9 @@ FodyWeavers.xsd
 # Azurite
 **/azurite
 
+# Local document storage (registration request attachments, etc.)
+src/back/src/Backend/00-Web/App_Data/
+
 # SqlTools
 **/*.session.sql
 

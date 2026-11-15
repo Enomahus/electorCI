@@ -127,6 +127,12 @@ export class RegistrationRequestUi implements OnInit, OnChanges {
     return this.form().controls.residence;
   }
 
+  isSaveDisabled(): boolean {
+    return (
+      this.form().invalid || this.fatherSearchCreateForm.invalid || this.motherSearchCreateForm.invalid
+    );
+  }
+
   allDepartments = computed<DistrictNode[]>(() =>
     this.store.findChildren(this.allRegions(), this.selectedRegionId()),
   );
